@@ -1,6 +1,6 @@
 import { PersonCenter } from "./components/PersonCenter";
 import { Avatar } from "./components/Avatar";
-import { Merchants } from "./components/Merchants";
+import { Collection } from "./components/Collection";
 import { Dictionary, filter, isEmpty, map } from "lodash";
 import { useMemo } from "react";
 import { useUserInfo } from "../../components/UserProvider";
@@ -8,17 +8,17 @@ import { useLocation, useParams } from "react-router-dom";
 import {
   PixelsMetaverseHandleImgProvider,
   useConvertedPostion,
-  usePixelsMetaverseContract
+  usePixelsMetaverse
 } from "../../pixels-metaverse";
 
 export const PixelsMetaverse = () => {
-  const { accounts } = usePixelsMetaverseContract()
+  const { accounts } = usePixelsMetaverse()
   const { search } = useLocation()
   const address = search ? search.split("=")[1] : accounts?.address
   const { goodsList, userInfo, goodsId } = useUserInfo()
   const convertedPostion = useConvertedPostion()
   const a = useParams()
-  console.log(a)
+  //console.log(a)
 
   /* 
   
@@ -84,7 +84,7 @@ export const PixelsMetaverse = () => {
       <div className="flex justify-between bg-transparent flex-1 pt-20">
         <PersonCenter outfitEdList={outfitEdList} noOutfitEdList={noOutfitEdList} />
         <Avatar />
-        <Merchants />
+        <Collection />
       </div>
     </PixelsMetaverseHandleImgProvider>
   )

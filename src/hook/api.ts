@@ -3,7 +3,7 @@ import { IMerchandise } from "../pages/produced/components/Submit";
 import { useLoading } from "../components/Loading";
 import { message } from "antd";
 import { cloneDeep, map } from "lodash";
-import { IArgContract, usePixelsMetaverseContract } from "../pixels-metaverse";
+import { IArgContract, usePixelsMetaverse } from "../pixels-metaverse";
 
 export interface IHandle {
   onSuccess?: () => void,
@@ -18,7 +18,7 @@ export const useRequest = (
   }: IHandle = {},
   delay: any[] = []
 ) => {
-  const { accounts, contract } = usePixelsMetaverseContract()
+  const { accounts, contract } = usePixelsMetaverse()
   const { closeDelayLoading, openLoading, closeLoading } = useLoading()
 
   return useCallback(async (arg?: any) => {
@@ -30,11 +30,13 @@ export const useRequest = (
         onSuccess && onSuccess()
       }).catch((error) => {
         closeLoading()
-        message.error(error?.message)
+        console.log(error)
+        //message.error(error?.message)
         onFail && onFail(error)
       })
     } catch (error) {
       closeLoading()
+      console.log(error)
       message.error(error?.message)
       onFail && onFail(error)
     }
@@ -64,7 +66,10 @@ export const fetchGetGoodsInfo = async (argContract: IArgContract, arg: { id: nu
 }
 
 export const fetchGetGoodsIdList = async (argContract: IArgContract, arg?: { setValue: Dispatch<React.SetStateAction<any[]>>, newNumber?: number }) => {
+  console.log(argContract?.contract, "idList")
   const idList = await argContract?.contract?.methods.getGoodsList().call();
+  console.log(idList)
+  
   const len = idList.length || 0;
   if (arg?.newNumber === -1) {
     for (let i = len - 1; i >= 0; i--) {
