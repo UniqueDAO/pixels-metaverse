@@ -29,7 +29,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.12.0",
-    "react-pixels-metaverse": "^0.0.5",
+    "react-pixels-metaverse": "^0.0.8",
     "react-router-dom": "^5.2.1",
     "react-scripts": "4.0.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
@@ -69,7 +69,7 @@
   "devDependencies": {
     "autoprefixer": "^9",
     "babel-plugin-import": "^1.13.3",
-    "contract-json-converted-html": "^0.0.12",
+    "contract-json-converted-html": "^0.0.13",
     "craco-less": "^1.20.0",
     "craco-plugin-react-hot-reload": "^0.1.0",
     "eosjs": "^22.1.0",
