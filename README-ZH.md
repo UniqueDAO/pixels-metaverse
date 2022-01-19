@@ -1,4 +1,7 @@
-中文 / [English](https://github.com/UniqueDAO/pixels-metaverse/blob/main/README.md)
+中文 / [English](https://github.com/UniqueDAO/pixels-metaverse/blob/main/README.md) 
+
+该项目基于 [scaffold-eth](https://github.com/scaffold-eth/scaffold-eth) 框架开发
+
 
 # 像素元宇宙
 
