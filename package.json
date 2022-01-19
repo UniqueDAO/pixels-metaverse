@@ -47,7 +47,9 @@
     "push:npm": "cd src/react-pixels-metaverse && git add . && git commit -m '人生何曾驻旧足，前端处处是新旅' && git push",
     "converted": "truffle-contract-json-converted-html",
     "html": "yarn converted && cd out && http-server",
-    "push:dev": "git push origin dev"
+    "push:dev": "git push origin dev",
+    "copy": "shx cp ./electron/main.js build && shx cp ./electron/package.json build",
+    "desktop": "yarn build && yarn copy && cd build && cnpm install && cnpm run pack"
   },
   "eslintConfig": {
     "extends": [
@@ -77,6 +79,7 @@
     "i18next-browser-languagedetector": "^6.1.2",
     "postcss": "^7",
     "postcss-cli": "^8.3.1",
-    "react-hot-loader": "^4.13.0"
+    "react-hot-loader": "^4.13.0",
+    "shx": "^0.3.4"
   }
 }
