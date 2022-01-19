@@ -49,7 +49,12 @@
     "html": "yarn converted && cd out && http-server",
     "push:dev": "git push origin dev",
     "copy": "shx cp ./electron/main.js build && shx cp ./electron/package.json build",
-    "desktop": "yarn build && yarn copy && cd build && npm install && yarn pack"
+    "desktop": "yarn build && yarn copy && cd build && npm install && yarn pack",
+    "ipfs": "node ./scripts/ipfs.js",
+    "surge": "surge ./build",
+    "s3": "node ./scripts/s3.js",
+    "ship": "yarn surge",
+    "watch": "node ./scripts/watch.js"
   },
   "eslintConfig": {
     "extends": [
@@ -82,6 +87,10 @@
     "postcss-cli": "^8.3.1",
     "react-hot-loader": "^4.13.0",
     "shx": "^0.3.4",
-    "webpack-dev-server": "3.11.1"
+    "webpack-dev-server": "3.11.1",
+    "ipfs-http-client": "^45.0.0",
+    "prettier": "^2.0.5",
+    "s3-folder-upload": "^2.3.1",
+    "surge": "^0.21.5"
   }
 }

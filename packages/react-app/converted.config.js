@@ -1,5 +1,5 @@
 module.exports = {
-  entry: "./src/contracts/", //essential
+  entry: "./src/contracts", //essential
   out: "./out", //Can not be transferred, default"./out"
   //Contract address of other developers after deployment in other networks
   networks: {
