@@ -2,6 +2,7 @@
   "name": "pixels-metaverse",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@ant-design/icons": "^4.6.4",
     "@craco/craco": "^6.2.0",
