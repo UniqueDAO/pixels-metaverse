@@ -68,3 +68,18 @@ yarn-error.log*
 
 # doc directory
 /doc
+
+**/out
+**/src/react-pixels-metaverse
+
+# production
+**/build
+**/play.md
+**/app.drawio
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
