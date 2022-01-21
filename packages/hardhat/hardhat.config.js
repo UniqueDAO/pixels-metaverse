@@ -128,7 +128,7 @@ module.exports = {
       },
     },
     ropsten: {
-      url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      url: `https://ropsten.infura.io/v3/${process.env.ROPSTEN_INFURA_KEY}`, // <---- YOUR INFURA ID! (or it won't work)
 
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/ropsten",// <---- YOUR MORALIS ID! (not limited to infura)
 
@@ -625,3 +625,7 @@ task("send", "Send ETH")
 
     return send(fromSigner, txRequest);
   });
+
+  task("hello", "Prints a greeting'")
+  .addOptionalParam("greeting", "The greeting to print", "Hello, World!")
+  .setAction(async ({ greeting }) => console.log(greeting));

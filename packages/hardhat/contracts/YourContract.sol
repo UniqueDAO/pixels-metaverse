@@ -17,7 +17,7 @@ contract YourContract {
 
   function setPurpose(string memory newPurpose) public {
       purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
+      console.log(msg.sender,"set purpose to1111",purpose);
       // emit SetPurpose(msg.sender, purpose);
   }
 }

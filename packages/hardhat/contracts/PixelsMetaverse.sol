@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./IPMT721.sol";
 
-contract PixelsMetavers {
+contract PixelsMetaverse {
     IPMT721 private PMT721;
     address private immutable _owner;
 
