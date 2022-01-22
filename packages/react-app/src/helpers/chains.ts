@@ -210,6 +210,22 @@ const supportedChains: IChainData[] = [
     }
   },
   {
+    name: "Hardhat",
+    short_name: "hardhat",
+    chain: "ETH",
+    network: "mainnet",
+    chain_id: 31337,
+    network_id: 31337,
+    rpc_url: "https://127.0.0.1:8545/",
+    native_currency: {
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: "18",
+      contractAddress: "",
+      balance: ""
+    }
+  },
+  {
     name: "Matic",
     short_name: "matic",
     chain: "Matic",

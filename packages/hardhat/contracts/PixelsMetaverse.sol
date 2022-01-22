@@ -69,8 +69,9 @@ contract PixelsMetaverse {
         _;
     }
 
-    constructor() {
+    constructor(address pmt721) {
         _owner = msg.sender;
+        PMT721 = IPMT721(pmt721);
     }
 
     function register() public {
