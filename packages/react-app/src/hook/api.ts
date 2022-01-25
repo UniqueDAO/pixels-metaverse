@@ -4,7 +4,7 @@ import { useLoading } from "../components/Loading";
 import { message } from "antd";
 import { cloneDeep, every, findIndex, isEmpty, isUndefined, map } from "lodash";
 import { usePixelsMetaverse } from "../pixels-metaverse";
-import { useWeb3Info } from "./web3";
+import { useWeb3Info } from "../web3";
 import { Contract } from 'web3-eth-contract';
 import { MaterialItem } from "../components/Card";
 

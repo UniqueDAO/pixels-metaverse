@@ -5,7 +5,7 @@ import { useLocation } from "react-router";
 import { useUserInfo } from "../../../components/UserProvider";
 import { PixelsMetaverseHandleImg, usePixelsMetaverseHandleImg } from "../../../pixels-metaverse";
 import { ReactNode, useEffect, useMemo } from "react";
-import { useWeb3Info } from "../../../hook/web3";
+import { useWeb3Info } from "../../../web3";
 import { split } from "lodash";
 
 const InfoLabel = ({ children, label }: { children: ReactNode, label: string }) => {

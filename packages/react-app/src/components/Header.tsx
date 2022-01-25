@@ -4,7 +4,7 @@ import { memo, useEffect, useState } from "react";
 import { ellipseAddress } from "../helpers/utilities";
 import { useTranslation } from "react-i18next"
 import { Button, Menu, message } from "antd";
-import { useWeb3Info } from "../hook/web3";
+import { useWeb3Info } from "../web3";
 import { isEmpty } from "lodash";
 import i18n from "i18next";
 

@@ -5,7 +5,7 @@ import { cloneDeep, find, isEmpty, map } from "lodash";
 import React, { Dispatch, ReactNode, useEffect, useMemo, useState } from "react";
 import { useUserInfo } from "../components/UserProvider";
 import { fetchCancelCollect, fetchCancelCompose, fetchCollect, fetchGetGoodsIdList, fetchSetUserConfig, fetchSubtract, useRequest } from "../hook/api";
-import { useWeb3Info } from "../hook/web3";
+import { useWeb3Info } from "../web3";
 import { categoryData } from "../pages/produced/components/Submit";
 import { PixelsMetaverseImgByPositionData } from "../pixels-metaverse";
 const { Text } = Typography;

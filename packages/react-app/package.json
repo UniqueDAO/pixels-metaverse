@@ -11,7 +11,6 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "@truffle/hdwallet-provider": "1.2.3",
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.172",
     "@types/node": "^16.7.2",
@@ -37,8 +36,9 @@
     "typescript": "^4.3.5",
     "web-vitals": "^1.0.1",
     "web3": "^1.5.2",
+    "web3-utils": "^1.7.0",
     "web3modal": "^1.9.4",
-    "web3-utils": "^1.7.0"
+    "ethers": "^5.5.3"
   },
   "scripts": {
     "start": "craco start",
@@ -46,15 +46,15 @@
     "test": "craco test",
     "deploy": "bash deploy.sh",
     "push:npm": "cd src/react-pixels-metaverse && git add . && git commit -m '人生何曾驻旧足，前端处处是新旅' && git push",
-    "converted": "truffle-contract-json-converted-html",
-    "html": "yarn converted && cd out && http-server",
+    "converted": "abi-to-html",
+    "html": "npm run converted && cd out && http-server",
     "push:dev": "git push origin dev",
     "copy": "shx cp ./electron/main.js build && shx cp ./electron/package.json build",
-    "desktop": "yarn build && yarn copy && cd build && npm install && yarn pack",
+    "desktop": "npm run build && npm run copy && cd build && npm install && npm run pack",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "surge ./build",
     "s3": "node ./scripts/s3.js",
-    "ship": "yarn surge",
+    "ship": "npm run surge",
     "watch": "node ./scripts/watch.js"
   },
   "eslintConfig": {
@@ -76,6 +76,7 @@
     ]
   },
   "devDependencies": {
+    "@types/ms.macro": "^2.0.0",
     "autoprefixer": "^9",
     "babel-plugin-import": "^1.13.3",
     "contract-json-converted-html": "^0.0.13",
@@ -84,14 +85,14 @@
     "eosjs": "^22.1.0",
     "hardhat": "^2.8.2",
     "i18next-browser-languagedetector": "^6.1.2",
+    "ipfs-http-client": "^45.0.0",
     "postcss": "^7",
     "postcss-cli": "^8.3.1",
-    "react-hot-loader": "^4.13.0",
-    "shx": "^0.3.4",
-    "webpack-dev-server": "3.11.1",
-    "ipfs-http-client": "^45.0.0",
     "prettier": "^2.0.5",
+    "react-hot-loader": "^4.13.0",
     "s3-folder-upload": "^2.3.1",
-    "surge": "^0.21.5"
+    "shx": "^0.3.4",
+    "surge": "^0.21.5",
+    "webpack-dev-server": "3.11.1"
   }
 }

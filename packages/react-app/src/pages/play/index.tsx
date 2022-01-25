@@ -9,7 +9,7 @@ import {
   PixelsMetaverseHandleImgProvider,
   useConvertedPostion
 } from "../../pixels-metaverse";
-import { useWeb3Info } from "../../hook/web3";
+import { useWeb3Info } from "../../web3";
 import { MaterialItem } from "../../components/Card";
 
 export const useGetPersonData = () => {

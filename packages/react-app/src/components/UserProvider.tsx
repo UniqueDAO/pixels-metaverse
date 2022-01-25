@@ -4,7 +4,7 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { usePixelsMetaverse } from "../pixels-metaverse";
 import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, useRequest } from "../hook/api";
-import { useWeb3Info } from "../hook/web3";
+import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
 
 export const UserInfoContext = createContext(

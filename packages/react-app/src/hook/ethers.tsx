@@ -129,7 +129,7 @@ export const useGetWeb3Info = () => {
     const web3Modal = new Web3Modal({
       network,
       cacheProvider: true,
-      //providerOptions: getProviderOptions()
+      providerOptions: getProviderOptions()
     });
     setWeb3Info((pre) => ({ ...pre, web3Modal }));
   }, [network])
