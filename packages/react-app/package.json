@@ -55,7 +55,8 @@
     "surge": "surge ./build",
     "s3": "node ./scripts/s3.js",
     "ship": "npm run surge",
-    "watch": "node ./scripts/watch.js"
+    "watch": "node ./scripts/watch.js",
+    "ab": "ts-node ./src/abi-to-request"
   },
   "eslintConfig": {
     "extends": [

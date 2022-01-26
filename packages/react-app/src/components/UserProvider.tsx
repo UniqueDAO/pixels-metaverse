@@ -3,7 +3,7 @@ import * as React from "react";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { usePixelsMetaverse } from "../pixels-metaverse";
-import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, useRequest } from "../hook/api";
+import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, fetchUserInfo2, useRequest } from "../hook/api";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
 
@@ -35,8 +35,9 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [collectList, setCollectList] = useState<any[]>([]);
   const [goodsId, setGoodsId] = useState<number | undefined>();
   const [composeList, setComposeList] = React.useState<string[]>([])
-  const { address, networkId } = useWeb3Info()
-  const { contract } = usePixelsMetaverse()
+  const {  networkId } = useWeb3Info()
+  const address = "0x525E8ff084af9fa69eC9ff84D6EC6955dCbe03eD"
+  const { contract, etherContract } = usePixelsMetaverse()
   const getUserInfo = useRequest(fetchUserInfo)
 
   const register = useRequest(fetchRegister, {
@@ -52,7 +53,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     getInfo()
-  }, [address, contract])
+  }, [address, contract, etherContract])
 
   const getGoodsIdList = useRequest(fetchGetGoodsIdList)
   const getCollectList = useRequest(fetchCollectList)

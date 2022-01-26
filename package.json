@@ -29,6 +29,7 @@
     "node": "yarn workspace @scaffold-eth/hardhat chain",
     "compile": "yarn workspace @scaffold-eth/hardhat compile",
     "deploy": "yarn workspace @scaffold-eth/hardhat deploy",
+    "ganache": "yarn workspace @scaffold-eth/hardhat ganache",
     "verify": "yarn workspace @scaffold-eth/hardhat verify",
     "watch": "yarn workspace @scaffold-eth/hardhat watch",
     "accounts": "yarn workspace @scaffold-eth/hardhat accounts",

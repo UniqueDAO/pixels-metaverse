@@ -66,23 +66,23 @@ export const Header = memo(() => {
         </div>
         <div className="flex justify-end relative">
           <div className="mr-4 flex items-center bg-white bg-opacity-10" style={{ borderRadius: 20 }}>
-          <input
-            className="px-4 bg-transparent outline-none focus:outline-none w-60"
-            placeholder="请输入用户钱包地址"
-            value={inputStr || ""}
-            onChange={(e) => setInputStr(e.target.value)}
-          />
-          <Button type="primary" size="large" className="w-24"
-            style={{ borderRadius: 0, borderTopRightRadius: 20, borderBottomRightRadius: 20 }}
-            onClick={() => {
-              if (inputStr && (inputStr?.length !== 42 || inputStr?.indexOf("0x") !== 0)) {
-                message.warning("Please enter a well-formed address");
-                return;
-              }
-              history.push(`/app${inputStr ? "?address=" + inputStr : ""}`)
-            }}
-          >查询</Button>
-        </div>
+            <input
+              className="px-4 bg-transparent outline-none focus:outline-none w-60"
+              placeholder="请输入用户钱包地址"
+              value={inputStr || ""}
+              onChange={(e) => setInputStr(e.target.value)}
+            />
+            <Button type="primary" size="large" className="w-24"
+              style={{ borderRadius: 0, borderTopRightRadius: 20, borderBottomRightRadius: 20 }}
+              onClick={() => {
+                if (inputStr && (inputStr?.length !== 42 || inputStr?.indexOf("0x") !== 0)) {
+                  message.warning("Please enter a well-formed address");
+                  return;
+                }
+                history.push(`/app${inputStr ? "?address=" + inputStr : ""}`)
+              }}
+            >查询</Button>
+          </div>
 
           {address && !isEmpty(chainData) && connected ? (
             <div className="px-4 rounded bg-white bg-opacity-10 relative w-48 h-11">
@@ -92,7 +92,7 @@ export const Header = memo(() => {
               </div>
             </div>)
             : <div className="flex items-center justify-center rounded cursor-pointer bg-white bg-opacity-10 w-24 hover:text-white h-10"
-              onClick={toConnect}>连接钱包</div>
+              onClick={() => { toConnect && toConnect() }}>连接钱包</div>
           }
           {/* <Dropdown overlay={menu} placement="bottomLeft">
           <div className="flex items-center justify-center rounded cursor-pointer bg-white bg-opacity-10 w-24 hover:text-white ml-4">{t("home.content")}</div>

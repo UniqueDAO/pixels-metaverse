@@ -6,7 +6,8 @@ import { useUserInfo } from "../../../components/UserProvider";
 import { PixelsMetaverseHandleImg, usePixelsMetaverseHandleImg } from "../../../pixels-metaverse";
 import { ReactNode, useEffect, useMemo } from "react";
 import { useWeb3Info } from "../../../web3";
-import { split } from "lodash";
+import { isEmpty, split } from "lodash";
+import { ellipseAddress } from "../../../helpers/utilities";
 
 const InfoLabel = ({ children, label }: { children: ReactNode, label: string }) => {
   return (
@@ -75,17 +76,18 @@ export const BaseInfo = () => {
         }} />
       <div className="overflow-y-scroll" style={{ height: "calc(100% - 240px)" }}>
         <InfoLabel label="账户">
-          <div className="overflow-x-scroll w-48">
-            {address || "0x000000000000000000000000000000000000000000000000000"}
+          <div className="flex">
+            {ellipseAddress(address, 10) || "0x000000000000000000000000000000000000000000000000000"}
           </div>
         </InfoLabel>
         <InfoLabel label="类型">
           <div className="flex">
-            {userInfo?.id !== "0" ? "宇宙居民" : "访客"}
-            {userInfo?.id === "0" && <div className="cursor-pointer text-red-500 ml-2" onClick={register}>激活</div>}
+            {userInfo?.id === "0"
+              ? <>访客<div className="cursor-pointer text-red-500 ml-2" onClick={register}>激活</div></>
+              : (isEmpty(userInfo) ? "请部署合约" : "宇宙居民")}
           </div>
         </InfoLabel>
-        <InfoLabel label="显示辅助线">
+        {/* <InfoLabel label="显示辅助线">
           <AppstoreOutlined style={{ color: config?.withGrid ? 'white' : "gray", fontSize: 22 }}
             onClick={() => setConfig((pre) => ({ ...pre, withGrid: !config?.withGrid }))} />
         </InfoLabel>
@@ -96,7 +98,7 @@ export const BaseInfo = () => {
         <InfoLabel label="背景色">
           <input type="color" value={config?.bgColor} className="w-10 cursor-pointer"
             onChange={(e) => setConfig((pre) => ({ ...pre, bgColor: e.target.value }))} />
-        </InfoLabel>
+        </InfoLabel> */}
         <Button type="primary" size="large" className="mt-6 bg-red-500 cursor-pointer h-10 w-full hover:text-white"
           style={{ cursor: isCurUser ? "pointer" : "no-drop" }}
           onClick={() => {

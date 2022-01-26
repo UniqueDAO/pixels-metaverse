@@ -42,6 +42,7 @@
     "send": "hardhat send --from 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266  --to 0xf0A3FdF9dC875041DFCF90ae81D7E01Ed9Bc2033 --amount 10",
     "generate": "hardhat generate",
     "account": "hardhat account",
-    "verify": "hardhat etherscan-verify --api-key PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8"
+    "verify": "hardhat etherscan-verify --api-key PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8",
+    "ganache": "hardhat deploy --network ganache --export-all ../react-app/src/contracts/hardhat_contracts.json"
   }
 }

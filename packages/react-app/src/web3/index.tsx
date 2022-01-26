@@ -4,42 +4,10 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { getChainData, warning } from "../helpers/utilities";
 import { IChainData } from "../helpers/types";
-import { isEmpty } from "lodash";
+import { isEmpty, isUndefined, omit } from "lodash";
 import { ethers } from "ethers";
 
-export type TLibrary = ethers.providers.Web3Provider
-  | ethers.providers.EtherscanProvider
-  | ethers.providers.InfuraProvider
-  | ethers.providers.JsonRpcProvider
-  | ethers.providers.IpcProvider
-
-export const useMyWeb3 = () => {
-  return useCallback(async (setWeb3: (web3: Web3) => void) => {
-    window.addEventListener("load", async () => {
-      if (window.ethereum) {
-        const web3 = new Web3(window.ethereum);
-        try {
-          await window.ethereum.enable();
-          console.log("window.ethereum");
-          setWeb3(web3)
-        } catch (error) {
-          //reject(error);
-        }
-      } else if (window.web3) {
-        const web3 = window.web3;
-        console.log("Injected web3 detected.");
-        setWeb3(web3)
-      } else {
-        const provider = new Web3.providers.HttpProvider(
-          "http://127.0.0.1:8545"
-        );
-        const web3 = new Web3(provider);
-        console.log("No web3 instance injected, using Local web3.");
-        setWeb3(web3)
-      }
-    });
-  }, [])
-}
+export type TLibrary = ethers.providers.Web3Provider | ethers.providers.InfuraProvider
 
 interface IWeb3InfoProps {
   connected?: boolean;
@@ -98,11 +66,11 @@ export const useGetWeb3Info = () => {
       if (library instanceof ethers.providers.Web3Provider && library?.provider instanceof WalletConnectProvider) {
         library?.provider.wc?.killSession()
       }
+      await web3Modal?.clearCachedProvider();
+      setWeb3Info((pre) => ({ ...pre, ...INITIAL_STATE }));
     } catch (error) {
       console.log(error)
     }
-    await web3Modal?.clearCachedProvider();
-    setWeb3Info((pre) => ({ ...pre, ...INITIAL_STATE }));
   };
 
   useEffect(() => {
@@ -129,6 +97,8 @@ export const useGetWeb3Info = () => {
   useEffect(() => {
     if (web3Modal?.cachedProvider) {
       toConnect()
+    } else {
+      toConnect(false)
     }
   }, [web3Modal?.cachedProvider])
 
@@ -152,15 +122,33 @@ export const useGetWeb3Info = () => {
     });
   };
 
-  const toConnect = async () => {
-    const instance: ethers.providers.ExternalProvider = await web3Modal?.connect();
-    await subscribeProvider(instance);
-    let library = new ethers.providers.Web3Provider(instance);
-    const signer = library.getSigner();
-    const address = await signer.getAddress();
-    const chainId = await signer.getChainId()
-    const addressBalance = await signer.getBalance()
-    const balance = ethers.utils.formatUnits(addressBalance)
+  const getLibrary = async () => {
+    if (process.env.NODE_ENV === "production") {
+      return new ethers.providers.InfuraProvider('mainnet')
+    } else {
+      return ethers.getDefaultProvider("http://127.0.0.1:8545") as ethers.providers.Web3Provider;
+    }
+  }
+
+  const toConnect = async (defaultProvider?: boolean) => {
+    let library: TLibrary, address: string, chainId: number, balance: string;
+    if (isUndefined(defaultProvider)) {
+      try {
+        const instance: ethers.providers.ExternalProvider = await web3Modal?.connect();
+        await subscribeProvider(instance);
+        library = new ethers.providers.Web3Provider(instance);
+        const signer = (library as TLibrary).getSigner();
+        address = await signer.getAddress();
+        const addressBalance = await signer.getBalance();
+        balance = ethers.utils.formatUnits(addressBalance);
+      } catch (error) {
+        library = await getLibrary()
+      }
+    } else {
+      library = await getLibrary()
+    }
+    const net = await library.getNetwork();
+    chainId = net?.chainId;
 
     setWeb3Info((pre) => ({
       ...pre,

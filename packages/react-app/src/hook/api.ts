@@ -8,7 +8,7 @@ import { useWeb3Info } from "../web3";
 import { Contract } from 'web3-eth-contract';
 import { MaterialItem } from "../components/Card";
 
-export interface IArgContract { contract: any, accounts?: any, address?: any }
+export interface IArgContract { contract: any, accounts?: any, address?: any, etherContract?: any }
 
 export interface IHandle {
   onSuccess?: () => void,
@@ -24,14 +24,14 @@ export const useRequest = (
   delay: any[] = []
 ) => {
   const { address } = useWeb3Info()
-  const { contract } = usePixelsMetaverse()
+  const { contract, etherContract } = usePixelsMetaverse()
   const { closeDelayLoading, openLoading, closeLoading } = useLoading()
 
   return useCallback(async (arg?: any) => {
     if (!contract) return
     try {
       !arg?.closeLoading && openLoading()
-      fetch({ address, contract }, arg).then(() => {
+      fetch({ address, contract, etherContract }, arg).then(() => {
         closeDelayLoading()
         onSuccess && onSuccess()
       }).catch((error) => {
@@ -52,6 +52,11 @@ export const useRequest = (
 export const fetchUserInfo = async (argContract: IArgContract, arg: { address: string, setUserInfo: Dispatch<any> }) => {
   const info = await argContract?.contract?.methods.user(arg.address).call();
   arg.setUserInfo && arg.setUserInfo(info)
+}
+
+export const fetchUserInfo2 = async (argContract: IArgContract, arg: { address: string, setUserInfo: Dispatch<any> }) => {
+  console.log(argContract?.etherContract, arg.address)
+  const info = await argContract?.etherContract?.amount();
 }
 
 export const fetchRegister = async (argContract: IArgContract) => {
