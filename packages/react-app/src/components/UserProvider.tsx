@@ -3,7 +3,7 @@ import * as React from "react";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { usePixelsMetaverse } from "../pixels-metaverse";
-import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, fetchUserInfo2, useRequest } from "../hook/api";
+import { fetchCollectList, fetchGetGoodsIdList, fetchGetMaterialLength, fetchRegister, fetchUserInfo, fetchUserInfo2, useRequest, useTemplementRequest } from "../hook/api";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
 
@@ -40,6 +40,9 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const { contract, etherContract } = usePixelsMetaverse()
   const getUserInfo = useRequest(fetchUserInfo2)
 
+  const [data] = useTemplementRequest(fetchGetMaterialLength)
+  console.log(data)
+
   const register = useRequest(fetchRegister, {
     onSuccess: () => {
       getUserInfo({ address: address, setUserInfo })
@@ -66,7 +69,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!networkId) return
     setGoodsList([])
-    //getGoodsIdList({ setValue: setGoodsList })
+    getGoodsIdList({ setValue: setGoodsList })
   }, [networkId, etherContract])
 
   useEffect(() => {

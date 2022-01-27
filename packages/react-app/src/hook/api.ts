@@ -1,18 +1,22 @@
-import { Dispatch, useCallback } from "react";
+import { Dispatch, useCallback, useEffect, useState } from "react";
 import { IMerchandise } from "../pages/produced/components/Submit";
 import { useLoading } from "../components/Loading";
 import { message } from "antd";
-import { cloneDeep, every, findIndex, isEmpty, isUndefined, map } from "lodash";
+import { cloneDeep, Dictionary, every, findIndex, isEmpty, isUndefined, map } from "lodash";
 import { usePixelsMetaverse } from "../pixels-metaverse";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "../components/Card";
-import { ethers } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 
 export interface IArgContract { contract: any, accounts?: any, address?: any, etherContract?: any }
 
 export interface IHandle {
   onSuccess?: () => void,
   onFail?: (arg?: any) => void
+}
+
+export const getNumberStr = (bigNumber: BigNumberish) => {
+  return bigNumber.toString()
 }
 
 export const useRequest = (
@@ -50,6 +54,21 @@ export const useRequest = (
   }, [contract, etherContract, address, ...delay])
 }
 
+export const useTemplementRequest = (fetch: (argContract: IArgContract, arg?: any) => Promise<void>) => {
+  const [data, setData] = useState<any>();
+  const { etherContract } = usePixelsMetaverse()
+  const getData = useRequest(fetch)
+  useEffect(() => {
+    getFun()
+  }, [etherContract])
+
+  const getFun = useCallback(() => {
+    getData({ setValue: setData })
+  }, [etherContract])
+
+  return [data, getFun]
+}
+
 export const fetchUserInfo2 = async (argContract: IArgContract, arg: { address: string, setUserInfo: Dispatch<any> }) => {
   const info = await argContract?.etherContract?.user(arg.address);
 }
@@ -82,7 +101,7 @@ export const fetchCollectList = async (argContract: IArgContract, arg: { address
 }
 
 export const fetchGetMaterialLength = async (argContract: IArgContract, arg?: { setValue: Dispatch<React.SetStateAction<any>> }) => {
-  const len = await argContract?.contract.methods.getMaterialLength().call();
+  const len = await argContract?.etherContract?.getMaterialLength();
   arg?.setValue && arg?.setValue(Number(len))
 }
 
@@ -110,7 +129,9 @@ const arrayToObject = (item: MaterialItem) => {
 }
 
 export const fetchGetGoodsIdList = async (argContract: IArgContract, arg?: { setValue: Dispatch<React.SetStateAction<any[]>>, createAmount?: number, list: string[], burnID?: string }) => {
-  const len = await argContract?.etherContract.getMaterialLength();
+  let len = await argContract?.etherContract.getMaterialLength();
+  len = getNumberStr(len)
+
   if (arg?.list && !isUndefined(arg?.createAmount)) {
     const list = [...arg?.list]
     for (let i = 0; i < arg?.createAmount; i++) {
@@ -118,31 +139,35 @@ export const fetchGetGoodsIdList = async (argContract: IArgContract, arg?: { set
     }
     for (let i = 0; i < list?.length; i++) {
       let item = await argContract?.etherContract.getMaterial(list[i])
-      if (item?.material?.owner === "0x0000000000000000000000000000000000000000" && item?.material?.id === "0") continue
-      if (!isEmpty(item?.composes) && every(item?.composes, ite => ite === "0")) continue
+      if (item?.material?.owner === "0x0000000000000000000000000000000000000000" && getNumberStr(item?.material?.id) === "0") continue
+      if (!isEmpty(item?.composes) && every(item?.composes, ite => getNumberStr(ite) === "0")) continue
       const obj = arrayToObject(item)
-      console.log(obj)
-      /* arg?.setValue && arg?.setValue((pre) => {
+      obj.baseInfo.userId = getNumberStr(item?.baseInfo?.userId)
+      obj.material.compose = getNumberStr(item?.material.compose)
+      obj.material.id = getNumberStr(item?.material?.id)
+      arg?.setValue && arg?.setValue((pre) => {
         const data = cloneDeep(pre) as MaterialItem[];
         const index = findIndex(data, ite => ite?.material?.id === list[i]);
         if (index >= 0) data[index] = obj;
         else data.unshift(obj)
         return data
-      }) */
+      })
     }
   } else {
     for (let i = len; i >= 1; i--) {
       let item = await argContract?.etherContract.getMaterial(i)
-      if (item?.material?.owner === "0x0000000000000000000000000000000000000000" && item?.material?.id === "0") continue
-      if (!isEmpty(item?.composes) && every(item?.composes, ite => ite === "0")) continue
+      if (item?.material?.owner === "0x0000000000000000000000000000000000000000" && getNumberStr(item?.material?.id) === "0") continue
+      if (!isEmpty(item?.composes) && every(item?.composes, ite => getNumberStr(ite) === "0")) continue
       const obj = arrayToObject(item)
-      console.log(obj)
-      /* arg?.setValue && arg?.setValue((pre) => {
+      obj.baseInfo.userId = getNumberStr(item?.baseInfo?.userId)
+      obj.material.compose = getNumberStr(item?.material.compose)
+      obj.material.id = getNumberStr(item?.material?.id)
+      arg?.setValue && arg?.setValue((pre) => {
         if (i === len) {
           return [obj]
         }
         return [...pre, obj]
-      }) */
+      })
     }
   }
   arg?.setValue && arg?.burnID && arg?.setValue((pre) => {

@@ -95,7 +95,6 @@ export const useGetWeb3Info = () => {
   }, [network])
 
   useEffect(() => {
-    console.log(web3Modal?.cachedProvider, "web3Modal?.cachedProvider")
     if (web3Modal?.cachedProvider) {
       toConnect()
     } else {
@@ -104,20 +103,14 @@ export const useGetWeb3Info = () => {
   }, [web3Modal?.cachedProvider])
 
   const subscribeProvider = async (provider: any) => {
-    if (!provider.on) {
-      return;
-    }
-
+    if (!provider.on) return;
     provider.on("close", () => resetApp());
-
     provider.on("accountsChanged", async (accounts: string[]) => {
       await setWeb3Info((pre) => ({ ...pre, address: accounts[0] }));
     });
-
     provider.on("chainChanged", async (chainId: string) => {
       await setWeb3Info((pre) => ({ ...pre, chainId: parseInt(chainId) }))
     });
-
     provider.on("networkChanged", async (networkId: string) => {
       await setWeb3Info((pre) => ({ ...pre, networkId: parseInt(networkId) }));
     });
