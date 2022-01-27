@@ -5,7 +5,7 @@ import { PixelsMetaverseContextProvider } from './pixels-metaverse';
 import { Header } from './components/Header';
 import bgSvg from "./assets/image/bg.svg"
 import { Routes } from './routes';
-import { Web3InfoProvider } from "./web3";
+import { useWeb3Info, Web3InfoProvider } from "./web3";
 
 declare global {
   // tslint:disable-next-line
@@ -20,23 +20,30 @@ declare global {
   }
 }
 
-const App = () => {
+const Main = () => {
   const { pathname } = useLocation()
+  const { library } = useWeb3Info()
 
+  return (
+    <PixelsMetaverseContextProvider library={library}>
+      <LoadingProvider>
+        <UserInfoProvider>
+          {pathname !== "/" && <Header />}
+          <Routes />
+          <Loading />
+        </UserInfoProvider>
+      </LoadingProvider>
+    </PixelsMetaverseContextProvider>
+  )
+}
+
+const App = () => {
   return (
     <div className="relative bg-white overflow-hidden" style={{ minWidth: 1400, minHeight: 600 }}>
       <div className="relative w-full h-full min-h-screen mx-auto bg-no-repeat md:bg-contain bg-cover bg-gray-900"
         style={{ backgroundImage: `url(${bgSvg})` }}>
         <Web3InfoProvider>
-          <PixelsMetaverseContextProvider library={""}>
-            <LoadingProvider>
-              <UserInfoProvider>
-                {pathname !== "/" && <Header />}
-                <Routes />
-                <Loading />
-              </UserInfoProvider>
-            </LoadingProvider>
-          </PixelsMetaverseContextProvider>
+          <Main />
         </Web3InfoProvider>
       </div>
     </div>

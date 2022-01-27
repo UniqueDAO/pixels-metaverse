@@ -1,13 +1,13 @@
-import { createContext, ReactNode, useState, useContext, useCallback, useEffect, useMemo } from "react";
+import { createContext, ReactNode, useState, useContext, useEffect, useMemo } from "react";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { getChainData, warning } from "../helpers/utilities";
 import { IChainData } from "../helpers/types";
-import { isEmpty, isUndefined, omit } from "lodash";
+import { isEmpty, isUndefined } from "lodash";
 import { ethers } from "ethers";
 
-export type TLibrary = ethers.providers.Web3Provider | ethers.providers.InfuraProvider
+export type TLibrary = ethers.providers.Web3Provider | ethers.providers.InfuraProvider | ethers.providers.JsonRpcProvider
 
 interface IWeb3InfoProps {
   connected?: boolean;
@@ -95,6 +95,7 @@ export const useGetWeb3Info = () => {
   }, [network])
 
   useEffect(() => {
+    console.log(web3Modal?.cachedProvider, "web3Modal?.cachedProvider")
     if (web3Modal?.cachedProvider) {
       toConnect()
     } else {
@@ -122,11 +123,11 @@ export const useGetWeb3Info = () => {
     });
   };
 
-  const getLibrary = async () => {
+  const getLibrary = () => {
     if (process.env.NODE_ENV === "production") {
       return new ethers.providers.InfuraProvider('mainnet')
     } else {
-      return ethers.getDefaultProvider("http://127.0.0.1:8545") as ethers.providers.Web3Provider;
+      return ethers.getDefaultProvider("http://127.0.0.1:8546") as ethers.providers.Web3Provider;
     }
   }
 
@@ -142,10 +143,10 @@ export const useGetWeb3Info = () => {
         const addressBalance = await signer.getBalance();
         balance = ethers.utils.formatUnits(addressBalance);
       } catch (error) {
-        library = await getLibrary()
+        library = getLibrary()
       }
     } else {
-      library = await getLibrary()
+      library = getLibrary()
     }
     const net = await library.getNetwork();
     chainId = net?.chainId;
@@ -165,6 +166,7 @@ export const useGetWeb3Info = () => {
     connected,
     address,
     chainId,
+    library,
     killSession: resetApp,
     toConnect,
     web3,
@@ -175,30 +177,10 @@ export const useGetWeb3Info = () => {
 }
 
 export const Web3InfoProvider = ({ children }: { children: ReactNode }) => {
-  const {
-    connected,
-    address,
-    chainId,
-    killSession,
-    toConnect,
-    web3,
-    networkId,
-    chainData,
-    addressBalance
-  } = useGetWeb3Info()
+  const web3Info = useGetWeb3Info()
 
   return (
-    <Web3InfoContext.Provider value={{
-      connected,
-      address,
-      chainId,
-      killSession,
-      toConnect,
-      web3,
-      networkId,
-      chainData,
-      addressBalance
-    }}>
+    <Web3InfoContext.Provider value={{ ...web3Info }}>
       {children}
     </Web3InfoContext.Provider>
   )

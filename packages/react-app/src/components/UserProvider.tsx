@@ -35,10 +35,10 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [collectList, setCollectList] = useState<any[]>([]);
   const [goodsId, setGoodsId] = useState<number | undefined>();
   const [composeList, setComposeList] = React.useState<string[]>([])
-  const {  networkId } = useWeb3Info()
-  const address = "0x525E8ff084af9fa69eC9ff84D6EC6955dCbe03eD"
+  const { networkId } = useWeb3Info()
+  const address = "0xf0A3FdF9dC875041DFCF90ae81D7E01Ed9Bc2033"
   const { contract, etherContract } = usePixelsMetaverse()
-  const getUserInfo = useRequest(fetchUserInfo)
+  const getUserInfo = useRequest(fetchUserInfo2)
 
   const register = useRequest(fetchRegister, {
     onSuccess: () => {
@@ -66,8 +66,8 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!networkId) return
     setGoodsList([])
-    getGoodsIdList({ setValue: setGoodsList })
-  }, [networkId, contract])
+    //getGoodsIdList({ setValue: setGoodsList })
+  }, [networkId, etherContract])
 
   useEffect(() => {
     if (!goodsId) return

@@ -43,7 +43,7 @@ export const Header = memo(() => {
   const { pathname } = useLocation()
   const params = useQueryParams()
   const [inputStr, setInputStr] = useState<string | null>()
-
+  
   useEffect(() => {
     if (params && params?.get("address")) {
       setInputStr(params?.get("address"))
@@ -92,7 +92,10 @@ export const Header = memo(() => {
               </div>
             </div>)
             : <div className="flex items-center justify-center rounded cursor-pointer bg-white bg-opacity-10 w-24 hover:text-white h-10"
-              onClick={() => { toConnect && toConnect() }}>连接钱包</div>
+              onClick={() => {
+                localStorage.clear()
+                toConnect && toConnect()
+              }}>连接钱包</div>
           }
           {/* <Dropdown overlay={menu} placement="bottomLeft">
           <div className="flex items-center justify-center rounded cursor-pointer bg-white bg-opacity-10 w-24 hover:text-white ml-4">{t("home.content")}</div>
