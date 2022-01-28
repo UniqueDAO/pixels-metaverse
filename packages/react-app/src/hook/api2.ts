@@ -1,4 +1,4 @@
-import { Dispatch, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IMerchandise } from "../pages/produced/components/Submit";
 import { usePixelsMetaverse } from "../pixels-metaverse";
 import { BigNumberish, ethers } from "ethers";
@@ -18,7 +18,7 @@ export const useRequest = <T, K>(
     onSuccess,
     onFail
   }: IHandle<K> = {},
-  delay: any[] = []
+  rely: any[] = []
 ) => {
   const { etherContract } = usePixelsMetaverse()
 
@@ -30,7 +30,7 @@ export const useRequest = <T, K>(
     } catch (error) {
       onFail && onFail(error)
     }
-  }, [etherContract, ...delay])
+  }, [etherContract, ...rely])
 }
 
 export const useGetDataRequest = <T, K>(fetch: (etherContract: ethers.Contract, arg: T) => Promise<K>, arg: T) => {
@@ -54,86 +54,70 @@ export const useGetDataRequest = <T, K>(fetch: (etherContract: ethers.Contract, 
 }
 
 export const fetchUserInfo = async (etherContract: ethers.Contract, arg: { address: string }) => {
-  const res = await etherContract?.user(arg.address);
-  return res
+  return await etherContract?.user(arg.address);
 }
 
 export const fetchGetMaterialLength = async (etherContract: ethers.Contract) => {
-  const res = await etherContract?.getMaterialLength();
-  return res as BigNumberish
+  return await etherContract?.getMaterialLength() as BigNumberish;
 }
 
 export const fetchRegister = async (etherContract: ethers.Contract) => {
-  const res = await etherContract.register();
-  return res
+  return await etherContract.register();
 }
 
-export const fetchGetMaterialInfo = async (etherContract: ethers.Contract, arg: { id: number, setGoodsList: Dispatch<React.SetStateAction<any[]>> }) => {
-  const res = await etherContract.getMaterial(arg?.id);
-  return res
+export const fetchGetMaterialInfo = async (etherContract: ethers.Contract, arg: { id: number }) => {
+  return await etherContract.getMaterial(arg?.id);
 }
 
 export const fetchCollectList = async (etherContract: ethers.Contract, arg: { address: string }) => {
-  const res = await etherContract.getCollection(arg?.address);
-  return res
+  return await etherContract.getCollection(arg?.address);
 }
 
 export const fetchGetGoodsIdList = async (etherContract: ethers.Contract, arg?: { createAmount?: number, list: string[], burnID?: string }) => {
-  const res = await etherContract.getMaterial(arg)
-  return res
+  return await etherContract.getMaterial(arg)
 }
 
 export const fetchSetConfig = async (etherContract: ethers.Contract, arg: { config: string }) => {
-  const res = await etherContract.setConfig(arg.config);
-  return res
+  return await etherContract.setConfig(arg.config);
 }
 
 export const fetchMake = async (etherContract: ethers.Contract, arg: { value: IMerchandise }) => {
-  const res = await etherContract.make(
+  return await etherContract.make(
     arg?.value?.name,
     arg?.value?.category,
     arg?.value?.data,
     "",
     Number(arg?.value?.amount))
-  return res
 }
 
 export const fetchCollect = async (etherContract: ethers.Contract, arg: { id: number }) => {
-  const res = await etherContract.collect(arg.id)
-  return res
+  return await etherContract.collect(arg.id)
 }
 
 export const fetchCancelCollect = async (etherContract: ethers.Contract, arg: { id: number, index: number }) => {
-  const res = await etherContract.cancelCollect(arg.id, arg?.index)
-  return res
+  return await etherContract.cancelCollect(arg.id, arg?.index)
 }
 
 export const fetchCompose = async (etherContract: ethers.Contract, arg: { ids: string[], name: string, category: string }) => {
-  const res = await etherContract.compose(arg.ids, arg.name, arg.category, "", "")
-  return res
+  return await etherContract.compose(arg.ids, arg.name, arg.category, "", "")
 }
 
 export const fetchCancelCompose = async (etherContract: ethers.Contract, arg: { ids: string }) => {
-  const res = await etherContract.cancelCompose(arg.ids)
-  return res
+  return await etherContract.cancelCompose(arg.ids)
 }
 
 export const fetchSubjoin = async (etherContract: ethers.Contract, arg: { ids: string, idList: string[] }) => {
-  const res = await etherContract.addition(arg.ids, arg.idList)
-  return res
+  return await etherContract.addition(arg.ids, arg.idList)
 }
 
 export const fetchSubtract = async (etherContract: ethers.Contract, arg: { ids: string, id: string, index: number }) => {
-  const res = await etherContract.subtract(arg.ids, arg.id, arg?.index)
-  return res
+  return await etherContract.subtract(arg.ids, arg.id, arg?.index)
 }
 
 export const fetchSetUserConfig = async (etherContract: ethers.Contract, arg: { role: string, id: string, other: number }) => {
-  const res = await etherContract.setConfig(arg.role, arg.id, arg?.other)
-  return res
+  return await etherContract.setConfig(arg.role, arg.id, arg?.other)
 }
 
 export const fetchOutfit = async (etherContract: ethers.Contract, arg: { value: any }) => {
-  const res = await etherContract.outfit(arg?.value.id, arg?.value.isOutfit)
-  return res
+  return await etherContract.outfit(arg?.value.id, arg?.value.isOutfit)
 }

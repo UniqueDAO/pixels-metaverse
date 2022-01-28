@@ -7,7 +7,7 @@ import { Button, Menu, message } from "antd";
 import { useWeb3Info } from "../web3";
 import { isEmpty } from "lodash";
 import i18n from "i18next";
-import { useGetDataRequest, fetchGetMaterialLength } from "../hook/api2";
+import { useGetDataRequest, fetchGetMaterialLength, fetchUserInfo } from "../hook/api2";
 
 const nav = [
   { label: "首页", path: "/app" },
@@ -45,6 +45,7 @@ export const Header = memo(() => {
   const params = useQueryParams()
   const [inputStr, setInputStr] = useState<string | null>()
   const [data] = useGetDataRequest(fetchGetMaterialLength, undefined)
+
   console.log(data?.toString())
 
   useEffect(() => {

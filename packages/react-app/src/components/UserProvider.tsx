@@ -66,7 +66,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!networkId) return
     setGoodsList([])
-    getGoodsIdList({ setValue: setGoodsList })
+    //getGoodsIdList({ setValue: setGoodsList })
   }, [networkId, etherContract])
 
   useEffect(() => {
