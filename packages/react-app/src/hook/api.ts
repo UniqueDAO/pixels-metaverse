@@ -1,12 +1,12 @@
-import { Dispatch, useCallback, useEffect, useState } from "react";
+import { Dispatch, useCallback } from "react";
 import { IMerchandise } from "../pages/produced/components/Submit";
 import { useLoading } from "../components/Loading";
 import { message } from "antd";
-import { cloneDeep, Dictionary, every, findIndex, isEmpty, isUndefined, map } from "lodash";
+import { cloneDeep, every, findIndex, isEmpty, isUndefined, map } from "lodash";
 import { usePixelsMetaverse } from "../pixels-metaverse";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "../components/Card";
-import { BigNumberish, ethers } from "ethers";
+import { BigNumberish } from "ethers";
 
 export interface IArgContract { contract: any, accounts?: any, address?: any, etherContract?: any }
 
@@ -52,25 +52,6 @@ export const useRequest = (
       }
     }
   }, [contract, etherContract, address, ...delay])
-}
-
-export const useTemplementRequest = (fetch: (argContract: IArgContract, arg?: any) => Promise<void>) => {
-  const [data, setData] = useState<any>();
-  const { etherContract } = usePixelsMetaverse()
-  const getData = useRequest(fetch)
-  useEffect(() => {
-    getFun()
-  }, [etherContract])
-
-  const getFun = useCallback(() => {
-    getData({ setValue: setData })
-  }, [etherContract])
-
-  return [data, getFun]
-}
-
-export const fetchUserInfo2 = async (argContract: IArgContract, arg: { address: string, setUserInfo: Dispatch<any> }) => {
-  const info = await argContract?.etherContract?.user(arg.address);
 }
 
 export const fetchUserInfo = async (argContract: IArgContract, arg: { address: string, setUserInfo: Dispatch<any> }) => {
