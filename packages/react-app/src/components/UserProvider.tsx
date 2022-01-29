@@ -3,14 +3,13 @@ import * as React from "react";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { usePixelsMetaverse } from "../pixels-metaverse";
-import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, useRequest } from "../hook/api";
+import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, useGetDataRequest, useRequest } from "../hook/api2";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
 
 export const UserInfoContext = createContext(
   {} as {
     userInfo: any;
-    setUserInfo: Dispatch<any>;
     goodsList: any[];
     setGoodsList: Dispatch<any[]>;
     collectList: any[];
@@ -18,7 +17,6 @@ export const UserInfoContext = createContext(
     goodsId?: number;
     setGoodsId: Dispatch<React.SetStateAction<number | undefined>>;
     register: (arg?: any) => Promise<void>;
-    getInfo: () => void;
     composeList: string[];
     setComposeList: Dispatch<React.SetStateAction<string[]>>;
     goodsListObj: Dictionary<MaterialItem>;
@@ -29,38 +27,46 @@ export const UserInfoContext = createContext(
 export const useUserInfo = () => useContext(UserInfoContext);
 
 export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useState<Dictionary<any>>({});
   const [goodsList, setGoodsList] = useState<any[]>([]);
   const [goodsListObj, setGoodsListObj] = useState<Dictionary<MaterialItem>>({});
   const [collectList, setCollectList] = useState<any[]>([]);
   const [goodsId, setGoodsId] = useState<number | undefined>();
   const [composeList, setComposeList] = React.useState<string[]>([])
-  const { networkId } = useWeb3Info()
-  const address = "0xf0A3FdF9dC875041DFCF90ae81D7E01Ed9Bc2033"
+  const { address, networkId } = useWeb3Info()
   const { contract, etherContract } = usePixelsMetaverse()
-  const getUserInfo = useRequest(fetchUserInfo)
+  /* const getUserInfo = useRequest(fetchUserInfo, {
+    onSuccess: (res)=>{
+      console.log(res, "resssss")
+      setUserInfo(res)
+    }
+  }) */
+
+  const [userInfo, getUserInfo] = useGetDataRequest(fetchUserInfo, address ? { address } : undefined)
+  console.log(userInfo, "userInfo")
 
   const register = useRequest(fetchRegister, {
     onSuccess: () => {
-      getUserInfo({ address: address, setUserInfo })
+      address && getUserInfo({ address: address })
     }
   }, [address])
 
-  const getInfo = () => {
-    if (!address) return
-    getUserInfo({ address, setUserInfo })
-  }
-
-  useEffect(() => {
-    getInfo()
-  }, [address, contract, etherContract])
+  /* useEffect(()=>{
+    const timer = setInterval(()=>{
+      getUserInfo({
+        address: "0x5D8e5bc8e7013380987367621e195244C65dEbA6"
+      })
+    }, 5000)
+    return ()=>{
+      clearInterval(timer)
+    } 
+  }, [etherContract]) */
 
   const getGoodsIdList = useRequest(fetchGetGoodsIdList)
-  const getCollectList = useRequest(fetchCollectList)
+  //const getCollectList = useRequest(fetchCollectList)
 
   useEffect(() => {
     if (!address) return
-    getCollectList({ setValue: setCollectList, address })
+    //getCollectList({ address })
   }, [address, contract])
 
   useEffect(() => {
@@ -100,11 +106,11 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UserInfoContext.Provider value={{
-      userInfo, setUserInfo,
+      userInfo,
       goodsList, setGoodsList,
       goodsId, setGoodsId,
       collectList, setCollectList,
-      register, getInfo,
+      register,
       composeList, setComposeList,
       goodsListObj, setGoodsListObj
     }}>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { IMerchandise } from "../pages/produced/components/Submit";
 import { usePixelsMetaverse } from "../pixels-metaverse";
-import { BigNumberish, ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 
 export interface IHandle<K> {
   onSuccess?: (arg?: K) => void,
@@ -13,7 +13,7 @@ export const getNumberStr = (bigNumber: BigNumberish) => {
 }
 
 export const useRequest = <T, K>(
-  fetch: (etherContract: ethers.Contract, arg: T) => Promise<K>,
+  fetch: (etherContract: ethers.Contract, arg?: T) => Promise<K>,
   {
     onSuccess,
     onFail
@@ -22,7 +22,7 @@ export const useRequest = <T, K>(
 ) => {
   const { etherContract } = usePixelsMetaverse()
 
-  return useCallback(async (arg: T) => {
+  return useCallback(async (arg?: T) => {
     if (!etherContract) return
     try {
       const res = await fetch(etherContract, arg)
@@ -33,28 +33,27 @@ export const useRequest = <T, K>(
   }, [etherContract, ...rely])
 }
 
-export const useGetDataRequest = <T, K>(fetch: (etherContract: ethers.Contract, arg: T) => Promise<K>, arg: T) => {
+export const useGetDataRequest = <T, K>(fetch: (etherContract: ethers.Contract, arg?: T) => Promise<K>, arg?: T) => {
   const [data, setData] = useState<K>();
   const { etherContract } = usePixelsMetaverse()
-  const getData = useRequest(fetch, {
-    onSuccess: (res) => {
-      setData(res)
-    }
-  })
+  const getData = useRequest(fetch, { onSuccess: (res) => setData(res) })
 
   useEffect(() => {
     getFun()
   }, [etherContract])
 
-  const getFun = useCallback(async () => {
-    getData(arg)
+  const getFun = useCallback(async (params?: T) => {
+    getData({ ...arg, ...params } as any)
   }, [etherContract, getData, arg])
 
   return [data, getFun] as const
 }
 
-export const fetchUserInfo = async (etherContract: ethers.Contract, arg: { address: string }) => {
-  return await etherContract?.user(arg.address);
+export const fetchUserInfo = async (etherContract: ethers.Contract, arg?: { address: string }) => {
+  if (!arg) return
+  const res = await etherContract?.user(arg?.address)
+  console.log(res?.id instanceof BigNumber, etherContract)
+  return res
 }
 
 export const fetchGetMaterialLength = async (etherContract: ethers.Contract) => {
@@ -114,8 +113,9 @@ export const fetchSubtract = async (etherContract: ethers.Contract, arg: { ids: 
   return await etherContract.subtract(arg.ids, arg.id, arg?.index)
 }
 
-export const fetchSetUserConfig = async (etherContract: ethers.Contract, arg: { role: string, id: string, other: number }) => {
-  return await etherContract.setConfig(arg.role, arg.id, arg?.other)
+export const fetchSetUserConfig = async (etherContract: ethers.Contract, arg?: { role: string, id: string, other: string }) => {
+  if (!arg) return
+  return await etherContract.setConfig(arg?.role, arg?.id, arg?.other)
 }
 
 export const fetchOutfit = async (etherContract: ethers.Contract, arg: { value: any }) => {

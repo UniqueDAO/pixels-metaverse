@@ -1,6 +1,6 @@
 import { Button, message } from "antd";
 import { AppstoreOutlined } from "@ant-design/icons";
-import { fetchSetUserConfig, useRequest } from "../../../hook/api";
+import { fetchSetUserConfig, useRequest } from "../../../hook/api2";
 import { useLocation } from "react-router";
 import { useUserInfo } from "../../../components/UserProvider";
 import { PixelsMetaverseHandleImg, usePixelsMetaverseHandleImg } from "../../../pixels-metaverse";
@@ -46,12 +46,11 @@ export const BaseInfo = () => {
   const { address: addresss } = useWeb3Info()
   const { search } = useLocation()
   const address = search ? search.split("=")[1] : addresss
-  const { userInfo, getInfo, register } = useUserInfo()
+  const { userInfo, register } = useUserInfo()
 
   const goSetConfig = useRequest(fetchSetUserConfig, {
     onSuccess: () => {
       message.success("更新信息成功！")
-      getInfo()
     }
   }, [config, address])
 
@@ -60,8 +59,9 @@ export const BaseInfo = () => {
     if (!bgColor && !gridColor && !withGrid) return
     setConfig((pre) => ({ ...pre, withGrid, bgColor, gridColor }))
   }, [bgColor, gridColor, withGrid])
+  console.log(address, addresss, address?.toUpperCase() === addresss?.toUpperCase(), "address")
 
-  const isCurUser = useMemo(() => address?.toUpperCase() === addresss?.toUpperCase(), [addresss, address])
+  const isCurUser = useMemo(() => address ? address?.toUpperCase() === addresss?.toUpperCase() : false, [addresss, address])
 
   return (
     <div className="pr-8 mr-4 border-r border-white border-opacity-30">
@@ -87,7 +87,7 @@ export const BaseInfo = () => {
               : (isEmpty(userInfo) ? "请部署合约" : "宇宙居民")}
           </div>
         </InfoLabel>
-        {/* <InfoLabel label="显示辅助线">
+        <InfoLabel label="显示辅助线">
           <AppstoreOutlined style={{ color: config?.withGrid ? 'white' : "gray", fontSize: 22 }}
             onClick={() => setConfig((pre) => ({ ...pre, withGrid: !config?.withGrid }))} />
         </InfoLabel>
@@ -98,16 +98,18 @@ export const BaseInfo = () => {
         <InfoLabel label="背景色">
           <input type="color" value={config?.bgColor} className="w-10 cursor-pointer"
             onChange={(e) => setConfig((pre) => ({ ...pre, bgColor: e.target.value }))} />
-        </InfoLabel> */}
+        </InfoLabel>
         <Button type="primary" size="large" className="mt-6 bg-red-500 cursor-pointer h-10 w-full hover:text-white"
           style={{ cursor: isCurUser ? "pointer" : "no-drop" }}
           onClick={() => {
             if (isCurUser) {
-              goSetConfig({
+              const arg = {
                 other: `${config?.bgColor === "transparent" || config?.bgColor === "" ? "T" : config?.bgColor?.substring(1) || ""}|${config?.gridColor?.substring(1) || ""}|${config?.withGrid ? "T" : ""}`,
                 role: userInfo?.role,
                 id: userInfo?.avater
-              })
+              }
+              console.log(arg)
+              goSetConfig(arg)
             }
           }}
         >{address?.toUpperCase() === addresss?.toUpperCase() ? "更新设置" : "不可更新设置"}</Button>

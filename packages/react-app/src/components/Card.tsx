@@ -70,11 +70,10 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 }
 
 export const SetAvater = ({ item }: { item: MaterialItem }) => {
-  const { userInfo, getInfo } = useUserInfo()
+  const { userInfo } = useUserInfo()
   const setAvater = useRequest(fetchSetUserConfig, {
     onSuccess: () => {
       message.success("头像设置成功！")
-      getInfo()
     }
   }, [item, userInfo])
 
