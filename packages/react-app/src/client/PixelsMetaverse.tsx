@@ -30,11 +30,11 @@ export const getBaseInfo = async (
 	if (!arg) return
 	const { bytes32Params1 } = arg;
 	return await contract.baseInfo(bytes32Params1) as {
-		data: string; //string
-		category: string; //string
-		decode: string; //string
-		name: string; //string
-		userId: BigNumber; //uint256
+			data: string; //string
+			category: string; //string
+			decode: string; //string
+			name: string; //string
+			userId: BigNumber; //uint256
 	}
 }
 
@@ -150,7 +150,25 @@ export const getGetMaterial = async (
 ) => {
 	if (!arg) return
 	const { id } = arg;
-	return await contract.getMaterial(id) as string; //tuple
+	return await contract.getMaterial(id) as {
+		material: {
+			id: BigNumber; //uint256
+			compose: BigNumber; //uint256
+			time: string; //string
+			position: string; //string
+			zIndex: string; //string
+			owner: string; //address
+			data: string; //bytes32
+		}, 
+		baseInfo: {
+			data: string; //string
+			category: string; //string
+			decode: string; //string
+			name: string; //string
+			userId: BigNumber; //uint256
+		}, 
+			composes: BigNumber[]; //uint256[]
+	}
 }
 
 //view
@@ -200,13 +218,13 @@ export const getMaterial = async (
 	if (!arg) return
 	const { uint256Params1 } = arg;
 	return await contract.material(uint256Params1) as {
-		id: BigNumber; //uint256
-		compose: BigNumber; //uint256
-		time: string; //string
-		position: string; //string
-		zIndex: string; //string
-		owner: string; //address
-		data: string; //bytes32
+			id: BigNumber; //uint256
+			compose: BigNumber; //uint256
+			time: string; //string
+			position: string; //string
+			zIndex: string; //string
+			owner: string; //address
+			data: string; //bytes32
 	}
 }
 
@@ -280,9 +298,9 @@ export const getUser = async (
 	if (!arg) return
 	const { addressParams1 } = arg;
 	return await contract.user(addressParams1) as {
-		id: BigNumber; //uint256
-		avater: BigNumber; //uint256
-		role: string; //string
-		other: string; //string
+			id: BigNumber; //uint256
+			avater: BigNumber; //uint256
+			role: string; //string
+			other: string; //string
 	}
 }

@@ -56,7 +56,7 @@
     "s3": "node ./scripts/s3.js",
     "ship": "npm run surge",
     "watch": "node ./scripts/watch.js",
-    "abi:api": "converted --entry './src/contracts/hardhat.json' --hardhat-chainId 1337 --contractName PixelsMetaverse",
+    "abi:api": "converted --entry './src/contracts/' --hardhat-chainId 1337",
     "abi:html": "abi-to-html"
   },
   "eslintConfig": {
