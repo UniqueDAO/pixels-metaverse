@@ -1,154 +1,288 @@
+import { BigNumber, ethers } from "ethers";
 
-import { BigNumber, BigNumberish, ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
-
+//nonpayable
 export const setAddition = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		ids: string | number; //uint256
+		idList: (string | number)[]; //uint256[]
+	}
 ) => {
-	return await etherContract.addition()
+	if (!arg) return
+	const { ids, idList } = arg;
+	return await contract.addition(ids, idList)
 }
 
+//view
 export const getAmount = async (
-	etherContract: ethers.Contract,
+	contract: ethers.Contract,
 ) => {
-	return await etherContract.amount()
+	return await contract.amount() as BigNumber; //uint256
 }
 
+//view
 export const getBaseInfo = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		bytes32Params1: string; //bytes32
+	}
 ) => {
-	return await etherContract.baseInfo()
+	if (!arg) return
+	const { bytes32Params1 } = arg;
+	return await contract.baseInfo(bytes32Params1) as {
+		data: string; //string
+		category: string; //string
+		decode: string; //string
+		name: string; //string
+		userId: BigNumber; //uint256
+	}
 }
 
+//nonpayable
 export const setCancelCollect = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		id: string | number; //uint256
+		index: string | number; //uint256
+	}
 ) => {
-	return await etherContract.cancelCollect()
+	if (!arg) return
+	const { id, index } = arg;
+	return await contract.cancelCollect(id, index)
 }
 
+//nonpayable
 export const setCancelCompose = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		ids: string | number; //uint256
+	}
 ) => {
-	return await etherContract.cancelCompose()
+	if (!arg) return
+	const { ids } = arg;
+	return await contract.cancelCompose(ids)
 }
 
+//nonpayable
 export const setCollect = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		id: string | number; //uint256
+	}
 ) => {
-	return await etherContract.collect()
+	if (!arg) return
+	const { id } = arg;
+	return await contract.collect(id)
 }
 
+//view
 export const getCollection = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		addressParams1: string; //address
+		uint256Params2: string | number; //uint256
+	}
 ) => {
-	return await etherContract.collection()
+	if (!arg) return
+	const { addressParams1, uint256Params2 } = arg;
+	return await contract.collection(addressParams1, uint256Params2) as BigNumber; //uint256
 }
 
+//nonpayable
 export const setCompose = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		ids: (string | number)[]; //uint256[]
+		name: string; //string
+		category: string; //string
+		data: string; //string
+		decode: string; //string
+	}
 ) => {
-	return await etherContract.compose()
+	if (!arg) return
+	const { ids, name, category, data, decode } = arg;
+	return await contract.compose(ids, name, category, data, decode)
 }
 
+//view
 export const getComposes = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		uint256Params1: string | number; //uint256
+		uint256Params2: string | number; //uint256
+	}
 ) => {
-	return await etherContract.composes()
+	if (!arg) return
+	const { uint256Params1, uint256Params2 } = arg;
+	return await contract.composes(uint256Params1, uint256Params2) as BigNumber; //uint256
 }
 
+//view
 export const getGetCollection = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		from: string; //address
+	}
 ) => {
-	return await etherContract.getCollection()
+	if (!arg) return
+	const { from } = arg;
+	return await contract.getCollection(from) as BigNumber[]; //uint256[]
 }
 
+//view
 export const getGetCompose = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		id: string | number; //uint256
+	}
 ) => {
-	return await etherContract.getCompose()
+	if (!arg) return
+	const { id } = arg;
+	return await contract.getCompose(id) as BigNumber[]; //uint256[]
 }
 
+//view
 export const getGetMaterial = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		id: string | number; //uint256
+	}
 ) => {
-	return await etherContract.getMaterial()
+	if (!arg) return
+	const { id } = arg;
+	return await contract.getMaterial(id) as string; //tuple
 }
 
+//view
 export const getGetMaterialLength = async (
-	etherContract: ethers.Contract,
+	contract: ethers.Contract,
 ) => {
-	return await etherContract.getMaterialLength()
+	return await contract.getMaterialLength() as BigNumber; //uint256
 }
 
+//nonpayable
 export const setHandleTransfer = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		from: string; //address
+		to: string; //address
+		id: string | number; //uint256
+	}
 ) => {
-	return await etherContract.handleTransfer()
+	if (!arg) return
+	const { from, to, id } = arg;
+	return await contract.handleTransfer(from, to, id)
 }
 
+//nonpayable
 export const setMake = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		name: string; //string
+		category: string; //string
+		data: string; //string
+		decode: string; //string
+		num: string | number; //uint256
+	}
 ) => {
-	return await etherContract.make()
+	if (!arg) return
+	const { name, category, data, decode, num } = arg;
+	return await contract.make(name, category, data, decode, num)
 }
 
+//view
 export const getMaterial = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		uint256Params1: string | number; //uint256
+	}
 ) => {
-	return await etherContract.material()
+	if (!arg) return
+	const { uint256Params1 } = arg;
+	return await contract.material(uint256Params1) as {
+		id: BigNumber; //uint256
+		compose: BigNumber; //uint256
+		time: string; //string
+		position: string; //string
+		zIndex: string; //string
+		owner: string; //address
+		data: string; //bytes32
+	}
 }
 
+//nonpayable
 export const setReMake = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		id: string | number; //uint256
+		num: string | number; //uint256
+	}
 ) => {
-	return await etherContract.reMake()
+	if (!arg) return
+	const { id, num } = arg;
+	return await contract.reMake(id, num)
 }
 
+//nonpayable
 export const setRegister = async (
-	etherContract: ethers.Contract,
+	contract: ethers.Contract,
 ) => {
-	return await etherContract.register()
+	return await contract.register()
 }
 
+//nonpayable
 export const setSetConfig = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		role: string; //string
+		id: string | number; //uint256
+		other: string; //string
+	}
 ) => {
-	return await etherContract.setConfig()
+	if (!arg) return
+	const { role, id, other } = arg;
+	return await contract.setConfig(role, id, other)
 }
 
+//nonpayable
 export const setSetPMT721 = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		pmt721: string; //address
+	}
 ) => {
-	return await etherContract.setPMT721()
+	if (!arg) return
+	const { pmt721 } = arg;
+	return await contract.setPMT721(pmt721)
 }
 
+//nonpayable
 export const setSubtract = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		ids: string | number; //uint256
+		id: string | number; //uint256
+		index: string | number; //uint256
+	}
 ) => {
-	return await etherContract.subtract()
+	if (!arg) return
+	const { ids, id, index } = arg;
+	return await contract.subtract(ids, id, index)
 }
 
+//view
 export const getUser = async (
-	etherContract: ethers.Contract,
-	arg?: { test: string },
+	contract: ethers.Contract,
+	arg?: {
+		addressParams1: string; //address
+	}
 ) => {
-	return await etherContract.user()
+	if (!arg) return
+	const { addressParams1 } = arg;
+	return await contract.user(addressParams1) as {
+		id: BigNumber; //uint256
+		avater: BigNumber; //uint256
+		role: string; //string
+		other: string; //string
+	}
 }

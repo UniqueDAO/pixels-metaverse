@@ -23,6 +23,7 @@
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
     "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
+    "abi:api": "yarn workspace @scaffold-eth/react-app abi:api",
     "test": "yarn workspace @scaffold-eth/hardhat test",
     "chain": "yarn workspace @scaffold-eth/hardhat chain",
     "fork": "yarn workspace @scaffold-eth/hardhat fork",

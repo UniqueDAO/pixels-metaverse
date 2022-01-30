@@ -1,154 +1,211 @@
 
-import { BigNumber, BigNumberish, ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
-
-export const fetchaddition = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setAddition = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.addition()
+	if (!arg) return
+	const { ids, idList } = arg;
+	return await contract.addition(ids, idList)
 }
 
-export const fetchamount = async (
-	etherContract,
+//view
+export const getAmount = async (
+	contract,
 ) => {
-	return await etherContract.amount()
+	return await contract.amount()
 }
 
-export const fetchbaseInfo = async (
-	etherContract,
-	arg,
+//view
+export const getBaseInfo = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.baseInfo()
+	if (!arg) return
+	const { bytes32Params1 } = arg;
+	return await contract.baseInfo(bytes32Params1)
 }
 
-export const fetchcancelCollect = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setCancelCollect = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.cancelCollect()
+	if (!arg) return
+	const { id, index } = arg;
+	return await contract.cancelCollect(id, index)
 }
 
-export const fetchcancelCompose = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setCancelCompose = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.cancelCompose()
+	if (!arg) return
+	const { ids } = arg;
+	return await contract.cancelCompose(ids)
 }
 
-export const fetchcollect = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setCollect = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.collect()
+	if (!arg) return
+	const { id } = arg;
+	return await contract.collect(id)
 }
 
-export const fetchcollection = async (
-	etherContract,
-	arg,
+//view
+export const getCollection = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.collection()
+	if (!arg) return
+	const { addressParams1, uint256Params2 } = arg;
+	return await contract.collection(addressParams1, uint256Params2)
 }
 
-export const fetchcompose = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setCompose = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.compose()
+	if (!arg) return
+	const { ids, name, category, data, decode } = arg;
+	return await contract.compose(ids, name, category, data, decode)
 }
 
-export const fetchcomposes = async (
-	etherContract,
-	arg,
+//view
+export const getComposes = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.composes()
+	if (!arg) return
+	const { uint256Params1, uint256Params2 } = arg;
+	return await contract.composes(uint256Params1, uint256Params2)
 }
 
-export const fetchgetCollection = async (
-	etherContract,
-	arg,
+//view
+export const getGetCollection = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.getCollection()
+	if (!arg) return
+	const { from } = arg;
+	return await contract.getCollection(from)
 }
 
-export const fetchgetCompose = async (
-	etherContract,
-	arg,
+//view
+export const getGetCompose = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.getCompose()
+	if (!arg) return
+	const { id } = arg;
+	return await contract.getCompose(id)
 }
 
-export const fetchgetMaterial = async (
-	etherContract,
-	arg,
+//view
+export const getGetMaterial = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.getMaterial()
+	if (!arg) return
+	const { id } = arg;
+	return await contract.getMaterial(id)
 }
 
-export const fetchgetMaterialLength = async (
-	etherContract,
+//view
+export const getGetMaterialLength = async (
+	contract,
 ) => {
-	return await etherContract.getMaterialLength()
+	return await contract.getMaterialLength()
 }
 
-export const fetchhandleTransfer = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setHandleTransfer = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.handleTransfer()
+	if (!arg) return
+	const { from, to, id } = arg;
+	return await contract.handleTransfer(from, to, id)
 }
 
-export const fetchmake = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setMake = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.make()
+	if (!arg) return
+	const { name, category, data, decode, num } = arg;
+	return await contract.make(name, category, data, decode, num)
 }
 
-export const fetchmaterial = async (
-	etherContract,
-	arg,
+//view
+export const getMaterial = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.material()
+	if (!arg) return
+	const { uint256Params1 } = arg;
+	return await contract.material(uint256Params1)
 }
 
-export const fetchreMake = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setReMake = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.reMake()
+	if (!arg) return
+	const { id, num } = arg;
+	return await contract.reMake(id, num)
 }
 
-export const fetchregister = async (
-	etherContract,
+//nonpayable
+export const setRegister = async (
+	contract,
 ) => {
-	return await etherContract.register()
+	return await contract.register()
 }
 
-export const fetchsetConfig = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setSetConfig = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.setConfig()
+	if (!arg) return
+	const { role, id, other } = arg;
+	return await contract.setConfig(role, id, other)
 }
 
-export const fetchsetPMT721 = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setSetPMT721 = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.setPMT721()
+	if (!arg) return
+	const { pmt721 } = arg;
+	return await contract.setPMT721(pmt721)
 }
 
-export const fetchsubtract = async (
-	etherContract,
-	arg,
+//nonpayable
+export const setSubtract = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.subtract()
+	if (!arg) return
+	const { ids, id, index } = arg;
+	return await contract.subtract(ids, id, index)
 }
 
-export const fetchuser = async (
-	etherContract,
-	arg,
+//view
+export const getUser = async (
+	contract,
+	arg
 ) => {
-	return await etherContract.user()
+	if (!arg) return
+	const { addressParams1 } = arg;
+	return await contract.user(addressParams1)
 }
