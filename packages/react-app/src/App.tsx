@@ -6,7 +6,6 @@ import { Header } from './components/Header';
 import bgSvg from "./assets/image/bg.svg"
 import { Routes } from './routes';
 import { useWeb3Info, Web3InfoProvider } from "./web3";
-import React from "react";
 import { ContractRequestContextProvider } from "abi-to-request"
 import { abisData } from "./client/abis";
 

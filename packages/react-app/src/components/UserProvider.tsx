@@ -6,6 +6,7 @@ import { usePixelsMetaverse } from "../pixels-metaverse";
 import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, useGetDataRequest, useRequest } from "../hook/api2";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
+import { useContractRequest } from "abi-to-request";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -34,12 +35,15 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { address, networkId } = useWeb3Info()
   const { contract, etherContract } = usePixelsMetaverse()
+  const { contracts } = useContractRequest()
   /* const getUserInfo = useRequest(fetchUserInfo, {
     onSuccess: (res)=>{
       console.log(res, "resssss")
       setUserInfo(res)
     }
   }) */
+
+  console.log(contracts, "contracts")
 
   const [userInfo, getUserInfo] = useGetDataRequest(fetchUserInfo, address ? { address } : undefined)
   console.log(userInfo, "userInfo")
