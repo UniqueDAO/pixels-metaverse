@@ -39,7 +39,7 @@
     "web3-utils": "^1.7.0",
     "web3modal": "^1.9.4",
     "ethers": "^5.5.3",
-    "abi-to-request": "../uniquedao-sdk/packages/abi-to-request/lib"
+    "abi-to-request": "^0.0.19"
   },
   "scripts": {
     "start": "craco start",
@@ -56,7 +56,7 @@
     "s3": "node ./scripts/s3.js",
     "ship": "npm run surge",
     "watch": "node ./scripts/watch.js",
-    "abi:api": "converted --entry './src/contracts/' --hardhat-chainId 1337",
+    "abi:api": "converted --entry './src/contracts/'",
     "abi:html": "abi-to-html"
   },
   "eslintConfig": {

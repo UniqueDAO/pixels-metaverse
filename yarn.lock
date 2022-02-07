@@ -4321,6 +4321,15 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+"@types/react@^17.0.39":
+  version "17.0.39"
+  resolved "https://registry.npmjs.org/@types/react/-/react-17.0.39.tgz#d0f4cde092502a6db00a1cded6e6bf2abb7633ce"
+  integrity sha512-UVavlfAxDd/AgAacMa60Azl7ygyQNRwC/DsHZmKgNvPmRR5p70AJ5Q9EAmL2NWOJmeV+vVUI4IAP7GZrN8h8Ug==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
 "@types/resolve@0.0.8", "@types/resolve@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-0.0.8.tgz#f26074d238e02659e323ce1a13d041eee280e194"
@@ -4943,15 +4952,20 @@ abab@^2.0.3, abab@^2.0.5:
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
   integrity sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q==
 
-abi-to-request@../uniquedao-sdk/packages/abi-to-request/lib:
-  version "0.0.18"
+abi-to-request@^0.0.19:
+  version "0.0.19"
+  resolved "https://registry.npmjs.org/abi-to-request/-/abi-to-request-0.0.19.tgz#5e1525513b845f5d36d17afcb2c003ec1a36235f"
+  integrity sha512-xbZPjoc9dWUtybDGmz+ehfrCLMsfWUb3QTMcadbVkMrzWgL1VX9qIwKojuzps/o6lM+Y4s8QtxMqKHR80p/f6w==
   dependencies:
     "@types/lodash" "^4.14.178"
+    "@types/react" "^17.0.39"
     async "^3.2.3"
     ethers "^5.5.3"
     lodash "^4.17.21"
     react "^17.0.2"
+    react-dom "^17.0.2"
     web3 "^1.7.0"
+    web3-eth-contract "^1.7.0"
 
 abort-controller@^3.0.0:
   version "3.0.0"
@@ -21936,7 +21950,7 @@ web3-eth-contract@1.2.11:
     web3-eth-abi "1.2.11"
     web3-utils "1.2.11"
 
-web3-eth-contract@1.7.0, web3-eth-contract@^1.5.2:
+web3-eth-contract@1.7.0, web3-eth-contract@^1.5.2, web3-eth-contract@^1.7.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/web3-eth-contract/-/web3-eth-contract-1.7.0.tgz#3795767a65d7b87bd22baea3e18aafdd928d5313"
   integrity sha512-2LY1Xwxu5rx468nqHuhvupQAIpytxIUj3mGL9uexszkhrQf05THVe3i4OnUCzkeN6B2cDztNOqLT3j9SSnVQDg==

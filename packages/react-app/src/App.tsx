@@ -6,6 +6,9 @@ import { Header } from './components/Header';
 import bgSvg from "./assets/image/bg.svg"
 import { Routes } from './routes';
 import { useWeb3Info, Web3InfoProvider } from "./web3";
+import React from "react";
+import { ContractRequestContextProvider } from "abi-to-request"
+import { abisData } from "./client/abis";
 
 declare global {
   // tslint:disable-next-line
@@ -25,15 +28,17 @@ const Main = () => {
   const { library } = useWeb3Info()
 
   return (
-    <PixelsMetaverseContextProvider library={library}>
-      <LoadingProvider>
-        <UserInfoProvider>
-          {pathname !== "/" && <Header />}
-          <Routes />
-          <Loading />
-        </UserInfoProvider>
-      </LoadingProvider>
-    </PixelsMetaverseContextProvider>
+    <ContractRequestContextProvider library={library} abisData={abisData}>
+      <PixelsMetaverseContextProvider library={library}>
+        <LoadingProvider>
+          <UserInfoProvider>
+            {pathname !== "/" && <Header />}
+            <Routes />
+            <Loading />
+          </UserInfoProvider>
+        </LoadingProvider>
+      </PixelsMetaverseContextProvider>
+    </ContractRequestContextProvider>
   )
 }
 

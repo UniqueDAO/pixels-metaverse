@@ -1,7 +1,7 @@
 import { BigNumber, ethers } from "ethers";
 
 //nonpayable
-export const setApprove = async (
+export const fetchApprove = async (
 	contract: ethers.Contract,
 	arg?: {
 		to: string; //address
@@ -14,7 +14,7 @@ export const setApprove = async (
 }
 
 //view
-export const getBalanceOf = async (
+export const fetchBalanceOf = async (
 	contract: ethers.Contract,
 	arg?: {
 		owner: string; //address
@@ -26,7 +26,7 @@ export const getBalanceOf = async (
 }
 
 //nonpayable
-export const setBurn = async (
+export const fetchBurn = async (
 	contract: ethers.Contract,
 	arg?: {
 		id: string | number; //uint256
@@ -38,14 +38,14 @@ export const setBurn = async (
 }
 
 //view
-export const getCurrentID = async (
+export const fetchCurrentID = async (
 	contract: ethers.Contract,
 ) => {
 	return await contract.currentID() as BigNumber; //uint256
 }
 
 //view
-export const getExits = async (
+export const fetchExits = async (
 	contract: ethers.Contract,
 	arg?: {
 		id: string | number; //uint256
@@ -57,7 +57,7 @@ export const getExits = async (
 }
 
 //view
-export const getGetApproved = async (
+export const fetchGetApproved = async (
 	contract: ethers.Contract,
 	arg?: {
 		tokenId: string | number; //uint256
@@ -69,14 +69,14 @@ export const getGetApproved = async (
 }
 
 //view
-export const getGetMinter = async (
+export const fetchGetMinter = async (
 	contract: ethers.Contract,
 ) => {
 	return await contract.getMinter() as string; //address
 }
 
 //view
-export const getIsApprovedForAll = async (
+export const fetchIsApprovedForAll = async (
 	contract: ethers.Contract,
 	arg?: {
 		owner: string; //address
@@ -89,7 +89,7 @@ export const getIsApprovedForAll = async (
 }
 
 //nonpayable
-export const setMint = async (
+export const fetchMint = async (
 	contract: ethers.Contract,
 	arg?: {
 		to: string; //address
@@ -101,14 +101,14 @@ export const setMint = async (
 }
 
 //view
-export const getName = async (
+export const fetchName = async (
 	contract: ethers.Contract,
 ) => {
 	return await contract.name() as string; //string
 }
 
 //view
-export const getOwnerOf = async (
+export const fetchOwnerOf = async (
 	contract: ethers.Contract,
 	arg?: {
 		tokenId: string | number; //uint256
@@ -120,7 +120,7 @@ export const getOwnerOf = async (
 }
 
 //nonpayable
-export const setSafeTransferFrom = async (
+export const fetchSafeTransferFrom = async (
 	contract: ethers.Contract,
 	arg?: {
 		from: string; //address
@@ -134,7 +134,7 @@ export const setSafeTransferFrom = async (
 }
 
 //nonpayable
-export const setSafeTransferFromFromToTokenId_data = async (
+export const fetchSafeTransferFromFromToTokenId_data = async (
 	contract: ethers.Contract,
 	arg?: {
 		from: string; //address
@@ -149,7 +149,7 @@ export const setSafeTransferFromFromToTokenId_data = async (
 }
 
 //nonpayable
-export const setSetApprovalForAll = async (
+export const fetchSetApprovalForAll = async (
 	contract: ethers.Contract,
 	arg?: {
 		operator: string; //address
@@ -162,7 +162,7 @@ export const setSetApprovalForAll = async (
 }
 
 //nonpayable
-export const setSetMinter = async (
+export const fetchSetMinter = async (
 	contract: ethers.Contract,
 	arg?: {
 		minter: string; //address
@@ -174,7 +174,7 @@ export const setSetMinter = async (
 }
 
 //view
-export const getSupportsInterface = async (
+export const fetchSupportsInterface = async (
 	contract: ethers.Contract,
 	arg?: {
 		interfaceId: string; //bytes4
@@ -186,14 +186,14 @@ export const getSupportsInterface = async (
 }
 
 //view
-export const getSymbol = async (
+export const fetchSymbol = async (
 	contract: ethers.Contract,
 ) => {
 	return await contract.symbol() as string; //string
 }
 
 //view
-export const getTokenURI = async (
+export const fetchTokenURI = async (
 	contract: ethers.Contract,
 	arg?: {
 		tokenId: string | number; //uint256
@@ -205,7 +205,7 @@ export const getTokenURI = async (
 }
 
 //nonpayable
-export const setTransferFrom = async (
+export const fetchTransferFrom = async (
 	contract: ethers.Contract,
 	arg?: {
 		from: string; //address

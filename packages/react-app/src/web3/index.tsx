@@ -7,7 +7,7 @@ import { IChainData } from "../helpers/types";
 import { isEmpty, isUndefined } from "lodash";
 import { ethers } from "ethers";
 
-export type TLibrary = ethers.providers.Web3Provider | ethers.providers.InfuraProvider | ethers.providers.JsonRpcProvider
+export type TLibrary = ethers.providers.Web3Provider | ethers.providers.InfuraProvider
 
 interface IWeb3InfoProps {
   connected?: boolean;

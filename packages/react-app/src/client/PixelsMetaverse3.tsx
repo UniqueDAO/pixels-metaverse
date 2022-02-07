@@ -1,14 +1,14 @@
 import { BigNumber, ethers } from "ethers";
 
 //view
-export const getAmount = async (
+export const fetchAmount = async (
 	contract: ethers.Contract,
 ) => {
 	return await contract.amount() as BigNumber; //uint256
 }
 
 //view
-export const getBaseInfo = async (
+export const fetchBaseInfo = async (
 	contract: ethers.Contract,
 	arg?: {
 		bytes32Params1: string; //bytes32
@@ -26,7 +26,7 @@ export const getBaseInfo = async (
 }
 
 //view
-export const getCollection = async (
+export const fetchCollection = async (
 	contract: ethers.Contract,
 	arg?: {
 		addressParams1: string; //address
@@ -39,7 +39,7 @@ export const getCollection = async (
 }
 
 //view
-export const getComposes = async (
+export const fetchComposes = async (
 	contract: ethers.Contract,
 	arg?: {
 		uint256Params1: string | number; //uint256
@@ -52,7 +52,7 @@ export const getComposes = async (
 }
 
 //view
-export const getMaterial = async (
+export const fetchMaterial = async (
 	contract: ethers.Contract,
 	arg?: {
 		uint256Params1: string | number; //uint256
@@ -72,7 +72,7 @@ export const getMaterial = async (
 }
 
 //view
-export const getUser = async (
+export const fetchUser = async (
 	contract: ethers.Contract,
 	arg?: {
 		addressParams1: string; //address
@@ -89,14 +89,14 @@ export const getUser = async (
 }
 
 //nonpayable
-export const setRegister = async (
+export const fetchRegister = async (
 	contract: ethers.Contract,
 ) => {
 	return await contract.register()
 }
 
 //nonpayable
-export const setSetConfig = async (
+export const fetchSetConfig = async (
 	contract: ethers.Contract,
 	arg?: {
 		role: string; //string
@@ -110,14 +110,14 @@ export const setSetConfig = async (
 }
 
 //view
-export const getGetMaterialLength = async (
+export const fetchGetMaterialLength = async (
 	contract: ethers.Contract,
 ) => {
 	return await contract.getMaterialLength() as BigNumber; //uint256
 }
 
 //view
-export const getGetMaterial = async (
+export const fetchGetMaterial = async (
 	contract: ethers.Contract,
 	arg?: {
 		id: string | number; //uint256
@@ -147,7 +147,7 @@ export const getGetMaterial = async (
 }
 
 //nonpayable
-export const setMake = async (
+export const fetchMake = async (
 	contract: ethers.Contract,
 	arg?: {
 		name: string; //string
@@ -163,7 +163,7 @@ export const setMake = async (
 }
 
 //nonpayable
-export const setReMake = async (
+export const fetchReMake = async (
 	contract: ethers.Contract,
 	arg?: {
 		id: string | number; //uint256
@@ -176,7 +176,7 @@ export const setReMake = async (
 }
 
 //nonpayable
-export const setCollect = async (
+export const fetchCollect = async (
 	contract: ethers.Contract,
 	arg?: {
 		id: string | number; //uint256
@@ -188,7 +188,7 @@ export const setCollect = async (
 }
 
 //nonpayable
-export const setCancelCollect = async (
+export const fetchCancelCollect = async (
 	contract: ethers.Contract,
 	arg?: {
 		id: string | number; //uint256
@@ -201,7 +201,7 @@ export const setCancelCollect = async (
 }
 
 //view
-export const getGetCollection = async (
+export const fetchGetCollection = async (
 	contract: ethers.Contract,
 	arg?: {
 		from: string; //address
@@ -213,7 +213,7 @@ export const getGetCollection = async (
 }
 
 //view
-export const getGetCompose = async (
+export const fetchGetCompose = async (
 	contract: ethers.Contract,
 	arg?: {
 		id: string | number; //uint256
@@ -225,7 +225,7 @@ export const getGetCompose = async (
 }
 
 //nonpayable
-export const setCompose = async (
+export const fetchCompose = async (
 	contract: ethers.Contract,
 	arg?: {
 		ids: (string | number)[]; //uint256[]
@@ -241,7 +241,7 @@ export const setCompose = async (
 }
 
 //nonpayable
-export const setCancelCompose = async (
+export const fetchCancelCompose = async (
 	contract: ethers.Contract,
 	arg?: {
 		ids: string | number; //uint256
@@ -253,7 +253,7 @@ export const setCancelCompose = async (
 }
 
 //nonpayable
-export const setAddition = async (
+export const fetchAddition = async (
 	contract: ethers.Contract,
 	arg?: {
 		ids: string | number; //uint256
@@ -266,7 +266,7 @@ export const setAddition = async (
 }
 
 //nonpayable
-export const setSubtract = async (
+export const fetchSubtract = async (
 	contract: ethers.Contract,
 	arg?: {
 		ids: string | number; //uint256
@@ -280,7 +280,7 @@ export const setSubtract = async (
 }
 
 //nonpayable
-export const setSetPMT721 = async (
+export const fetchSetPMT721 = async (
 	contract: ethers.Contract,
 	arg?: {
 		pmt721: string; //address
@@ -292,7 +292,7 @@ export const setSetPMT721 = async (
 }
 
 //nonpayable
-export const setHandleTransfer = async (
+export const fetchHandleTransfer = async (
 	contract: ethers.Contract,
 	arg?: {
 		from: string; //address
