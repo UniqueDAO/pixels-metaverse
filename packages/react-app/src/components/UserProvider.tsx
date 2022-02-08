@@ -6,7 +6,12 @@ import { usePixelsMetaverse } from "../pixels-metaverse";
 import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, useGetDataRequest, useRequest } from "../hook/api2";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
-import { useContractRequest } from "abi-to-request";
+import { useContractRequest, useRequest as useAbiRequest, useGetDataRequest as useAbiGetDataRequest } from "abi-to-request";
+import { PixelsMetaverse_Ganache1337_GetMaterialLength, PixelsMetaverse_Ganache1337_User } from "../client/PixelsMetaverse_Ganache1337";
+import { ethers } from "ethers";
+import { PMT721_Ganache1337_CurrentID } from "../client/PMT721_Ganache1337";
+import { abisData } from "../client/abis";
+import { PixelsMetaverse_3_Amount } from "../client/PixelsMetaverse_3";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -43,9 +48,13 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     }
   }) */
 
-  console.log(contracts, "contracts")
+  const getUserInfo2 = useAbiRequest(PMT721_Ganache1337_CurrentID, {
+    onSuccess: (res)=>{
+      console.log(res && ethers.utils.formatUnits(res, 0), "resssss")
+    }
+  })
 
-  const [userInfo, getUserInfo] = useGetDataRequest(fetchUserInfo, address ? { address } : undefined)
+  const [userInfo, getUserInfo] = useAbiGetDataRequest(PMT721_Ganache1337_CurrentID)
   console.log(userInfo, "userInfo")
 
   const register = useRequest(fetchRegister, {
@@ -69,9 +78,10 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   //const getCollectList = useRequest(fetchCollectList)
 
   useEffect(() => {
+    //getUserInfo2()
     if (!address) return
     //getCollectList({ address })
-  }, [address, contract])
+  }, [address, contracts])
 
   useEffect(() => {
     if (!networkId) return

@@ -44,9 +44,9 @@ export const Header = memo(() => {
   const { pathname } = useLocation()
   const params = useQueryParams()
   const [inputStr, setInputStr] = useState<string | null>()
-  const [data] = useGetDataRequest(fetchGetMaterialLength, undefined)
+/*   const [data] = useGetDataRequest(fetchGetMaterialLength, undefined)
 
-  console.log(data?.toString())
+  console.log(data?.toString()) */
 
   useEffect(() => {
     if (params && params?.get("address")) {

@@ -22,6 +22,10 @@ declare global {
   }
 }
 
+
+const a = { a1: "1312", c: 12312 }
+export type TContractList = keyof typeof a
+
 const Main = () => {
   const { pathname } = useLocation()
   const { library } = useWeb3Info()
