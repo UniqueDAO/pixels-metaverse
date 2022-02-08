@@ -7,7 +7,7 @@ import bgSvg from "./assets/image/bg.svg"
 import { Routes } from './routes';
 import { useWeb3Info, Web3InfoProvider } from "./web3";
 import { ContractRequestContextProvider } from "abi-to-request"
-import { abisData } from "./client/abis";
+import { abis } from "./client/abis";
 
 declare global {
   // tslint:disable-next-line
@@ -22,16 +22,12 @@ declare global {
   }
 }
 
-
-const a = { a1: "1312", c: 12312 }
-export type TContractList = keyof typeof a
-
 const Main = () => {
   const { pathname } = useLocation()
   const { library } = useWeb3Info()
 
   return (
-    <ContractRequestContextProvider library={library} abisData={abisData}>
+    <ContractRequestContextProvider library={library} abis={abis}>
       <PixelsMetaverseContextProvider library={library}>
         <LoadingProvider>
           <UserInfoProvider>

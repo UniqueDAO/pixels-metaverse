@@ -8,7 +8,9 @@ import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
 import { useContractRequest, useRequest as useAbiRequest, useGetDataRequest as useAbiGetDataRequest } from "abi-to-request";
 import { ethers } from "ethers";
-import { PMT721_Ganache1337_CurrentID, PMT721_Ganache1337_GetMinter, PMT721_Ganache1337_Name } from "../client/PMT721_Ganache1337";
+import { PixelsMetaverse_Amount } from "../client/PixelsMetaverse";
+import { SimpleToken_Decimals, SimpleToken_Name } from "../client/SimpleToken";
+import { PMT721_Name } from "../client/PMT721";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -45,14 +47,13 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     }
   }) */
 
-  const getUserInfo2 = useAbiRequest(PMT721_Ganache1337_CurrentID, {
+  const getUserInfo2 = useAbiRequest(PMT721_Name, {
     onSuccess: (res)=>{
-      console.log(res && ethers.utils.formatUnits(res, 0), "resssss")
+      console.log(res, "resssss")
     }
   })
 
-  const [userInfo, getUserInfo] = useAbiGetDataRequest(PMT721_Ganache1337_Name)
-  console.log(userInfo, "userInfo")
+  const [userInfo, getUserInfo] = useAbiGetDataRequest(SimpleToken_Name)
 
   const register = useRequest(fetchRegister, {
     onSuccess: () => {
@@ -75,10 +76,11 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   //const getCollectList = useRequest(fetchCollectList)
 
   useEffect(() => {
-    //getUserInfo2()
+    getUserInfo2()
     if (!address) return
     //getCollectList({ address })
-  }, [address, contracts])
+  }, [contracts])
+  console.log(contracts)
 
   useEffect(() => {
     if (!networkId) return

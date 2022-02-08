@@ -2,7 +2,7 @@ import { TContract } from 'abi-to-request';
 import { BigNumber, ethers } from "ethers";
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_Addition = async (
+export const PixelsMetaverse_Addition = async (
 	contract: TContract,
 	arg?: {
 		ids: string | number; //uint256
@@ -17,7 +17,7 @@ export const PixelsMetaverse_Ganache1337_Addition = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_Amount = async (
+export const PixelsMetaverse_Amount = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
@@ -26,7 +26,7 @@ export const PixelsMetaverse_Ganache1337_Amount = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_BaseInfo = async (
+export const PixelsMetaverse_BaseInfo = async (
 	contract: TContract,
 	arg?: {
 		bytes32Params1: string; //bytes32
@@ -46,7 +46,7 @@ export const PixelsMetaverse_Ganache1337_BaseInfo = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_CancelCollect = async (
+export const PixelsMetaverse_CancelCollect = async (
 	contract: TContract,
 	arg?: {
 		id: string | number; //uint256
@@ -61,7 +61,7 @@ export const PixelsMetaverse_Ganache1337_CancelCollect = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_CancelCompose = async (
+export const PixelsMetaverse_CancelCompose = async (
 	contract: TContract,
 	arg?: {
 		ids: string | number; //uint256
@@ -75,7 +75,7 @@ export const PixelsMetaverse_Ganache1337_CancelCompose = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_Collect = async (
+export const PixelsMetaverse_Collect = async (
 	contract: TContract,
 	arg?: {
 		id: string | number; //uint256
@@ -89,7 +89,7 @@ export const PixelsMetaverse_Ganache1337_Collect = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_Collection = async (
+export const PixelsMetaverse_Collection = async (
 	contract: TContract,
 	arg?: {
 		addressParams1: string; //address
@@ -104,7 +104,7 @@ export const PixelsMetaverse_Ganache1337_Collection = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_Compose = async (
+export const PixelsMetaverse_Compose = async (
 	contract: TContract,
 	arg?: {
 		ids: (string | number)[]; //uint256[]
@@ -122,7 +122,7 @@ export const PixelsMetaverse_Ganache1337_Compose = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_Composes = async (
+export const PixelsMetaverse_Composes = async (
 	contract: TContract,
 	arg?: {
 		uint256Params1: string | number; //uint256
@@ -137,7 +137,7 @@ export const PixelsMetaverse_Ganache1337_Composes = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_GetCollection = async (
+export const PixelsMetaverse_GetCollection = async (
 	contract: TContract,
 	arg?: {
 		from: string; //address
@@ -151,7 +151,7 @@ export const PixelsMetaverse_Ganache1337_GetCollection = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_GetCompose = async (
+export const PixelsMetaverse_GetCompose = async (
 	contract: TContract,
 	arg?: {
 		id: string | number; //uint256
@@ -165,7 +165,7 @@ export const PixelsMetaverse_Ganache1337_GetCompose = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_GetMaterial = async (
+export const PixelsMetaverse_GetMaterial = async (
 	contract: TContract,
 	arg?: {
 		id: string | number; //uint256
@@ -197,7 +197,7 @@ export const PixelsMetaverse_Ganache1337_GetMaterial = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_GetMaterialLength = async (
+export const PixelsMetaverse_GetMaterialLength = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
@@ -206,7 +206,7 @@ export const PixelsMetaverse_Ganache1337_GetMaterialLength = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_HandleTransfer = async (
+export const PixelsMetaverse_HandleTransfer = async (
 	contract: TContract,
 	arg?: {
 		from: string; //address
@@ -222,7 +222,7 @@ export const PixelsMetaverse_Ganache1337_HandleTransfer = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_Make = async (
+export const PixelsMetaverse_Make = async (
 	contract: TContract,
 	arg?: {
 		name: string; //string
@@ -240,7 +240,7 @@ export const PixelsMetaverse_Ganache1337_Make = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_Material = async (
+export const PixelsMetaverse_Material = async (
 	contract: TContract,
 	arg?: {
 		uint256Params1: string | number; //uint256
@@ -262,7 +262,7 @@ export const PixelsMetaverse_Ganache1337_Material = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_ReMake = async (
+export const PixelsMetaverse_ReMake = async (
 	contract: TContract,
 	arg?: {
 		id: string | number; //uint256
@@ -277,7 +277,7 @@ export const PixelsMetaverse_Ganache1337_ReMake = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_Register = async (
+export const PixelsMetaverse_Register = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
@@ -286,7 +286,7 @@ export const PixelsMetaverse_Ganache1337_Register = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_SetConfig = async (
+export const PixelsMetaverse_SetConfig = async (
 	contract: TContract,
 	arg?: {
 		role: string; //string
@@ -302,7 +302,7 @@ export const PixelsMetaverse_Ganache1337_SetConfig = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_SetPMT721 = async (
+export const PixelsMetaverse_SetPMT721 = async (
 	contract: TContract,
 	arg?: {
 		pmt721: string; //address
@@ -316,7 +316,7 @@ export const PixelsMetaverse_Ganache1337_SetPMT721 = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Ganache1337_Subtract = async (
+export const PixelsMetaverse_Subtract = async (
 	contract: TContract,
 	arg?: {
 		ids: string | number; //uint256
@@ -332,7 +332,7 @@ export const PixelsMetaverse_Ganache1337_Subtract = async (
 }
 
 //view
-export const PixelsMetaverse_Ganache1337_User = async (
+export const PixelsMetaverse_User = async (
 	contract: TContract,
 	arg?: {
 		addressParams1: string; //address

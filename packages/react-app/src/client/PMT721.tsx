@@ -2,7 +2,7 @@ import { TContract } from 'abi-to-request';
 import { BigNumber, ethers } from "ethers";
 
 //nonpayable
-export const PMT721_Localhost31337_Approve = async (
+export const PMT721_Approve = async (
 	contract: TContract,
 	arg?: {
 		to: string; //address
@@ -17,7 +17,7 @@ export const PMT721_Localhost31337_Approve = async (
 }
 
 //view
-export const PMT721_Localhost31337_BalanceOf = async (
+export const PMT721_BalanceOf = async (
 	contract: TContract,
 	arg?: {
 		owner: string; //address
@@ -31,7 +31,7 @@ export const PMT721_Localhost31337_BalanceOf = async (
 }
 
 //nonpayable
-export const PMT721_Localhost31337_Burn = async (
+export const PMT721_Burn = async (
 	contract: TContract,
 	arg?: {
 		id: string | number; //uint256
@@ -45,7 +45,7 @@ export const PMT721_Localhost31337_Burn = async (
 }
 
 //view
-export const PMT721_Localhost31337_CurrentID = async (
+export const PMT721_CurrentID = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
@@ -54,7 +54,7 @@ export const PMT721_Localhost31337_CurrentID = async (
 }
 
 //view
-export const PMT721_Localhost31337_Exits = async (
+export const PMT721_Exits = async (
 	contract: TContract,
 	arg?: {
 		id: string | number; //uint256
@@ -68,7 +68,7 @@ export const PMT721_Localhost31337_Exits = async (
 }
 
 //view
-export const PMT721_Localhost31337_GetApproved = async (
+export const PMT721_GetApproved = async (
 	contract: TContract,
 	arg?: {
 		tokenId: string | number; //uint256
@@ -82,7 +82,7 @@ export const PMT721_Localhost31337_GetApproved = async (
 }
 
 //view
-export const PMT721_Localhost31337_GetMinter = async (
+export const PMT721_GetMinter = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
@@ -91,7 +91,7 @@ export const PMT721_Localhost31337_GetMinter = async (
 }
 
 //view
-export const PMT721_Localhost31337_IsApprovedForAll = async (
+export const PMT721_IsApprovedForAll = async (
 	contract: TContract,
 	arg?: {
 		owner: string; //address
@@ -106,7 +106,7 @@ export const PMT721_Localhost31337_IsApprovedForAll = async (
 }
 
 //nonpayable
-export const PMT721_Localhost31337_Mint = async (
+export const PMT721_Mint = async (
 	contract: TContract,
 	arg?: {
 		to: string; //address
@@ -120,7 +120,7 @@ export const PMT721_Localhost31337_Mint = async (
 }
 
 //view
-export const PMT721_Localhost31337_Name = async (
+export const PMT721_Name = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
@@ -129,7 +129,7 @@ export const PMT721_Localhost31337_Name = async (
 }
 
 //view
-export const PMT721_Localhost31337_OwnerOf = async (
+export const PMT721_OwnerOf = async (
 	contract: TContract,
 	arg?: {
 		tokenId: string | number; //uint256
@@ -143,7 +143,7 @@ export const PMT721_Localhost31337_OwnerOf = async (
 }
 
 //nonpayable
-export const PMT721_Localhost31337_SafeTransferFrom = async (
+export const PMT721_SafeTransferFrom = async (
 	contract: TContract,
 	arg?: {
 		from: string; //address
@@ -159,7 +159,7 @@ export const PMT721_Localhost31337_SafeTransferFrom = async (
 }
 
 //nonpayable
-export const PMT721_Localhost31337_SafeTransferFromFromToTokenId_data = async (
+export const PMT721_SafeTransferFromFromToTokenId_data = async (
 	contract: TContract,
 	arg?: {
 		from: string; //address
@@ -176,7 +176,7 @@ export const PMT721_Localhost31337_SafeTransferFromFromToTokenId_data = async (
 }
 
 //nonpayable
-export const PMT721_Localhost31337_SetApprovalForAll = async (
+export const PMT721_SetApprovalForAll = async (
 	contract: TContract,
 	arg?: {
 		operator: string; //address
@@ -191,7 +191,7 @@ export const PMT721_Localhost31337_SetApprovalForAll = async (
 }
 
 //nonpayable
-export const PMT721_Localhost31337_SetMinter = async (
+export const PMT721_SetMinter = async (
 	contract: TContract,
 	arg?: {
 		minter: string; //address
@@ -205,7 +205,7 @@ export const PMT721_Localhost31337_SetMinter = async (
 }
 
 //view
-export const PMT721_Localhost31337_SupportsInterface = async (
+export const PMT721_SupportsInterface = async (
 	contract: TContract,
 	arg?: {
 		interfaceId: string; //bytes4
@@ -219,7 +219,7 @@ export const PMT721_Localhost31337_SupportsInterface = async (
 }
 
 //view
-export const PMT721_Localhost31337_Symbol = async (
+export const PMT721_Symbol = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
@@ -228,7 +228,7 @@ export const PMT721_Localhost31337_Symbol = async (
 }
 
 //view
-export const PMT721_Localhost31337_TokenURI = async (
+export const PMT721_TokenURI = async (
 	contract: TContract,
 	arg?: {
 		tokenId: string | number; //uint256
@@ -242,7 +242,7 @@ export const PMT721_Localhost31337_TokenURI = async (
 }
 
 //nonpayable
-export const PMT721_Localhost31337_TransferFrom = async (
+export const PMT721_TransferFrom = async (
 	contract: TContract,
 	arg?: {
 		from: string; //address
