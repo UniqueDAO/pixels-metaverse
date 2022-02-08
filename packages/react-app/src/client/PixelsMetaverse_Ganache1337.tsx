@@ -176,21 +176,21 @@ export const PixelsMetaverse_Ganache1337_GetMaterial = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		return await (contract as ethers.Contract).getMaterial(id) as {
 			material: {
-				id: BigNumber; //uint256
-				compose: BigNumber; //uint256
-				time: string; //string
-				position: string; //string
-				zIndex: string; //string
-				owner: string; //address
-				data: string; //bytes32
-			},
+			id: BigNumber; //uint256
+			compose: BigNumber; //uint256
+			time: string; //string
+			position: string; //string
+			zIndex: string; //string
+			owner: string; //address
+			data: string; //bytes32
+		}, 
 			baseInfo: {
-				data: string; //string
-				category: string; //string
-				decode: string; //string
-				name: string; //string
-				userId: BigNumber; //uint256
-			},
+			data: string; //string
+			category: string; //string
+			decode: string; //string
+			name: string; //string
+			userId: BigNumber; //uint256
+		}, 
 			composes: BigNumber[]; //uint256[]
 		}
 	}

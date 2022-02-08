@@ -3,15 +3,12 @@ import * as React from "react";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { usePixelsMetaverse } from "../pixels-metaverse";
-import { fetchCollectList, fetchGetGoodsIdList, fetchRegister, fetchUserInfo, useGetDataRequest, useRequest } from "../hook/api2";
+import { fetchGetGoodsIdList, fetchRegister, useRequest } from "../hook/api2";
 import { useWeb3Info } from "../web3";
 import { MaterialItem } from "./Card";
 import { useContractRequest, useRequest as useAbiRequest, useGetDataRequest as useAbiGetDataRequest } from "abi-to-request";
-import { PixelsMetaverse_Ganache1337_GetMaterialLength, PixelsMetaverse_Ganache1337_User } from "../client/PixelsMetaverse_Ganache1337";
 import { ethers } from "ethers";
-import { PMT721_Ganache1337_CurrentID } from "../client/PMT721_Ganache1337";
-import { abisData } from "../client/abis";
-import { PixelsMetaverse_3_Amount } from "../client/PixelsMetaverse_3";
+import { PMT721_Ganache1337_CurrentID, PMT721_Ganache1337_GetMinter, PMT721_Ganache1337_Name } from "../client/PMT721_Ganache1337";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -54,7 +51,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     }
   })
 
-  const [userInfo, getUserInfo] = useAbiGetDataRequest(PMT721_Ganache1337_CurrentID)
+  const [userInfo, getUserInfo] = useAbiGetDataRequest(PMT721_Ganache1337_Name)
   console.log(userInfo, "userInfo")
 
   const register = useRequest(fetchRegister, {
