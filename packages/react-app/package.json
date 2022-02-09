@@ -39,7 +39,7 @@
     "web3-utils": "^1.7.0",
     "web3modal": "^1.9.4",
     "ethers": "^5.5.3",
-    "abi-to-request": "^0.0.24"
+    "abi-to-request": "^0.0.25"
   },
   "scripts": {
     "start": "craco start",

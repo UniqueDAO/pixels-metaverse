@@ -5,7 +5,7 @@ import { Dictionary, keys, map } from 'lodash';
 import { useUserInfo } from '../../../components/UserProvider';
 import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
 import { fetchGetGoodsIdList, fetchMake, useRequest } from '../../../hook/api';
-import { useWeb3Info } from '../../../web3';
+import { useWeb3Info } from 'abi-to-request';
 import { ClearIcon } from '../../lockers/components/SearchQuery';
 import React from 'react';
 const { Option } = Select;

@@ -4747,7 +4747,7 @@
     js-sha3 "0.8.0"
     query-string "6.13.5"
 
-"@walletconnect/web3-provider@^1.6.5":
+"@walletconnect/web3-provider@^1.6.5", "@walletconnect/web3-provider@^1.7.1":
   version "1.7.1"
   resolved "https://registry.npmjs.org/@walletconnect/web3-provider/-/web3-provider-1.7.1.tgz#3b7bf41bfd0198b18f5cc5626e1ec28e931667c7"
   integrity sha512-dhoYwQaBVbaKIiELNeCF4kW7Dslbf73wDIsxOF9gmjVch1Qi18kNlqbR03u56iBcAsXU0tAwfd9Z7cGHfUX1Fg==
@@ -4952,13 +4952,14 @@ abab@^2.0.3, abab@^2.0.5:
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
   integrity sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q==
 
-abi-to-request@^0.0.24:
-  version "0.0.24"
-  resolved "https://registry.npmjs.org/abi-to-request/-/abi-to-request-0.0.24.tgz#3596c80776ea2cefb6fa4fe3ede40ff97b8ddff4"
-  integrity sha512-qramEKjvSIPmtSkqrGOtyQptFV2/MoLiAGcLS/NOCdPN+4xmTUqnbItFtGydgS8NZxUIEWqzjbN3ooICm4X0wA==
+abi-to-request@^0.0.25:
+  version "0.0.25"
+  resolved "https://registry.npmjs.org/abi-to-request/-/abi-to-request-0.0.25.tgz#48da3afeb940a43d86ac9d9ace11b94f99ab469e"
+  integrity sha512-Md+xofVXhlanaHvjV5AX+b2OlQDIwxbZEDb5+tfkam6I0/f928MZK7Z3A0GgWury+Ow18Nv4hc9PSH34Zdo5Kg==
   dependencies:
     "@types/lodash" "^4.14.178"
     "@types/react" "^17.0.39"
+    "@walletconnect/web3-provider" "^1.7.1"
     async "^3.2.3"
     ethers "^5.5.3"
     lodash "^4.17.21"
@@ -4966,6 +4967,7 @@ abi-to-request@^0.0.24:
     react-dom "^17.0.2"
     web3 "^1.7.0"
     web3-eth-contract "^1.7.0"
+    web3modal "^1.9.5"
 
 abort-controller@^3.0.0:
   version "3.0.0"
@@ -22321,7 +22323,7 @@ web3@^1.5.2, web3@^1.7.0:
     web3-shh "1.7.0"
     web3-utils "1.7.0"
 
-web3modal@^1.9.4:
+web3modal@^1.9.4, web3modal@^1.9.5:
   version "1.9.5"
   resolved "https://registry.npmjs.org/web3modal/-/web3modal-1.9.5.tgz#a1d6351a11358b376af5772f79f3dcdba6c38d1b"
   integrity sha512-L5ME6zgoaCDa+T66skW9WpxGOJX6vU9v+7aLacoQJhU3AMTk784ionpX+Pg4UdhdM+UQW+odge32GkwEX11czQ==

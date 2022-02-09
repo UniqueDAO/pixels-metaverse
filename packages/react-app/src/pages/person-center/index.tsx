@@ -5,7 +5,7 @@ import { useUserInfo } from "../../components/UserProvider";
 import { PixelsMetaverseHandleImgProvider, useConvertedPostion, usePixelsMetaverseUserInfo } from "../../pixels-metaverse";
 import { BaseInfo } from "./components/BaseInfo";
 import { AssetsInfo } from "./components/AssetsInfo";
-import { useWeb3Info } from "../../web3";
+import { useWeb3Info } from "abi-to-request";
 import { useLoading } from "../../components/Loading";
 import { message } from "antd";
 import { useGetPersonData } from "../play";

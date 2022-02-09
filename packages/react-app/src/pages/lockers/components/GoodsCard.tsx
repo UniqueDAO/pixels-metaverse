@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 import { PixelsMetaverseImgByPositionData } from "../../../pixels-metaverse";
 import { useMemo, useState } from "react";
 import { ellipseAddress } from "../../../helpers/utilities";
-import { useWeb3Info } from "../../../web3";
+import { useWeb3Info } from "abi-to-request";
 import { Collection, Composes, Details, MaterialItem, MaterialLabel } from "../../../components/Card";
 import { Modal } from "antd";
 

@@ -1,6 +1,4 @@
 import * as ethUtil from "ethereumjs-util";
-import { IChainData } from "./types";
-import supportedChains from "./chains";
 import { message } from "antd";
 import { throttle } from "lodash";
 
@@ -108,29 +106,6 @@ export function isMobile(): boolean {
 export const warning = throttle((chainId: number | string) => {
   message.warning(`很遗憾，暂时不支持 Chain ID 为 ${chainId} 的链！`)
 }, 5000)
-
-export function getChainData(chainId: number): IChainData {
-  const chainData = supportedChains?.filter(
-    (chain: any) => chain.chain_id === parseInt(String(chainId))
-  )[0];
-
-  const API_KEY = process.env.REACT_APP_INFURA_ID;
-
-  if (
-    chainData?.rpc_url.includes("infura.io") &&
-    chainData?.rpc_url.includes("%API_KEY%") &&
-    API_KEY
-  ) {
-    const rpcUrl = chainData.rpc_url.replace("%API_KEY%", API_KEY);
-
-    return {
-      ...chainData,
-      rpc_url: rpcUrl
-    };
-  }
-
-  return chainData;
-}
 
 export function hashPersonalMessage(msg: string): string {
   const buffer = Buffer.from(msg);

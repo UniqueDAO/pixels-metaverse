@@ -6,7 +6,7 @@ import {
 import { useLocation } from "react-router-dom";
 import { useUserInfo } from "./UserProvider";
 import { categoryData } from "../pages/produced/components/Submit";
-import { useWeb3Info } from "../web3";
+import { useWeb3Info } from "abi-to-request";
 import { useMemo } from "react";
 import { Collection, Composes, MaterialItem, MaterialLabel } from "./Card";
 

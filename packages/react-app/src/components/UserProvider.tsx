@@ -4,13 +4,11 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { usePixelsMetaverse } from "../pixels-metaverse";
 import { fetchGetGoodsIdList, fetchRegister, useRequest } from "../hook/api2";
-import { useWeb3Info } from "../web3";
+import { useWeb3Info } from "abi-to-request";
 import { MaterialItem } from "./Card";
-import { useContractRequest, useRequest as useAbiRequest, useGetDataRequest as useAbiGetDataRequest } from "abi-to-request";
+import { useContractRequest, useAbiToRequest, useGetDataAbiToRequest } from "abi-to-request";
 import { ethers } from "ethers";
-import { PixelsMetaverse_Amount } from "../client/PixelsMetaverse";
-import { SimpleToken_Decimals, SimpleToken_Name } from "../client/SimpleToken";
-import { PMT721_Name } from "../client/PMT721";
+import { SimpleToken_Decimals, SimpleToken_Name, SimpleToken_TotalSupply } from "../client/SimpleToken";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -46,14 +44,16 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       setUserInfo(res)
     }
   }) */
+  console.log(contracts)
 
-  const getUserInfo2 = useAbiRequest(PMT721_Name, {
+  const getUserInfo2 = useAbiToRequest(SimpleToken_Name, {
     onSuccess: (res)=>{
       console.log(res, "resssss")
     }
   })
 
-  const [userInfo, getUserInfo] = useAbiGetDataRequest(SimpleToken_Name)
+  const [userInfo, getUserInfo] = useGetDataAbiToRequest(SimpleToken_TotalSupply)
+  console.log(userInfo, "userInfo")
 
   const register = useRequest(fetchRegister, {
     onSuccess: () => {
@@ -80,7 +80,6 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     if (!address) return
     //getCollectList({ address })
   }, [contracts])
-  console.log(contracts)
 
   useEffect(() => {
     if (!networkId) return

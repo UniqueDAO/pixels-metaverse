@@ -5,8 +5,7 @@ import { PixelsMetaverseContextProvider } from './pixels-metaverse';
 import { Header } from './components/Header';
 import bgSvg from "./assets/image/bg.svg"
 import { Routes } from './routes';
-import { useWeb3Info, Web3InfoProvider } from "./web3";
-import { ContractRequestContextProvider } from "abi-to-request"
+import { ContractRequestContextProvider, useWeb3Info, Web3InfoProvider } from "abi-to-request"
 import { abis } from "./client/abis";
 
 declare global {
