@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { BigNumber as ethBigNumber, BigNumberish, ethers } from 'ethers'
 
 export function isNaN(value: string | number): boolean {
   return new BigNumber(`${value}`).isNaN()
@@ -202,4 +203,9 @@ export function formatInputDecimals(
     .toFormat()
     .replace(/,/g, '')
   return result
+}
+
+export const getNumber = (big: BigNumberish)=>{
+  if(big === "") return ""
+  return big.toString()
 }

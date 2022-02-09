@@ -1,5 +1,5 @@
-import { TContract } from 'abi-to-request';
-import { BigNumber, ethers } from "ethers";
+import { TContract, convertedBigNumber } from 'abi-to-request';
+import { ethers } from "ethers";
 
 //nonpayable
 export const PixelsMetaverse_Addition = async (
@@ -12,7 +12,8 @@ export const PixelsMetaverse_Addition = async (
 	if (!arg) return
 	const { ids, idList } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).addition(ids, idList)
+		let res = await (contract as ethers.Contract).addition(ids, idList)
+		return res
 	}
 }
 
@@ -21,7 +22,8 @@ export const PixelsMetaverse_Amount = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).amount() as BigNumber; //uint256
+		let res = await (contract as ethers.Contract).amount()
+		return convertedBigNumber(res) as string; //uint256
 	}
 }
 
@@ -35,12 +37,13 @@ export const PixelsMetaverse_BaseInfo = async (
 	if (!arg) return
 	const { bytes32Params1 } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).baseInfo(bytes32Params1) as {
+		let res = await (contract as ethers.Contract).baseInfo(bytes32Params1)
+		return convertedBigNumber(res) as {
 			data: string; //string
 			category: string; //string
 			decode: string; //string
 			name: string; //string
-			userId: BigNumber; //uint256
+			userId: string; //uint256
 		}
 	}
 }
@@ -56,7 +59,8 @@ export const PixelsMetaverse_CancelCollect = async (
 	if (!arg) return
 	const { id, index } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).cancelCollect(id, index)
+		let res = await (contract as ethers.Contract).cancelCollect(id, index)
+		return res
 	}
 }
 
@@ -70,7 +74,8 @@ export const PixelsMetaverse_CancelCompose = async (
 	if (!arg) return
 	const { ids } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).cancelCompose(ids)
+		let res = await (contract as ethers.Contract).cancelCompose(ids)
+		return res
 	}
 }
 
@@ -84,7 +89,8 @@ export const PixelsMetaverse_Collect = async (
 	if (!arg) return
 	const { id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).collect(id)
+		let res = await (contract as ethers.Contract).collect(id)
+		return res
 	}
 }
 
@@ -99,7 +105,8 @@ export const PixelsMetaverse_Collection = async (
 	if (!arg) return
 	const { addressParams1, uint256Params2 } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).collection(addressParams1, uint256Params2) as BigNumber; //uint256
+		let res = await (contract as ethers.Contract).collection(addressParams1, uint256Params2)
+		return convertedBigNumber(res) as string; //uint256
 	}
 }
 
@@ -117,7 +124,8 @@ export const PixelsMetaverse_Compose = async (
 	if (!arg) return
 	const { ids, name, category, data, decode } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).compose(ids, name, category, data, decode)
+		let res = await (contract as ethers.Contract).compose(ids, name, category, data, decode)
+		return res
 	}
 }
 
@@ -132,7 +140,8 @@ export const PixelsMetaverse_Composes = async (
 	if (!arg) return
 	const { uint256Params1, uint256Params2 } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).composes(uint256Params1, uint256Params2) as BigNumber; //uint256
+		let res = await (contract as ethers.Contract).composes(uint256Params1, uint256Params2)
+		return convertedBigNumber(res) as string; //uint256
 	}
 }
 
@@ -146,7 +155,8 @@ export const PixelsMetaverse_GetCollection = async (
 	if (!arg) return
 	const { from } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).getCollection(from) as BigNumber[]; //uint256[]
+		let res = await (contract as ethers.Contract).getCollection(from)
+		return convertedBigNumber(res) as string[]; //uint256[]
 	}
 }
 
@@ -160,7 +170,8 @@ export const PixelsMetaverse_GetCompose = async (
 	if (!arg) return
 	const { id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).getCompose(id) as BigNumber[]; //uint256[]
+		let res = await (contract as ethers.Contract).getCompose(id)
+		return convertedBigNumber(res) as string[]; //uint256[]
 	}
 }
 
@@ -174,24 +185,25 @@ export const PixelsMetaverse_GetMaterial = async (
 	if (!arg) return
 	const { id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).getMaterial(id) as {
+		let res = await (contract as ethers.Contract).getMaterial(id)
+		return convertedBigNumber(res) as {
 			material: {
-			id: BigNumber; //uint256
-			compose: BigNumber; //uint256
-			time: string; //string
-			position: string; //string
-			zIndex: string; //string
-			owner: string; //address
-			data: string; //bytes32
-		}, 
+				id: string; //uint256
+				compose: string; //uint256
+				time: string; //string
+				position: string; //string
+				zIndex: string; //string
+				owner: string; //address
+				data: string; //bytes32
+			},
 			baseInfo: {
-			data: string; //string
-			category: string; //string
-			decode: string; //string
-			name: string; //string
-			userId: BigNumber; //uint256
-		}, 
-			composes: BigNumber[]; //uint256[]
+				data: string; //string
+				category: string; //string
+				decode: string; //string
+				name: string; //string
+				userId: string; //uint256
+			},
+			composes: string[]; //uint256[]
 		}
 	}
 }
@@ -201,7 +213,8 @@ export const PixelsMetaverse_GetMaterialLength = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).getMaterialLength() as BigNumber; //uint256
+		let res = await (contract as ethers.Contract).getMaterialLength()
+		return convertedBigNumber(res) as string; //uint256
 	}
 }
 
@@ -217,7 +230,8 @@ export const PixelsMetaverse_HandleTransfer = async (
 	if (!arg) return
 	const { from, to, id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).handleTransfer(from, to, id)
+		let res = await (contract as ethers.Contract).handleTransfer(from, to, id)
+		return res
 	}
 }
 
@@ -235,7 +249,8 @@ export const PixelsMetaverse_Make = async (
 	if (!arg) return
 	const { name, category, data, decode, num } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).make(name, category, data, decode, num)
+		let res = await (contract as ethers.Contract).make(name, category, data, decode, num)
+		return res
 	}
 }
 
@@ -249,9 +264,10 @@ export const PixelsMetaverse_Material = async (
 	if (!arg) return
 	const { uint256Params1 } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).material(uint256Params1) as {
-			id: BigNumber; //uint256
-			compose: BigNumber; //uint256
+		let res = await (contract as ethers.Contract).material(uint256Params1)
+		return convertedBigNumber(res) as {
+			id: string; //uint256
+			compose: string; //uint256
 			time: string; //string
 			position: string; //string
 			zIndex: string; //string
@@ -272,7 +288,8 @@ export const PixelsMetaverse_ReMake = async (
 	if (!arg) return
 	const { id, num } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).reMake(id, num)
+		let res = await (contract as ethers.Contract).reMake(id, num)
+		return res
 	}
 }
 
@@ -281,7 +298,8 @@ export const PixelsMetaverse_Register = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).register()
+		let res = await (contract as ethers.Contract).register()
+		return res
 	}
 }
 
@@ -297,7 +315,8 @@ export const PixelsMetaverse_SetConfig = async (
 	if (!arg) return
 	const { role, id, other } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).setConfig(role, id, other)
+		let res = await (contract as ethers.Contract).setConfig(role, id, other)
+		return res
 	}
 }
 
@@ -311,7 +330,8 @@ export const PixelsMetaverse_SetPMT721 = async (
 	if (!arg) return
 	const { pmt721 } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).setPMT721(pmt721)
+		let res = await (contract as ethers.Contract).setPMT721(pmt721)
+		return res
 	}
 }
 
@@ -327,7 +347,8 @@ export const PixelsMetaverse_Subtract = async (
 	if (!arg) return
 	const { ids, id, index } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).subtract(ids, id, index)
+		let res = await (contract as ethers.Contract).subtract(ids, id, index)
+		return res
 	}
 }
 
@@ -341,9 +362,10 @@ export const PixelsMetaverse_User = async (
 	if (!arg) return
 	const { addressParams1 } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).user(addressParams1) as {
-			id: BigNumber; //uint256
-			avater: BigNumber; //uint256
+		let res = await (contract as ethers.Contract).user(addressParams1)
+		return convertedBigNumber(res) as {
+			id: string; //uint256
+			avater: string; //uint256
 			role: string; //string
 			other: string; //string
 		}

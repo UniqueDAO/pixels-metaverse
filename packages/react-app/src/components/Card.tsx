@@ -5,9 +5,11 @@ import { cloneDeep, find, isEmpty, map } from "lodash";
 import React, { Dispatch, ReactNode, useEffect, useMemo, useState } from "react";
 import { useUserInfo } from "../components/UserProvider";
 import { fetchCancelCollect, fetchCancelCompose, fetchCollect, fetchGetGoodsIdList, fetchSetUserConfig, fetchSubtract, useRequest } from "../hook/api";
-import { useWeb3Info } from "abi-to-request";
+import { useAbiToRequest, useWeb3Info } from "abi-to-request";
 import { categoryData } from "../pages/produced/components/Submit";
 import { PixelsMetaverseImgByPositionData } from "../pixels-metaverse";
+import { PixelsMetaverse_SetConfig } from "../client/PixelsMetaverse";
+import { ethers } from "ethers";
 const { Text } = Typography;
 
 export interface IMaterial {
@@ -70,12 +72,14 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 }
 
 export const SetAvater = ({ item }: { item: MaterialItem }) => {
-  const { userInfo } = useUserInfo()
-  const setAvater = useRequest(fetchSetUserConfig, {
+  const { userInfo, getUserInfo } = useUserInfo()
+
+  const setAvater = useAbiToRequest(PixelsMetaverse_SetConfig, {
     onSuccess: () => {
       message.success("头像设置成功！")
+      getUserInfo()
     }
-  }, [item, userInfo])
+  })
 
   return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvater({ role: userInfo?.role, id: item?.material?.id, other: userInfo?.other }) }}>
     设置为头像
@@ -100,7 +104,7 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
         size={200}
         style={{ background: "#323945", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }} />
       <div className="ml-10 flex flex-col justify-between">
-        <div>物品名称：{item?.baseInfo?.name || "这什么鬼名称"}{address?.toLowerCase() === item?.material?.owner?.toLowerCase() && userInfo?.avater !== item?.material.id && <SetAvater item={item} />}</div>
+        <div>物品名称：{item?.baseInfo?.name || "这什么鬼名称"}{address?.toLowerCase() === item?.material?.owner?.toLowerCase() && ethers.utils.formatUnits(userInfo?.avater, 0) !== ethers.utils.formatUnits(item?.material?.id, 0) && <SetAvater item={item} />}</div>
         <div>物品类别：{(find(categoryData, ite => ite?.value === item?.baseInfo?.category) || {})?.label || "这什么鬼类别"}</div>
         <div className="flex">组成部分：<div className="overflow-x-scroll" style={{ maxWidth: !child ? 800 : 400 }}>{item?.composes?.join(",") || "暂无"}{!isEmpty(item?.composes) && Number(item?.material?.compose) === 0 && <CancelCompose item={item} setIsModalVisible={setIsModalVisible} />}</div></div>
         <div className="relative">所属地址：<Text copyable={{

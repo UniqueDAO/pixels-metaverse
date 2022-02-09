@@ -1,5 +1,5 @@
-import { TContract } from 'abi-to-request';
-import { BigNumber, ethers } from "ethers";
+import { TContract, convertedBigNumber } from 'abi-to-request';
+import { ethers } from "ethers";
 
 //view
 export const HappyRedPacket_Check_availability = async (
@@ -11,13 +11,14 @@ export const HappyRedPacket_Check_availability = async (
 	if (!arg) return
 	const { id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).check_availability(id) as {
+		let res = await (contract as ethers.Contract).check_availability(id)
+		return convertedBigNumber(res) as {
 			token_address: string; //address
-			balance: BigNumber; //uint256
-			total: BigNumber; //uint256
-			claimed: BigNumber; //uint256
+			balance: string; //uint256
+			total: string; //uint256
+			claimed: string; //uint256
 			expired: string; //bool
-			claimed_amount: BigNumber; //uint256
+			claimed_amount: string; //uint256
 		}
 	}
 }
@@ -34,8 +35,9 @@ export const HappyRedPacket_Claim = async (
 	if (!arg) return
 	const { id, proof, recipient } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).claim(id, proof, recipient) as {
-			claimed: BigNumber; //uint256
+		let res = await (contract as ethers.Contract).claim(id, proof, recipient)
+		return convertedBigNumber(res) as {
+			claimed: string; //uint256
 		}
 	}
 }
@@ -59,7 +61,8 @@ export const HappyRedPacket_Create_red_packet = async (
 	if (!arg) return
 	const { _merkleroot, _number, _ifrandom, _duration, _seed, _message, _name, _token_type, _token_addr, _total_tokens } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).create_red_packet(_merkleroot, _number, _ifrandom, _duration, _seed, _message, _name, _token_type, _token_addr, _total_tokens)
+		let res = await (contract as ethers.Contract).create_red_packet(_merkleroot, _number, _ifrandom, _duration, _seed, _message, _name, _token_type, _token_addr, _total_tokens)
+		return res
 	}
 }
 
@@ -68,7 +71,8 @@ export const HappyRedPacket_Initialize = async (
 	contract: TContract,
 ) => {
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).initialize()
+		let res = await (contract as ethers.Contract).initialize()
+		return res
 	}
 }
 
@@ -82,6 +86,7 @@ export const HappyRedPacket_Refund = async (
 	if (!arg) return
 	const { id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		return await (contract as ethers.Contract).refund(id)
+		let res = await (contract as ethers.Contract).refund(id)
+		return res
 	}
 }

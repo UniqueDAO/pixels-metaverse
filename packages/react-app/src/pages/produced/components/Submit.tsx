@@ -5,9 +5,10 @@ import { Dictionary, keys, map } from 'lodash';
 import { useUserInfo } from '../../../components/UserProvider';
 import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
 import { fetchGetGoodsIdList, fetchMake, useRequest } from '../../../hook/api';
-import { useWeb3Info } from 'abi-to-request';
+import { useAbiToRequest, useWeb3Info } from 'abi-to-request';
 import { ClearIcon } from '../../lockers/components/SearchQuery';
 import React from 'react';
+import { PixelsMetaverse_Register } from '../../../client/PixelsMetaverse';
 const { Option } = Select;
 
 export const Label = ({ children, noNeed }: { children: ReactNode, noNeed?: boolean }) => {
@@ -97,8 +98,16 @@ export const Submit = () => {
   const [positionData, setPostionData] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { address: addresss } = useWeb3Info()
-  const { userInfo, setGoodsList, register } = useUserInfo()
+  const { userInfo, setGoodsList, getUserInfo } = useUserInfo()
+
   const address = addresss
+
+  const register = useAbiToRequest(PixelsMetaverse_Register, {
+    onSuccess: () => {
+      address && getUserInfo({ addressParams1: address })
+    }
+  }, [address])
+  
   const getGoodsIdList = useRequest(fetchGetGoodsIdList)
 
   const postGoods = useRequest(fetchMake, {

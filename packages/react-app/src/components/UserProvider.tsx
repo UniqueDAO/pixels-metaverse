@@ -2,24 +2,20 @@ import { Dictionary, isEmpty, keyBy, map } from "lodash";
 import * as React from "react";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
-import { usePixelsMetaverse } from "../pixels-metaverse";
-import { fetchGetGoodsIdList, fetchRegister, useRequest } from "../hook/api2";
-import { useWeb3Info } from "abi-to-request";
 import { MaterialItem } from "./Card";
-import { useContractRequest, useAbiToRequest, useGetDataAbiToRequest } from "abi-to-request";
-import { ethers } from "ethers";
-import { SimpleToken_Decimals, SimpleToken_Name, SimpleToken_TotalSupply } from "../client/SimpleToken";
+import { useAbiToRequest, useContractRequest, useGetDataAbiToRequest, useWeb3Info } from "abi-to-request";
+import { PixelsMetaverse_GetCollection, PixelsMetaverse_GetMaterial, PixelsMetaverse_GetMaterialLength, PixelsMetaverse_User } from "../client/PixelsMetaverse";
 
 export const UserInfoContext = createContext(
   {} as {
     userInfo: any;
+    getUserInfo: (params?: { addressParams1: string; } | undefined) => Promise<void>
     goodsList: any[];
     setGoodsList: Dispatch<any[]>;
     collectList: any[];
     setCollectList: Dispatch<any[]>;
     goodsId?: number;
     setGoodsId: Dispatch<React.SetStateAction<number | undefined>>;
-    register: (arg?: any) => Promise<void>;
     composeList: string[];
     setComposeList: Dispatch<React.SetStateAction<string[]>>;
     goodsListObj: Dictionary<MaterialItem>;
@@ -29,91 +25,93 @@ export const UserInfoContext = createContext(
 
 export const useUserInfo = () => useContext(UserInfoContext);
 
+const arrayToObject = (item: MaterialItem) => {
+  return {
+    baseInfo: {
+      category: item?.baseInfo?.category,
+      data: item?.baseInfo?.data,
+      decode: item?.baseInfo?.decode,
+      name: item?.baseInfo?.name,
+      userId: item?.baseInfo?.userId,
+    },
+    composes: item?.composes,
+    material: {
+      compose: item?.material?.compose,
+      data: item?.material?.data,
+      id: item?.material?.id,
+      owner: item?.material?.owner,
+      position: item?.material?.position,
+      time: item?.material?.time,
+      zIndex: item?.material?.zIndex,
+    },
+    composeData: []
+  }
+}
+
 export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [goodsList, setGoodsList] = useState<any[]>([]);
   const [goodsListObj, setGoodsListObj] = useState<Dictionary<MaterialItem>>({});
   const [collectList, setCollectList] = useState<any[]>([]);
-  const [goodsId, setGoodsId] = useState<number | undefined>();
+  const [goodsId, setGoodsId] = useState<number | undefined>(1);
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { address, networkId } = useWeb3Info()
-  const { contract, etherContract } = usePixelsMetaverse()
   const { contracts } = useContractRequest()
-  /* const getUserInfo = useRequest(fetchUserInfo, {
-    onSuccess: (res)=>{
-      console.log(res, "resssss")
-      setUserInfo(res)
+  const [userInfo, getUserInfo] = useGetDataAbiToRequest(PixelsMetaverse_User, address ? { addressParams1: address } : undefined)
+  const [materialLength, getGetMaterialLength] = useGetDataAbiToRequest(PixelsMetaverse_GetMaterialLength)
+  const getGoodsInfo = useAbiToRequest(PixelsMetaverse_GetMaterial, {
+    onSuccess: (res) => {
+      /* res && setGoodsList((pre) => {
+        const data = arrayToObject(res as any)
+        const list = cloneDeep(pre)
+        list.push(data)
+        return map(list, item => {
+          if (ethers.utils.formatUnits(item?.material?.id, 0) === String(goodsId)) {
+            return 
+          }
+          return item
+        })
+      }) */
+      res && setGoodsList([arrayToObject(res as any)])
     }
-  }) */
-  console.log(contracts)
+  }, [goodsId])
 
-  const getUserInfo2 = useAbiToRequest(SimpleToken_Name, {
-    onSuccess: (res)=>{
-      console.log(res, "resssss")
+  const getCollectList = useAbiToRequest(PixelsMetaverse_GetCollection, {
+    onSuccess: (res) => {
+      res && setCollectList(res)
     }
   })
 
-  const [userInfo, getUserInfo] = useGetDataAbiToRequest(SimpleToken_TotalSupply)
-  console.log(userInfo, "userInfo")
-
-  const register = useRequest(fetchRegister, {
-    onSuccess: () => {
-      address && getUserInfo({ address: address })
-    }
-  }, [address])
-
-  /* useEffect(()=>{
-    const timer = setInterval(()=>{
-      getUserInfo({
-        address: "0x5D8e5bc8e7013380987367621e195244C65dEbA6"
-      })
-    }, 5000)
-    return ()=>{
-      clearInterval(timer)
-    } 
-  }, [etherContract]) */
-
-  const getGoodsIdList = useRequest(fetchGetGoodsIdList)
-  //const getCollectList = useRequest(fetchCollectList)
-
   useEffect(() => {
-    getUserInfo2()
     if (!address) return
-    //getCollectList({ address })
-  }, [contracts])
-
-  useEffect(() => {
-    if (!networkId) return
-    setGoodsList([])
-    //getGoodsIdList({ setValue: setGoodsList })
-  }, [networkId, etherContract])
+    getCollectList({ from: address })
+  }, [address, contracts, networkId])
 
   useEffect(() => {
     if (!goodsId) return
-    //getGoodsInfo({ id: goodsId, setGoodsList })
-  }, [goodsId])
+    getGoodsInfo({ id: goodsId })
+  }, [goodsId, contracts, networkId])
 
   useEffect(() => {
-    if (!isEmpty(goodsList)) {
-      const obj: Dictionary<MaterialItem> = keyBy(goodsList, (item: MaterialItem) => item?.material?.id);
-      const getData = (items: MaterialItem) => {
-        const data: MaterialItem[] = []
-        const fun = (item: MaterialItem) => {
-          if (item?.composes?.length === 0) return
-          map(item?.composes, (ite: number) => {
-            if (obj[ite]) data.push(obj[ite])
-            fun(obj[ite])
-          })
-        }
-        fun(items)
-        return data
+    if (isEmpty(goodsList)) return
+    const obj: Dictionary<MaterialItem> = keyBy(goodsList, (item: MaterialItem) => item?.material?.id);
+    const getData = (items: MaterialItem) => {
+      const data: MaterialItem[] = []
+      const fun = (item: MaterialItem) => {
+        if (item?.composes?.length === 0) return
+        map(item?.composes, (ite: number) => {
+          if (obj[ite]) data.push(obj[ite])
+          fun(obj[ite])
+        })
       }
-      map(goodsList, (item: MaterialItem) => {
-        const data = getData(item)
-        if (isEmpty(data)) obj[item?.material?.id].composeData = [item]
-        obj[item?.material?.id].composeData = data;
-      })
-      setGoodsListObj(obj)
+      fun(items)
+      return data
     }
+    map(goodsList, (item: MaterialItem) => {
+      const data = getData(item)
+      if (isEmpty(data)) obj[item?.material?.id].composeData = [item]
+      obj[item?.material?.id].composeData = data;
+    })
+    setGoodsListObj(obj)
   }, [goodsList])
 
   return (
@@ -122,7 +120,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       goodsList, setGoodsList,
       goodsId, setGoodsId,
       collectList, setCollectList,
-      register,
+      getUserInfo,
       composeList, setComposeList,
       goodsListObj, setGoodsListObj
     }}>

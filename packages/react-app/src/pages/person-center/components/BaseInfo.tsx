@@ -1,13 +1,13 @@
 import { Button, message } from "antd";
 import { AppstoreOutlined } from "@ant-design/icons";
-import { fetchSetUserConfig, useRequest } from "../../../hook/api2";
 import { useLocation } from "react-router";
 import { useUserInfo } from "../../../components/UserProvider";
 import { PixelsMetaverseHandleImg, usePixelsMetaverseHandleImg } from "../../../pixels-metaverse";
 import { ReactNode, useEffect, useMemo } from "react";
-import { useWeb3Info } from "abi-to-request";
+import { useAbiToRequest, useWeb3Info } from "abi-to-request";
 import { isEmpty, split } from "lodash";
 import { ellipseAddress } from "../../../helpers/utilities";
+import { PixelsMetaverse_Register, PixelsMetaverse_SetConfig } from "../../../client/PixelsMetaverse";
 
 const InfoLabel = ({ children, label }: { children: ReactNode, label: string }) => {
   return (
@@ -46,11 +46,18 @@ export const BaseInfo = () => {
   const { address: addresss } = useWeb3Info()
   const { search } = useLocation()
   const address = search ? search.split("=")[1] : addresss
-  const { userInfo, register } = useUserInfo()
+  const { userInfo, getUserInfo } = useUserInfo()
 
-  const goSetConfig = useRequest(fetchSetUserConfig, {
+  const register = useAbiToRequest(PixelsMetaverse_Register, {
+    onSuccess: () => {
+      address && getUserInfo()
+    }
+  }, [address])
+
+  const goSetConfig = useAbiToRequest(PixelsMetaverse_SetConfig, {
     onSuccess: () => {
       message.success("更新信息成功！")
+      getUserInfo()
     }
   }, [config, address])
 
@@ -59,7 +66,6 @@ export const BaseInfo = () => {
     if (!bgColor && !gridColor && !withGrid) return
     setConfig((pre) => ({ ...pre, withGrid, bgColor, gridColor }))
   }, [bgColor, gridColor, withGrid])
-  console.log(address, addresss, address?.toUpperCase() === addresss?.toUpperCase(), "address")
 
   const isCurUser = useMemo(() => address ? address?.toUpperCase() === addresss?.toUpperCase() : false, [addresss, address])
 
@@ -108,7 +114,6 @@ export const BaseInfo = () => {
                 role: userInfo?.role,
                 id: userInfo?.avater
               }
-              console.log(arg)
               goSetConfig(arg)
             }
           }}
