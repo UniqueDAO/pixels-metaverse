@@ -4,8 +4,7 @@ import { isEmpty, isUndefined } from "lodash";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import Web3 from "web3";
-import { IChainData } from "../chain";
-import { getChainData } from "../utiities";
+import { IChainData, getChainData } from "../chain";
 
 type TLibrary = ethers.providers.Web3Provider | ethers.providers.InfuraProvider
 
