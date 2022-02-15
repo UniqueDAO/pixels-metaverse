@@ -1,5 +1,6 @@
-import { TContract, convertedBigNumber } from 'abi-to-request';
+import { TContract, convertedBigNumber } from '../abi-to-request';
 import { ethers } from "ethers";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
 
 //nonpayable
 export const PixelsMetaverse_Addition = async (
@@ -250,7 +251,7 @@ export const PixelsMetaverse_Make = async (
 	const { name, category, data, decode, num } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).make(name, category, data, decode, num)
-		return res
+		return res as TransactionResponse
 	}
 }
 

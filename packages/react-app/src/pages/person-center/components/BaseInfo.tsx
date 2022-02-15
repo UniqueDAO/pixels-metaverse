@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { useUserInfo } from "../../../components/UserProvider";
 import { PixelsMetaverseHandleImg, usePixelsMetaverseHandleImg } from "../../../pixels-metaverse";
 import { ReactNode, useEffect, useMemo } from "react";
-import { useAbiToRequest, useWeb3Info } from "abi-to-request";
+import { useRequest, useWeb3Info } from "../../../abi-to-request";
 import { isEmpty, split } from "lodash";
 import { ellipseAddress } from "../../../helpers/utilities";
 import { PixelsMetaverse_Register, PixelsMetaverse_SetConfig } from "../../../client/PixelsMetaverse";
@@ -48,13 +48,13 @@ export const BaseInfo = () => {
   const address = search ? search.split("=")[1] : addresss
   const { userInfo, getUserInfo } = useUserInfo()
 
-  const register = useAbiToRequest(PixelsMetaverse_Register, {
+  const [, register] = useRequest(PixelsMetaverse_Register, {
     onSuccess: () => {
       address && getUserInfo()
     }
   }, [address])
 
-  const goSetConfig = useAbiToRequest(PixelsMetaverse_SetConfig, {
+  const [, goSetConfig] = useRequest(PixelsMetaverse_SetConfig, {
     onSuccess: () => {
       message.success("更新信息成功！")
       getUserInfo()

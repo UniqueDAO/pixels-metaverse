@@ -4,11 +4,10 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Dictionary, keys, map } from 'lodash';
 import { useUserInfo } from '../../../components/UserProvider';
 import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
-import { fetchGetGoodsIdList, fetchMake, useRequest } from '../../../hook/api';
-import { useAbiToRequest, useWeb3Info } from 'abi-to-request';
 import { ClearIcon } from '../../lockers/components/SearchQuery';
 import React from 'react';
-import { PixelsMetaverse_Register } from '../../../client/PixelsMetaverse';
+import { PixelsMetaverse_Make, PixelsMetaverse_Register } from '../../../client/PixelsMetaverse';
+import { useWeb3Info, useRequest } from '../../../abi-to-request';
 const { Option } = Select;
 
 export const Label = ({ children, noNeed }: { children: ReactNode, noNeed?: boolean }) => {
@@ -102,18 +101,20 @@ export const Submit = () => {
 
   const address = addresss
 
-  const register = useAbiToRequest(PixelsMetaverse_Register, {
+  const [_, register] = useRequest(PixelsMetaverse_Register, {
     onSuccess: () => {
       address && getUserInfo({ addressParams1: address })
     }
   }, [address])
-  
-  const getGoodsIdList = useRequest(fetchGetGoodsIdList)
 
-  const postGoods = useRequest(fetchMake, {
-    onSuccess: () => {
+  //const getGoodsIdList = useRequest(fetchGetGoodsIdList)
+
+  const [postGoods] = useRequest(PixelsMetaverse_Make, {
+    isGlobalTransactionHookValid: true,
+    onSuccess: (arg) => {
+      console.log(arg?.data, "提交到链上", 2)
       message.success("物品制造成功！")
-      getGoodsIdList({ setValue: setGoodsList, createAmount: Number(amount) })
+      //getGoodsIdList({ setValue: setGoodsList, createAmount: Number(amount) })
       setIsModalVisible(false)
       setMerchandies({
         name: "",
@@ -144,15 +145,13 @@ export const Submit = () => {
   const handleOk = useCallback(() => {
     const nftData = `${positionData}${min}`
     const data = {
-      name,
-      category,
-      amount,
+      name: name || "",
+      category: category || "",
+      num: amount,
       data: nftData,
       decode: ""
     }
-    postGoods({
-      value: data
-    })
+    postGoods(data)
     setIsModalVisible(false)
   }, [positionData, min]);
 

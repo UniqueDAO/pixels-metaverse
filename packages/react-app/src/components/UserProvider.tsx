@@ -3,7 +3,7 @@ import * as React from "react";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
-import { useAbiToRequest, useContractRequest, useGetDataAbiToRequest, useWeb3Info } from "abi-to-request";
+import { useContractRequest, useImmediateReadContractRequest, useWeb3Info } from "../abi-to-request";
 import { PixelsMetaverse_GetCollection, PixelsMetaverse_GetMaterial, PixelsMetaverse_GetMaterialLength, PixelsMetaverse_User } from "../client/PixelsMetaverse";
 
 export const UserInfoContext = createContext(
@@ -56,9 +56,9 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { address, networkId } = useWeb3Info()
   const { contracts } = useContractRequest()
-  const [userInfo, getUserInfo] = useGetDataAbiToRequest(PixelsMetaverse_User, address ? { addressParams1: address } : undefined)
-  const [materialLength, getGetMaterialLength] = useGetDataAbiToRequest(PixelsMetaverse_GetMaterialLength)
-  const getGoodsInfo = useAbiToRequest(PixelsMetaverse_GetMaterial, {
+  const [userInfo, getUserInfo] = useImmediateReadContractRequest(PixelsMetaverse_User, { arg: address ? { addressParams1: address } : undefined })
+  const [materialLength, getGetMaterialLength] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterialLength)
+  const [, getGoodsInfo] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterial, {
     onSuccess: (res) => {
       /* res && setGoodsList((pre) => {
         const data = arrayToObject(res as any)
@@ -72,12 +72,13 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
         })
       }) */
       res && setGoodsList([arrayToObject(res as any)])
+      console.log(res?.data, "res?.data")
     }
   }, [goodsId])
 
-  const getCollectList = useAbiToRequest(PixelsMetaverse_GetCollection, {
+  const [, getCollectList] = useImmediateReadContractRequest(PixelsMetaverse_GetCollection, {
     onSuccess: (res) => {
-      res && setCollectList(res)
+      res?.data && setCollectList(res?.data)
     }
   })
 

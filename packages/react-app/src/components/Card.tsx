@@ -4,11 +4,10 @@ import { DataNode } from "antd/lib/tree";
 import { cloneDeep, find, isEmpty, map } from "lodash";
 import React, { Dispatch, ReactNode, useEffect, useMemo, useState } from "react";
 import { useUserInfo } from "../components/UserProvider";
-import { fetchCancelCollect, fetchCancelCompose, fetchCollect, fetchGetGoodsIdList, fetchSetUserConfig, fetchSubtract, useRequest } from "../hook/api";
-import { useAbiToRequest, useWeb3Info } from "abi-to-request";
+import { useRequest, useWeb3Info } from "../abi-to-request";
 import { categoryData } from "../pages/produced/components/Submit";
 import { PixelsMetaverseImgByPositionData } from "../pixels-metaverse";
-import { PixelsMetaverse_SetConfig } from "../client/PixelsMetaverse";
+import { PixelsMetaverse_CancelCollect, PixelsMetaverse_CancelCompose, PixelsMetaverse_GetCompose, PixelsMetaverse_GetMaterial, PixelsMetaverse_SetConfig, PixelsMetaverse_Subtract } from "../client/PixelsMetaverse";
 import { ethers } from "ethers";
 const { Text } = Typography;
 
@@ -38,13 +37,13 @@ export interface MaterialItem {
 }
 
 export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const getGoodsIdList = useRequest(fetchGetGoodsIdList)
+  const getGoodsIdList = useRequest(PixelsMetaverse_GetMaterial)
   const { composeList, setComposeList, setGoodsList, goodsListObj, userInfo } = useUserInfo()
 
-  const cancelCompose = useRequest(fetchCancelCompose, {
+  const [cancelCompose] = useRequest(PixelsMetaverse_CancelCompose, {
     onSuccess: () => {
       message.success("分解成功！")
-      getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: item?.composes, burnID: item?.material?.id })
+      //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: item?.composes, burnID: item?.material?.id })
       setIsModalVisible && setIsModalVisible(false)
     }
   }, [composeList])
@@ -55,13 +54,13 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 }
 
 export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const getGoodsIdList = useRequest(fetchGetGoodsIdList)
+  const getGoodsIdList = useRequest(PixelsMetaverse_GetMaterial)
   const { setGoodsList, goodsListObj } = useUserInfo()
 
-  const substract = useRequest(fetchSubtract, {
+  const [substract] = useRequest(PixelsMetaverse_Subtract, {
     onSuccess: () => {
       message.success("移除成功！")
-      getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: [...new Set([...item?.composes, item?.material?.id, goodsListObj[item?.material?.compose]?.composes])] })
+      //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: [...new Set([...item?.composes, item?.material?.id, goodsListObj[item?.material?.compose]?.composes])] })
       setIsModalVisible && setIsModalVisible(false)
     }
   }, [item])
@@ -74,7 +73,7 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 export const SetAvater = ({ item }: { item: MaterialItem }) => {
   const { userInfo, getUserInfo } = useUserInfo()
 
-  const setAvater = useAbiToRequest(PixelsMetaverse_SetConfig, {
+  const [, setAvater] = useRequest(PixelsMetaverse_SetConfig, {
     onSuccess: () => {
       message.success("头像设置成功！")
       getUserInfo()
@@ -226,13 +225,13 @@ export const Collection = ({ item }: { item: MaterialItem }) => {
   const { setCollectList, collectList, userInfo } = useUserInfo()
   const { address } = useWeb3Info()
 
-  const collect = useRequest(fetchCollect, {
+  const [collect] = useRequest(PixelsMetaverse_GetCompose, {
     onSuccess: () => {
       message.success("收藏成功！")
     }
   }, [])
 
-  const cancelCollect = useRequest(fetchCancelCollect, {
+  const [cancelCollect] = useRequest(PixelsMetaverse_CancelCollect, {
     onSuccess: () => {
       message.success("已取消收藏！")
     }
@@ -244,8 +243,8 @@ export const Collection = ({ item }: { item: MaterialItem }) => {
     <>
       {address?.toLowerCase() !== item?.material?.owner?.toLowerCase() ? <button
         className="p px-2 bg-red-500 rounded-sm " onClick={() => {
-          if (index >= 0) cancelCollect({ id: Number(item?.material?.id), setCollectList, index })
-          else collect({ id: Number(item?.material?.id), setCollectList })
+          if (index >= 0) cancelCollect({ id: Number(item?.material?.id), index })
+          else collect({ id: Number(item?.material?.id) })
         }}
       >{index >= 0 ? "取消收藏" : "收藏"}</button> : <div>当前账户</div>}
     </>

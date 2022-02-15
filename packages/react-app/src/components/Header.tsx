@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next"
 import { Button, Menu, message } from "antd";
 import { isEmpty } from "lodash";
 import i18n from "i18next";
-import { useWeb3Info } from "abi-to-request"
+import { useWeb3Info } from "../abi-to-request"
 
 const nav = [
   { label: "首页", path: "/app" },

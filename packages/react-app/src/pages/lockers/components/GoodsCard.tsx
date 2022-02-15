@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 import { PixelsMetaverseImgByPositionData } from "../../../pixels-metaverse";
 import { useMemo, useState } from "react";
 import { ellipseAddress } from "../../../helpers/utilities";
-import { useWeb3Info } from "abi-to-request";
+import { useWeb3Info } from "../../../abi-to-request";
 import { Collection, Composes, Details, MaterialItem, MaterialLabel } from "../../../components/Card";
 import { Modal } from "antd";
 import { ethers } from "ethers";
@@ -63,7 +63,7 @@ export const GoodsCard = ({ item }: { item: MaterialItem }) => {
         footer={null}
         onCancel={() => { setIsModalVisible(false) }}
       >
-        <Details id={ethers.utils.formatUnits(item?.material?.id, 0)} setIsModalVisible={setIsModalVisible}/>
+        <Details id={ethers.utils.formatUnits(item?.material?.id, 0)} setIsModalVisible={setIsModalVisible} />
       </Modal>}
     </div>
   )
