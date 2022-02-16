@@ -90,7 +90,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [materialId, setMaterialId] = useState<number | undefined>();
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { openLoading, closeDelayLoading } = useLoading()
-  const { address, networkId } = useWeb3Info()
+  const { address, chainId } = useWeb3Info()
   const [userInfo, getUserInfo] = useImmediateReadContractRequest(PixelsMetaverse_User, { arg: address ? { addressParams1: address } : undefined })
   const [collectList, getCollectList] = useImmediateReadContractRequest(PixelsMetaverse_GetCollection, { arg: address ? { from: address } : undefined })
   const [materialLength, getMaterialLength] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterialLength)
@@ -111,8 +111,8 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   }, [getMaterialInfo, materialLength])
 
   useEffect(() => {
-    if (Number(materialLength) && networkId) getMaterialList()
-  }, [materialLength, networkId])
+    if (Number(materialLength) && chainId) getMaterialList()
+  }, [materialLength, chainId])
 
   useEffect(() => {
     if (isEmpty(materialList)) return

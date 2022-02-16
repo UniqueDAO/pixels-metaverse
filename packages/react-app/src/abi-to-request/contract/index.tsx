@@ -9,7 +9,7 @@ import { IHandleRequest } from "../request";
 export type TEthersContract = ethers.Contract;
 export type TWeb3Contract = Contract;
 
-export type TContract = TEthersContract | TWeb3Contract
+export type TContract = (TEthersContract | TWeb3Contract) & { sendAccount: string }
 
 type TContractRequestContext<K> = {
     contracts: Dictionary<TContract>;
@@ -77,10 +77,16 @@ export const ContractRequestContextProvider = <T,>({
 
     const getContracts = async (library: TLibrary, abis: TAbiItem[]) => {
         const contracts: { [key in string]: TContract } = {};
+        let sendAccounts: string[] = []
+        if (library instanceof Web3) {
+            sendAccounts = await library?.eth.getAccounts()
+        }
+
         for (let i = 0; i < abis.length; i++) {
             const contract = await getContract(library, abis[i])
             if (contract) {
-                contracts[abis[i].contractName] = contract
+                (contract as TContract).sendAccount = sendAccounts[0] || ""
+                contracts[abis[i].contractName] = contract as TContract
             }
         }
         setContracts(contracts)

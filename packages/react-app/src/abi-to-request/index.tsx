@@ -1,4 +1,5 @@
 export * from "./contract"
 export * from "./request"
-export * from "./web3"
+//export * from "./library"
+export * from "./library/web3"
 export * from "./utiities"

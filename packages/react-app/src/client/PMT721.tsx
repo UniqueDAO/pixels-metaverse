@@ -1,4 +1,7 @@
-import { TContract, convertedBigNumber } from 'abi-to-request';
+import { TContract, convertedBigNumber } from '../abi-to-request';
+import { Contract } from 'web3-eth-contract';
+import { TransactionResponse } from "@ethersproject/abstract-provider";
+import { TransactionReceipt } from 'web3-core';
 import { ethers } from "ethers";
 
 //nonpayable
@@ -13,7 +16,10 @@ export const PMT721_Approve = async (
 	const { to, tokenId } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).approve(to, tokenId)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.approve(to, tokenId).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }
 
@@ -29,6 +35,9 @@ export const PMT721_BalanceOf = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).balanceOf(owner)
 		return convertedBigNumber(res) as string; //uint256
+	} else {
+		let res = await (contract as Contract).methods.balanceOf(owner).call()
+		return res as string; //uint256
 	}
 }
 
@@ -43,7 +52,10 @@ export const PMT721_Burn = async (
 	const { id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).burn(id)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.burn(id).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }
 
@@ -54,6 +66,9 @@ export const PMT721_CurrentID = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).currentID()
 		return convertedBigNumber(res) as string; //uint256
+	} else {
+		let res = await (contract as Contract).methods.currentID().call()
+		return res as string; //uint256
 	}
 }
 
@@ -69,6 +84,9 @@ export const PMT721_Exits = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).exits(id)
 		return convertedBigNumber(res) as string; //bool
+	} else {
+		let res = await (contract as Contract).methods.exits(id).call()
+		return res as string; //bool
 	}
 }
 
@@ -84,6 +102,9 @@ export const PMT721_GetApproved = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).getApproved(tokenId)
 		return convertedBigNumber(res) as string; //address
+	} else {
+		let res = await (contract as Contract).methods.getApproved(tokenId).call()
+		return res as string; //address
 	}
 }
 
@@ -94,6 +115,9 @@ export const PMT721_GetMinter = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).getMinter()
 		return convertedBigNumber(res) as string; //address
+	} else {
+		let res = await (contract as Contract).methods.getMinter().call()
+		return res as string; //address
 	}
 }
 
@@ -110,6 +134,9 @@ export const PMT721_IsApprovedForAll = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).isApprovedForAll(owner, operator)
 		return convertedBigNumber(res) as string; //bool
+	} else {
+		let res = await (contract as Contract).methods.isApprovedForAll(owner, operator).call()
+		return res as string; //bool
 	}
 }
 
@@ -124,7 +151,10 @@ export const PMT721_Mint = async (
 	const { to } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).mint(to)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.mint(to).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }
 
@@ -135,6 +165,9 @@ export const PMT721_Name = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).name()
 		return convertedBigNumber(res) as string; //string
+	} else {
+		let res = await (contract as Contract).methods.name().call()
+		return res as string; //string
 	}
 }
 
@@ -150,6 +183,9 @@ export const PMT721_OwnerOf = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).ownerOf(tokenId)
 		return convertedBigNumber(res) as string; //address
+	} else {
+		let res = await (contract as Contract).methods.ownerOf(tokenId).call()
+		return res as string; //address
 	}
 }
 
@@ -166,7 +202,10 @@ export const PMT721_SafeTransferFrom = async (
 	const { from, to, tokenId } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).safeTransferFrom(from, to, tokenId)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.safeTransferFrom(from, to, tokenId).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }
 
@@ -184,7 +223,10 @@ export const PMT721_SafeTransferFromFromToTokenId_data = async (
 	const { from, to, tokenId, _data } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).safeTransferFrom(from, to, tokenId, _data)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.safeTransferFrom(from, to, tokenId, _data).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }
 
@@ -200,7 +242,10 @@ export const PMT721_SetApprovalForAll = async (
 	const { operator, approved } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).setApprovalForAll(operator, approved)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.setApprovalForAll(operator, approved).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }
 
@@ -215,7 +260,10 @@ export const PMT721_SetMinter = async (
 	const { minter } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).setMinter(minter)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.setMinter(minter).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }
 
@@ -231,6 +279,9 @@ export const PMT721_SupportsInterface = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).supportsInterface(interfaceId)
 		return convertedBigNumber(res) as string; //bool
+	} else {
+		let res = await (contract as Contract).methods.supportsInterface(interfaceId).call()
+		return res as string; //bool
 	}
 }
 
@@ -241,6 +292,9 @@ export const PMT721_Symbol = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).symbol()
 		return convertedBigNumber(res) as string; //string
+	} else {
+		let res = await (contract as Contract).methods.symbol().call()
+		return res as string; //string
 	}
 }
 
@@ -256,6 +310,9 @@ export const PMT721_TokenURI = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).tokenURI(tokenId)
 		return convertedBigNumber(res) as string; //string
+	} else {
+		let res = await (contract as Contract).methods.tokenURI(tokenId).call()
+		return res as string; //string
 	}
 }
 
@@ -272,6 +329,9 @@ export const PMT721_TransferFrom = async (
 	const { from, to, tokenId } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).transferFrom(from, to, tokenId)
-		return res
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.transferFrom(from, to, tokenId).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
 	}
 }

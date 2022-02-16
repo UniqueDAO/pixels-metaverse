@@ -1,4 +1,4 @@
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import { memo, useEffect, useState } from "react";
 import { ellipseAddress } from "../helpers/utilities";
@@ -99,8 +99,10 @@ export const Header = memo(() => {
             </div>)
             : <div className="flex items-center justify-center rounded cursor-pointer bg-white bg-opacity-10 w-24 hover:text-white h-10"
               onClick={() => {
+                console.log(1111111)
                 localStorage.clear()
                 toConnect && toConnect()
+                console.log(222222)
               }}>连接钱包</div>
           }
           {/* <Dropdown overlay={menu} placement="bottomLeft">

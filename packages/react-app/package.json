@@ -39,7 +39,8 @@
     "web3-utils": "^1.7.0",
     "web3modal": "^1.9.4",
     "ethers": "^5.5.3",
-    "abi-to-request": "^0.0.25"
+    "abi-to-request": "^0.0.34",
+    "web3-core": "^1.7.0"
   },
   "scripts": {
     "start": "craco start",
@@ -56,7 +57,7 @@
     "s3": "node ./scripts/s3.js",
     "ship": "npm run surge",
     "watch": "node ./scripts/watch.js",
-    "abi:api": "converted --entry './src/contracts/' --npm etherjs --chainId 1337"
+    "abi:api": "converted --entry './src/contracts/' --chainId 1337"
   },
   "eslintConfig": {
     "extends": [

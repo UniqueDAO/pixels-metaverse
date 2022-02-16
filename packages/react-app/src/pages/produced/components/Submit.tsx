@@ -101,7 +101,7 @@ export const Submit = () => {
 
   const address = addresss
 
-  const [_, register] = useRequest(PixelsMetaverse_Register, {
+  const [register] = useRequest(PixelsMetaverse_Register, {
     onSuccess: () => {
       address && getUserInfo({ addressParams1: address })
     }
@@ -111,8 +111,7 @@ export const Submit = () => {
 
   const [postMaterial] = useRequest(PixelsMetaverse_Make, {
     isGlobalTransactionHookValid: true,
-    onSuccess: (arg) => {
-      console.log(arg?.data, "提交到链上", 2)
+    onTransactionSuccess: () => {
       message.success("物品制造成功！")
       //getMaterialIdList({ setValue: setMaterialList, createAmount: Number(amount) })
       setIsModalVisible(false)
