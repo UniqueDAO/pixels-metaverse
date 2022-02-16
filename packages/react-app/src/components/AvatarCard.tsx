@@ -17,13 +17,13 @@ export const AvatarCard = ({ item, star }: {
   const { setSelectList } = usePixelsMetaverseHandleImg()
   const { search } = useLocation()
   const address = search ? search.split("=")[1] : addresss
-  const { goodsListObj, userInfo } = useUserInfo()
+  const { materialListObj, userInfo } = useUserInfo()
 
   const data = useMemo(() => {
-    if (isEmpty(item) || isEmpty(goodsListObj)) return []
+    if (isEmpty(item) || isEmpty(materialListObj)) return []
     if (isEmpty(item?.composes)) return [({ ...item, data: item?.baseInfo?.data } as any)]
     return map(item?.composeData, it => ({ ...it, data: it?.baseInfo?.data } as any))
-  }, [item, goodsListObj])
+  }, [item, materialListObj])
 
   return (
     <div
@@ -31,7 +31,7 @@ export const AvatarCard = ({ item, star }: {
       className="mt-2 item-avatar p-2 flex justify-between border-gray-500 border-b"
     >
       <PixelsMetaverseImgByPositionData
-        data={{ ...item, positions: item?.baseInfo?.data, goodsData: data }}
+        data={{ ...item, positions: item?.baseInfo?.data, materialData: data }}
         size={96}
         style={{ background: userInfo?.user?.bgColor || "#e1e1e11a", cursor: 'pointer', boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }}
         onClick={() => {

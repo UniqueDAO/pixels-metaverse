@@ -29,8 +29,9 @@ export const UserInfoContext = createContext(
       failError: any;
       successValue?: undefined;
     } | undefined>
-    goodsList: any[];
-    setGoodsList: Dispatch<any[]>;
+    getMaterialInfo: (params?: { id: string | number; } | undefined) => Promise<any>,
+    materialList: MaterialItem[];
+    setMaterialList: Dispatch<React.SetStateAction<MaterialItem[]>>
     collectList: string[] | undefined;
     getCollectList: (params?: {
       from: string;
@@ -41,12 +42,20 @@ export const UserInfoContext = createContext(
       failError: any;
       successValue?: undefined;
     } | undefined>
-    goodsId?: number;
-    setGoodsId: Dispatch<React.SetStateAction<number | undefined>>;
+    getMaterialLength: (params?: unknown) => Promise<{
+      successValue: string | undefined;
+      failError?: undefined;
+    } | {
+      failError: any;
+      successValue?: undefined;
+    } | undefined>,
+    getMaterialList: () => Promise<void>,
+    materialId?: number;
+    setMaterialId: Dispatch<React.SetStateAction<number | undefined>>;
     composeList: string[];
     setComposeList: Dispatch<React.SetStateAction<string[]>>;
-    goodsListObj: Dictionary<MaterialItem>;
-    setGoodsListObj: React.Dispatch<React.SetStateAction<Dictionary<MaterialItem>>>
+    materialListObj: Dictionary<MaterialItem>;
+    setMaterialListObj: React.Dispatch<React.SetStateAction<Dictionary<MaterialItem>>>
   },
 );
 
@@ -76,39 +85,39 @@ const arrayToObject = (item: MaterialItem) => {
 }
 
 export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
-  const [goodsList, setGoodsList] = useState<any[]>([]);
-  const [goodsListObj, setGoodsListObj] = useState<Dictionary<MaterialItem>>({});
-  const [goodsId, setGoodsId] = useState<number | undefined>();
+  const [materialList, setMaterialList] = useState<MaterialItem[]>([]);
+  const [materialListObj, setMaterialListObj] = useState<Dictionary<MaterialItem>>({});
+  const [materialId, setMaterialId] = useState<number | undefined>();
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { openLoading, closeDelayLoading } = useLoading()
   const { address, networkId } = useWeb3Info()
   const [userInfo, getUserInfo] = useImmediateReadContractRequest(PixelsMetaverse_User, { arg: address ? { addressParams1: address } : undefined })
   const [collectList, getCollectList] = useImmediateReadContractRequest(PixelsMetaverse_GetCollection, { arg: address ? { from: address } : undefined })
-  const [materialLength] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterialLength)
-  const [getGoodsInfo] = useRequest(PixelsMetaverse_GetMaterial, { isGlobalTransactionHookValid: false })
+  const [materialLength, getMaterialLength] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterialLength)
+  const [getMaterialInfo] = useRequest(PixelsMetaverse_GetMaterial, { isGlobalTransactionHookValid: false })
 
-  const getFirstGoodsList = useCallback(async () => {
+  const getMaterialList = useCallback(async () => {
     openLoading()
     const arr: MaterialItem[] = []
     for (let i = Number(materialLength); i >= 1; i--) {
-      const res = await getGoodsInfo({ id: i })
+      const res = await getMaterialInfo({ id: i })
       if (res?.successValue) arr.push(arrayToObject(res?.successValue as MaterialItem))
       if (res?.failError) {
         console.log(res?.failError, i, "error")
       }
     }
     closeDelayLoading()
-    setGoodsList(arr)
-  }, [getGoodsInfo, materialLength])
+    setMaterialList(arr)
+  }, [getMaterialInfo, materialLength])
 
   useEffect(() => {
-    if (Number(materialLength) && networkId) getFirstGoodsList()
+    if (Number(materialLength) && networkId) getMaterialList()
   }, [materialLength, networkId])
 
   useEffect(() => {
-    if (isEmpty(goodsList)) return
-    if (goodsList?.length !== Number(materialLength)) return
-    const obj: Dictionary<MaterialItem> = keyBy(goodsList, (item: MaterialItem) => item?.material?.id);
+    if (isEmpty(materialList)) return
+    if (materialList?.length !== Number(materialLength)) return
+    const obj: Dictionary<MaterialItem> = keyBy(materialList, (item: MaterialItem) => item?.material?.id);
     const getData = (items: MaterialItem) => {
       const data: MaterialItem[] = []
       const fun = (item: MaterialItem) => {
@@ -121,22 +130,25 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       fun(items)
       return data
     }
-    map(goodsList, (item: MaterialItem) => {
+    map(materialList, (item: MaterialItem) => {
       const data = getData(item)
       if (isEmpty(data)) obj[item?.material?.id].composeData = [item]
       obj[item?.material?.id].composeData = data;
     })
-    setGoodsListObj(obj)
-  }, [goodsList])
+    setMaterialListObj(obj)
+  }, [materialList])
 
   return (
     <UserInfoContext.Provider value={{
+      getMaterialInfo,
+      getMaterialLength,
+      getMaterialList,
       userInfo, getUserInfo,
       collectList, getCollectList,
-      goodsList, setGoodsList,
-      goodsId, setGoodsId,
+      materialList, setMaterialList,
+      materialId, setMaterialId,
       composeList, setComposeList,
-      goodsListObj, setGoodsListObj
+      materialListObj, setMaterialListObj
     }}>
       {children}
     </UserInfoContext.Provider>

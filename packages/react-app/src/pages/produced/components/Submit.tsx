@@ -97,7 +97,7 @@ export const Submit = () => {
   const [positionData, setPostionData] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { address: addresss } = useWeb3Info()
-  const { userInfo, setGoodsList, getUserInfo } = useUserInfo()
+  const { userInfo, setMaterialList, getUserInfo } = useUserInfo()
 
   const address = addresss
 
@@ -107,14 +107,14 @@ export const Submit = () => {
     }
   }, [address])
 
-  //const getGoodsIdList = useRequest(fetchGetGoodsIdList)
+  //const getMaterialIdList = useRequest(fetchGetMaterialIdList)
 
-  const [postGoods] = useRequest(PixelsMetaverse_Make, {
+  const [postMaterial] = useRequest(PixelsMetaverse_Make, {
     isGlobalTransactionHookValid: true,
     onSuccess: (arg) => {
       console.log(arg?.data, "提交到链上", 2)
       message.success("物品制造成功！")
-      //getGoodsIdList({ setValue: setGoodsList, createAmount: Number(amount) })
+      //getMaterialIdList({ setValue: setMaterialList, createAmount: Number(amount) })
       setIsModalVisible(false)
       setMerchandies({
         name: "",
@@ -137,7 +137,7 @@ export const Submit = () => {
     price,
     weight,
     config?.bgColor,
-    setGoodsList
+    setMaterialList
   ])
 
   const min = useMemo(() => Math.min(...positionsArr), [positionsArr])
@@ -151,7 +151,7 @@ export const Submit = () => {
       data: nftData,
       decode: ""
     }
-    postGoods(data)
+    postMaterial(data)
     setIsModalVisible(false)
   }, [positionData, min]);
 

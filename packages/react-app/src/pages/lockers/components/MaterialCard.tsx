@@ -8,15 +8,15 @@ import { ellipseAddress } from "../../../helpers/utilities";
 import { Collection, Composes, Details, MaterialItem, MaterialLabel } from "../../../components/Card";
 import { Modal } from "antd";
 
-export const GoodsCard = ({ item }: { item: MaterialItem }) => {
-  const { userInfo, goodsListObj } = useUserInfo()
+export const MaterialCard = ({ item }: { item: MaterialItem }) => {
+  const { userInfo, materialListObj } = useUserInfo()
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const history = useHistory()
   const data = useMemo(() => {
-    if (isEmpty(item) || isEmpty(goodsListObj)) return []
+    if (isEmpty(item) || isEmpty(materialListObj)) return []
     if (isEmpty(item?.composes)) return [({ ...item, data: item?.baseInfo?.data } as any)]
     return map(item?.composeData, it => ({ ...it, data: it?.baseInfo?.data } as any))
-  }, [item, goodsListObj])
+  }, [item, materialListObj])
 
   return (
     <div
@@ -28,7 +28,7 @@ export const GoodsCard = ({ item }: { item: MaterialItem }) => {
         margin: 7
       }}>
       <PixelsMetaverseImgByPositionData
-        data={{ ...item, positions: item?.baseInfo?.data, goodsData: data }}
+        data={{ ...item, positions: item?.baseInfo?.data, materialData: data }}
         size={200}
         style={{ background: userInfo?.user?.bgColor || "#e1e1e11a", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }}
         onClick={() => { setIsModalVisible(true) }}

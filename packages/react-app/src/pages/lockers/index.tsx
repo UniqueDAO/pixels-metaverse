@@ -1,6 +1,6 @@
 import React from "react";
 import { SearchQuery } from "./components/SearchQuery";
-import { GoodsCard } from "./components/GoodsCard";
+import { MaterialCard } from "./components/MaterialCard";
 import { DataStateBox } from "../../components/DataStateBox";
 import { map } from "lodash";
 import { MaterialItem } from "../../components/Card";
@@ -23,7 +23,10 @@ export const Lockers = () => {
         </div>
         <DataStateBox data={data}>
           <div className="flex flex-wrap overflow-scroll" style={{ height: "calc(100vh - 175px)" }}>
-            {map(data, (item, i) => <GoodsCard key={`${i}`} item={item} />)}
+            {map(data, (item, i) => {
+              if (item?.baseInfo?.userId === "0" && item?.material?.id === "0") return null
+              return <MaterialCard key={`${i}`} item={item} />
+            })}
           </div>
         </DataStateBox>
       </div>

@@ -11,7 +11,6 @@ import {
   PixelsMetaverse_CancelCollect,
   PixelsMetaverse_CancelCompose,
   PixelsMetaverse_Collect,
-  PixelsMetaverse_GetMaterial,
   PixelsMetaverse_SetConfig,
   PixelsMetaverse_Subtract
 } from "../client/PixelsMetaverse";
@@ -43,17 +42,16 @@ export interface MaterialItem {
 }
 
 export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const getGoodsIdList = useRequest(PixelsMetaverse_GetMaterial)
-  const { composeList, setComposeList, setGoodsList, goodsListObj, userInfo } = useUserInfo()
+  const { composeList, getMaterialList } = useUserInfo()
 
   const [cancelCompose] = useRequest(PixelsMetaverse_CancelCompose, {
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
       message.success("分解成功！")
-      //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: item?.composes, burnID: item?.material?.id })
+      getMaterialList()
       setIsModalVisible && setIsModalVisible(false)
     }
-  }, [composeList])
+  }, [composeList, item])
 
   return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { cancelCompose({ ids: item?.material?.id }) }}>
     分解
@@ -61,19 +59,18 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 }
 
 export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const getGoodsIdList = useRequest(PixelsMetaverse_GetMaterial)
-  const { setGoodsList, goodsListObj } = useUserInfo()
+  const { getMaterialList, materialListObj } = useUserInfo()
 
   const [substract] = useRequest(PixelsMetaverse_Subtract, {
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
       message.success("移除成功！")
-      //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: [...new Set([...item?.composes, item?.material?.id, goodsListObj[item?.material?.compose]?.composes])] })
+      getMaterialList()
       setIsModalVisible && setIsModalVisible(false)
     }
   }, [item])
 
-  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { substract({ ids: item?.material?.compose, id: item?.material?.id, index: goodsListObj[item?.material?.compose]?.composes?.indexOf(item?.material?.id) }) }}>
+  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { substract({ ids: item?.material?.compose, id: item?.material?.id, index: materialListObj[item?.material?.compose]?.composes?.indexOf(item?.material?.id) }) }}>
     移除所属ID
   </span>)
 }
@@ -84,8 +81,9 @@ export const SetAvater = ({ item }: { item: MaterialItem }) => {
   const [setAvater] = useRequest(PixelsMetaverse_SetConfig, {
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
-      message.success("头像设置成功！")
-      getUserInfo()
+      getUserInfo().then((res) => {
+        res?.successValue && message.success("头像设置成功！")
+      })
     }
   })
 
@@ -95,20 +93,20 @@ export const SetAvater = ({ item }: { item: MaterialItem }) => {
 }
 
 export const DetailsBody = ({ item, child, setIsModalVisible }: { item: MaterialItem, child?: boolean, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const { collectList, goodsListObj, userInfo } = useUserInfo()
+  const { collectList, materialListObj, userInfo } = useUserInfo()
   const { address } = useWeb3Info()
   const data = useMemo(() => {
-    if (isEmpty(item) || isEmpty(goodsListObj)) return []
+    if (isEmpty(item) || isEmpty(materialListObj)) return []
     if (isEmpty(item?.composes)) return [({ ...item, data: item?.baseInfo?.data } as any)]
     return map(item?.composeData, it => ({ ...it, data: it?.baseInfo?.data } as any))
-  }, [item, goodsListObj])
+  }, [item, materialListObj])
 
   const isCollect = useMemo(() => collectList?.includes(item?.material?.id), [collectList, item])
 
   return (
     <div className="flex">
       <PixelsMetaverseImgByPositionData
-        data={{ ...item, positions: item?.baseInfo?.data, goodsData: data }}
+        data={{ ...item, positions: item?.baseInfo?.data, materialData: data }}
         size={200}
         style={{ background: "#323945", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }} />
       <div className="ml-10 flex flex-col justify-between">
@@ -130,34 +128,34 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
 }
 
 export const MaterialTreeData = ({ item }: { item: MaterialItem }) => {
-  const { goodsListObj } = useUserInfo()
+  const { materialListObj } = useUserInfo()
   const [select, setSelect] = useState<MaterialItem>()
   const [treeData, setTreeData] = useState<DataNode[]>();
 
   useEffect(() => {
-    if (isEmpty(item) || isEmpty(goodsListObj)) return
+    if (isEmpty(item) || isEmpty(materialListObj)) return
     const nodeData: DataNode[] = [];
     const fun = (item: MaterialItem, node: DataNode[]) => {
       if (item?.composes?.length === 0) return
       map(item?.composes, (ite: string) => {
-        if (goodsListObj[ite]) {
+        if (materialListObj[ite]) {
           node?.push({
             key: ite,
             title: ite,
             children: []
           })
           const childNode = find(node, it => it.key === ite)?.children;
-          childNode && fun(goodsListObj[ite], childNode);
+          childNode && fun(materialListObj[ite], childNode);
         }
       })
     }
     fun(item, nodeData)
-    nodeData[0]?.key && setSelect(goodsListObj[nodeData[0]?.key]);
+    nodeData[0]?.key && setSelect(materialListObj[nodeData[0]?.key]);
     setTreeData(nodeData)
-  }, [item, goodsListObj])
+  }, [item, materialListObj])
 
   const onSelect = (selectedKeys: React.Key[]) => {
-    !isEmpty(selectedKeys) && setSelect(goodsListObj[selectedKeys[0]])
+    !isEmpty(selectedKeys) && setSelect(materialListObj[selectedKeys[0]])
   };
 
   return (
@@ -178,8 +176,8 @@ export const MaterialTreeData = ({ item }: { item: MaterialItem }) => {
 }
 
 export const Details = ({ id, setIsModalVisible }: { id: string, setIsModalVisible: Dispatch<React.SetStateAction<boolean>> }) => {
-  const { goodsListObj } = useUserInfo()
-  const item = useMemo(() => goodsListObj[id], [goodsListObj, id])
+  const { materialListObj } = useUserInfo()
+  const item = useMemo(() => materialListObj[id], [materialListObj, id])
 
   return (
     <div className="text-black text-opacity-70">

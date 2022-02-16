@@ -25,7 +25,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   const [type, setType] = useState<ICompose>()
   const [tab, setTab] = useState<string>("new")
   const [value, setValue] = React.useState<string>("-1");
-  const { composeList, setComposeList, setGoodsList, goodsListObj, userInfo } = useUserInfo()
+  const { composeList, setComposeList, getMaterialLength, materialListObj, userInfo, getMaterialList } = useUserInfo()
   const [{
     name,
     category,
@@ -38,41 +38,43 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   })
 
   const [compose] = useRequest(PixelsMetaverse_Compose, {
-    onSuccess: () => {
-      message.success("合成成功！")
-      setComposeList && setComposeList([])
-      //getGoodsIdList({ setValue: setGoodsList, createAmount: 1, list: composeList })
-      setIsModalVisible(false)
+    isGlobalTransactionHookValid: true,
+    onTransactionSuccess: () => {
+      getMaterialLength().then(() => {
+        message.success("合成成功！")
+        setComposeList && setComposeList([])
+        setIsModalVisible(false)
+      })
     }
   }, [composeList])
 
   const [join] = useRequest(PixelsMetaverse_Addition, {
-    onSuccess: () => {
+    onTransactionSuccess: () => {
       message.success(`合成至 ${value} 成功！`)
       setComposeList && setComposeList([])
-      //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: composeList })
+      getMaterialList()
       setIsModalVisible(false)
     }
   }, [value, composeList])
 
   useEffect(() => {
-    if (isEmpty(composeList) || isEmpty(goodsListObj)) return
+    if (isEmpty(composeList) || isEmpty(materialListObj)) return
     const type: ICompose = {
       singles: [],
       composes: [],
       composesData: []
     }
     map(composeList, item => {
-      if (isEmpty(goodsListObj[item]?.composes)) {
+      if (isEmpty(materialListObj[item]?.composes)) {
         type?.singles.push(item)
-        type?.composesData.push(goodsListObj[item]);
+        type?.composesData.push(materialListObj[item]);
       } else {
         type?.composes.push(item)
-        type.composesData = [...type?.composesData, ...goodsListObj[item]?.composeData];
+        type.composesData = [...type?.composesData, ...materialListObj[item]?.composeData];
       }
     })
     setType(type)
-  }, [composeList, goodsListObj])
+  }, [composeList, materialListObj])
 
   const data = useMemo(() => {
     if (isEmpty(type?.composesData)) return []
@@ -96,7 +98,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   return (
     <div className="rounded-md text-black text-opacity-70 bg-white bg-opacity-10 flex items-center justify-between" style={{ height: 400 }}>
       <PixelsMetaverseImgByPositionData
-        data={{ positions: "", goodsData: data }}
+        data={{ positions: "", materialData: data }}
         size={400}
         style={{ background: "#323945", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)", marginRight: 20 }} />
       <div className="flex flex-col justify-between h-full">
@@ -187,7 +189,7 @@ export const CreateMaterial = ({
 }
 
 export const MergeMaterial = ({ composes, value, setValue }: { composes?: string[], value?: string, setValue: Dispatch<React.SetStateAction<string>> }) => {
-  const { goodsListObj } = useUserInfo()
+  const { materialListObj } = useUserInfo()
 
   return <div className="overflow-y-scroll" style={{ width: 400, height: 280 }}>
     <Radio.Group onChange={(e) => {
@@ -198,7 +200,7 @@ export const MergeMaterial = ({ composes, value, setValue }: { composes?: string
           <Radio value={item} key={item} style={{ marginTop: 20 }}>
             <div className="flex items-center">
               <div className="inline-block" style={{ width: 50 }}>ID: {item}</div>
-              <div className="ellipsis inline-block" style={{ width: 300 }}>{goodsListObj[item]?.baseInfo?.name}</div>
+              <div className="ellipsis inline-block" style={{ width: 300 }}>{materialListObj[item]?.baseInfo?.name}</div>
             </div>
           </Radio>
         )

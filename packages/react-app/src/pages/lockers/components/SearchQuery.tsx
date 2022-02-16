@@ -17,7 +17,7 @@ export const SearchQuery = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { composeList } = useUserInfo()
 
-  const { goodsList } = useUserInfo()
+  const { materialList } = useUserInfo()
   const [{
     sort,
     owner,
@@ -35,16 +35,16 @@ export const SearchQuery = ({
   }
 
   const shopList = useMemo(() => {
-    return groupBy(goodsList, item => item?.material?.owner)
-  }, [goodsList])
+    return groupBy(materialList, item => item?.material?.owner)
+  }, [materialList])
 
-  const goodsCatagoryList = useMemo(() => {
-    return groupBy(goodsList, item => item?.baseInfo?.category)
-  }, [goodsList])
+  const materialCatagoryList = useMemo(() => {
+    return groupBy(materialList, item => item?.baseInfo?.category)
+  }, [materialList])
 
   const saleList = useMemo(() => {
-    return groupBy(goodsList, item => item?.material?.id)
-  }, [goodsList])
+    return groupBy(materialList, item => item?.material?.id)
+  }, [materialList])
 
   const sortList = [
     {
@@ -66,7 +66,7 @@ export const SearchQuery = ({
   ]
 
   useEffect(() => {
-    const ownerList = owner ? filter(goodsList as MaterialItem[], item => item?.material?.owner === owner) : goodsList
+    const ownerList = owner ? filter(materialList as MaterialItem[], item => item?.material?.owner === owner) : materialList
     const categoryList = category ? filter(ownerList as MaterialItem[], item => item?.baseInfo?.category === category) : ownerList
     const saleList = sale ? filter(categoryList as MaterialItem[], item => String(item?.material?.id) === sale) : categoryList
     let sortList;
@@ -76,7 +76,7 @@ export const SearchQuery = ({
       sortList = saleList
     }
     setData(sortList)
-  }, [goodsList, owner, category, sale, sort])
+  }, [materialList, owner, category, sale, sort])
 
   return (
     <div className="flex justify-between items-center">
@@ -141,7 +141,7 @@ export const SearchQuery = ({
         }}
         clearIcon={ClearIcon}
       >
-        {map(filter(keys(goodsCatagoryList), item=>!!item), item => <Option key={item} value={item}>{filter(categoryData, ite => ite.value === item)[0]?.label}</Option>)}
+        {map(filter(keys(materialCatagoryList), item=>!!item), item => <Option key={item} value={item}>{filter(categoryData, ite => ite.value === item)[0]?.label}</Option>)}
       </Select>
        */}{/* <Select
         style={{ width: 120, marginLeft: 10 }}

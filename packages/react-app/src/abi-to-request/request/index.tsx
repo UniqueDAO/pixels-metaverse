@@ -75,12 +75,12 @@ const useRequestContract = <T, K>(
             handleTransactionHook(onSuccess, transactionHook?.onSuccess, { ...name, data: res }, isValid)
             handleTransactionHook(onFinish, transactionHook?.onFinish, { ...name, data: res }, isValid)
 
-            return { onSuccess: () => res }
+            return { successValue: res }
         } catch (error) {
             handleTransactionHook(onFail, transactionHook?.onFail, { ...name, data: error }, isValid)
             handleTransactionHook(onFinish, transactionHook?.onFinish, { ...name, data: error }, isValid)
 
-            return { onFail: () => error }
+            return { failError: error }
         }
     }, [contracts, ...rely])
 }
@@ -109,9 +109,7 @@ export const useRequest = <T, K>(
     const contract = contracts && contracts[contractName] ? contracts[contractName] : undefined;
 
     const writeFun = useCallback(async (params?: T) => {
-        const res = await setFun({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
-        if (res?.onSuccess) return { successValue: res?.onSuccess() }
-        if (res?.onFail) return { failError: res?.onFail() }
+        return await setFun({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
     }, [contract, setFun, option?.arg])
 
     return [writeFun, returnValue] as const
@@ -146,9 +144,7 @@ export const useImmediateReadContractRequest = <T, K>(
     }, [contract])
 
     const getFun = useCallback(async (params?: T) => {
-        const res = await getData({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
-        if (res?.onSuccess) return { successValue: res?.onSuccess() }
-        if (res?.onFail) return { failError: res?.onFail() }
+        return await getData({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
     }, [contract, getData, option?.arg, ...rely])
 
     return [returnValue, getFun] as const
