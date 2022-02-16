@@ -43,9 +43,9 @@ export const Header = memo(() => {
   const { pathname } = useLocation()
   const params = useQueryParams()
   const [inputStr, setInputStr] = useState<string | null>()
-/*   const [data] = useGetDataRequest(fetchGetMaterialLength, undefined)
-
-  console.log(data?.toString()) */
+  /*   const [data] = useGetDataRequest(fetchGetMaterialLength, undefined)
+  
+    console.log(data?.toString()) */
 
   useEffect(() => {
     if (params && params?.get("address")) {
@@ -88,10 +88,13 @@ export const Header = memo(() => {
           </div>
 
           {address && !isEmpty(chainData) && connected ? (
-            <div className="px-4 rounded bg-white bg-opacity-10 relative w-48 h-11">
-              <div className="font-bold">{ellipseAddress(address, 10)}</div>
+            <div className="px-2 rounded bg-white bg-opacity-10 relative w-52 h-11">
+              <div className="font-bold">{ellipseAddress(address, 12)}</div>
               <div className="flex justify-between text-xs">
-                {chainData?.name}<span className="cursor-pointer hover:text-white" onClick={killSession}>断开连接</span>
+                <div className="w-32 ellipsis">
+                  {chainData?.name}
+                </div>
+                <span className="cursor-pointer hover:text-white" onClick={killSession}>断开连接</span>
               </div>
             </div>)
             : <div className="flex items-center justify-center rounded cursor-pointer bg-white bg-opacity-10 w-24 hover:text-white h-10"

@@ -1,5 +1,4 @@
 import { PixelsMetaverseHandleImg, usePixelsMetaverseHandleImg } from "../../../pixels-metaverse";
-import { useGetUserConfig } from "../../person-center/components/BaseInfo";
 
 export const Avatar = () => {
   const { config, canvas2Ref } = usePixelsMetaverseHandleImg()

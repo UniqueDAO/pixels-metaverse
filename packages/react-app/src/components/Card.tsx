@@ -7,8 +7,14 @@ import { useUserInfo } from "../components/UserProvider";
 import { useRequest, useWeb3Info } from "../abi-to-request";
 import { categoryData } from "../pages/produced/components/Submit";
 import { PixelsMetaverseImgByPositionData } from "../pixels-metaverse";
-import { PixelsMetaverse_CancelCollect, PixelsMetaverse_CancelCompose, PixelsMetaverse_GetCompose, PixelsMetaverse_GetMaterial, PixelsMetaverse_SetConfig, PixelsMetaverse_Subtract } from "../client/PixelsMetaverse";
-import { ethers } from "ethers";
+import {
+  PixelsMetaverse_CancelCollect,
+  PixelsMetaverse_CancelCompose,
+  PixelsMetaverse_Collect,
+  PixelsMetaverse_GetMaterial,
+  PixelsMetaverse_SetConfig,
+  PixelsMetaverse_Subtract
+} from "../client/PixelsMetaverse";
 const { Text } = Typography;
 
 export interface IMaterial {
@@ -41,7 +47,8 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
   const { composeList, setComposeList, setGoodsList, goodsListObj, userInfo } = useUserInfo()
 
   const [cancelCompose] = useRequest(PixelsMetaverse_CancelCompose, {
-    onSuccess: () => {
+    isGlobalTransactionHookValid: true,
+    onTransactionSuccess: () => {
       message.success("分解成功！")
       //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: item?.composes, burnID: item?.material?.id })
       setIsModalVisible && setIsModalVisible(false)
@@ -58,7 +65,8 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
   const { setGoodsList, goodsListObj } = useUserInfo()
 
   const [substract] = useRequest(PixelsMetaverse_Subtract, {
-    onSuccess: () => {
+    isGlobalTransactionHookValid: true,
+    onTransactionSuccess: () => {
       message.success("移除成功！")
       //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: [...new Set([...item?.composes, item?.material?.id, goodsListObj[item?.material?.compose]?.composes])] })
       setIsModalVisible && setIsModalVisible(false)
@@ -73,8 +81,9 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 export const SetAvater = ({ item }: { item: MaterialItem }) => {
   const { userInfo, getUserInfo } = useUserInfo()
 
-  const [, setAvater] = useRequest(PixelsMetaverse_SetConfig, {
-    onSuccess: () => {
+  const [setAvater] = useRequest(PixelsMetaverse_SetConfig, {
+    isGlobalTransactionHookValid: true,
+    onTransactionSuccess: () => {
       message.success("头像设置成功！")
       getUserInfo()
     }
@@ -103,7 +112,7 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
         size={200}
         style={{ background: "#323945", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }} />
       <div className="ml-10 flex flex-col justify-between">
-        <div>物品名称：{item?.baseInfo?.name || "这什么鬼名称"}{address?.toLowerCase() === item?.material?.owner?.toLowerCase() && ethers.utils.formatUnits(userInfo?.avater, 0) !== ethers.utils.formatUnits(item?.material?.id, 0) && <SetAvater item={item} />}</div>
+        <div>物品名称：{item?.baseInfo?.name || "这什么鬼名称"}{address?.toLowerCase() === item?.material?.owner?.toLowerCase() && String(userInfo?.avater) !== item?.material?.id && <SetAvater item={item} />}</div>
         <div>物品类别：{(find(categoryData, ite => ite?.value === item?.baseInfo?.category) || {})?.label || "这什么鬼类别"}</div>
         <div className="flex">组成部分：<div className="overflow-x-scroll" style={{ maxWidth: !child ? 800 : 400 }}>{item?.composes?.join(",") || "暂无"}{!isEmpty(item?.composes) && Number(item?.material?.compose) === 0 && <CancelCompose item={item} setIsModalVisible={setIsModalVisible} />}</div></div>
         <div className="relative">所属地址：<Text copyable={{
@@ -222,17 +231,19 @@ export const MaterialLabel = ({
 }
 
 export const Collection = ({ item }: { item: MaterialItem }) => {
-  const { setCollectList, collectList, userInfo } = useUserInfo()
+  const { collectList } = useUserInfo()
   const { address } = useWeb3Info()
 
-  const [collect] = useRequest(PixelsMetaverse_GetCompose, {
-    onSuccess: () => {
+  const [collect] = useRequest(PixelsMetaverse_Collect, {
+    isGlobalTransactionHookValid: true,
+    onTransactionSuccess: () => {
       message.success("收藏成功！")
     }
   }, [])
 
   const [cancelCollect] = useRequest(PixelsMetaverse_CancelCollect, {
-    onSuccess: () => {
+    isGlobalTransactionHookValid: true,
+    onTransactionSuccess: () => {
       message.success("已取消收藏！")
     }
   }, [])
@@ -243,10 +254,10 @@ export const Collection = ({ item }: { item: MaterialItem }) => {
     <>
       {address?.toLowerCase() !== item?.material?.owner?.toLowerCase() ? <button
         className="p px-2 bg-red-500 rounded-sm " onClick={() => {
-          if (index >= 0) cancelCollect({ id: Number(item?.material?.id), index })
+          if (index !== undefined && index >= 0) cancelCollect({ id: Number(item?.material?.id), index })
           else collect({ id: Number(item?.material?.id) })
         }}
-      >{index >= 0 ? "取消收藏" : "收藏"}</button> : <div>当前账户</div>}
+      >{index !== undefined && index >= 0 ? "取消收藏" : "收藏"}</button> : <div>当前账户</div>}
     </>
   )
 }

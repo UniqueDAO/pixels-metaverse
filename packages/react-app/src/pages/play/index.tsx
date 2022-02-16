@@ -46,7 +46,7 @@ export const PixelsMetaverse = () => {
   const a = useParams();
   const { noCollectionList, avater, colectionList, onwerList } = useGetPersonData();
 
-  const avaterData = useMemo(() => {
+  const avaterData = React.useMemo(() => {
     avater?.composeData?.push(avater)
     return avater
   }, [avater?.composeData])

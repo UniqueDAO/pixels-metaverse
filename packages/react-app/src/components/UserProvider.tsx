@@ -1,19 +1,46 @@
-import { Dictionary, isEmpty, keyBy, map } from "lodash";
 import * as React from "react";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { Dictionary, isEmpty, keyBy, map } from "lodash";
+import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
-import { useContractRequest, useImmediateReadContractRequest, useWeb3Info } from "../abi-to-request";
-import { PixelsMetaverse_GetCollection, PixelsMetaverse_GetMaterial, PixelsMetaverse_GetMaterialLength, PixelsMetaverse_User } from "../client/PixelsMetaverse";
+import { useImmediateReadContractRequest, useRequest, useWeb3Info } from "../abi-to-request";
+import {
+  PixelsMetaverse_GetCollection,
+  PixelsMetaverse_GetMaterial,
+  PixelsMetaverse_GetMaterialLength,
+  PixelsMetaverse_User
+} from "../client/PixelsMetaverse";
+import { useLoading } from "./Loading";
 
 export const UserInfoContext = createContext(
   {} as {
     userInfo: any;
-    getUserInfo: (params?: { addressParams1: string; } | undefined) => Promise<void>
+    getUserInfo: (params?: {
+      addressParams1: string;
+    } | undefined) => Promise<{
+      successValue: {
+        id: string;
+        avater: string;
+        role: string;
+        other: string;
+      } | undefined;
+      failError?: undefined;
+    } | {
+      failError: any;
+      successValue?: undefined;
+    } | undefined>
     goodsList: any[];
     setGoodsList: Dispatch<any[]>;
-    collectList: any[];
-    setCollectList: Dispatch<any[]>;
+    collectList: string[] | undefined;
+    getCollectList: (params?: {
+      from: string;
+    } | undefined) => Promise<{
+      successValue: string[] | undefined;
+      failError?: undefined;
+    } | {
+      failError: any;
+      successValue?: undefined;
+    } | undefined>
     goodsId?: number;
     setGoodsId: Dispatch<React.SetStateAction<number | undefined>>;
     composeList: string[];
@@ -51,49 +78,36 @@ const arrayToObject = (item: MaterialItem) => {
 export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [goodsList, setGoodsList] = useState<any[]>([]);
   const [goodsListObj, setGoodsListObj] = useState<Dictionary<MaterialItem>>({});
-  const [collectList, setCollectList] = useState<any[]>([]);
-  const [goodsId, setGoodsId] = useState<number | undefined>(1);
+  const [goodsId, setGoodsId] = useState<number | undefined>();
   const [composeList, setComposeList] = React.useState<string[]>([])
+  const { openLoading, closeDelayLoading } = useLoading()
   const { address, networkId } = useWeb3Info()
-  const { contracts } = useContractRequest()
   const [userInfo, getUserInfo] = useImmediateReadContractRequest(PixelsMetaverse_User, { arg: address ? { addressParams1: address } : undefined })
-  const [materialLength, getGetMaterialLength] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterialLength)
-  const [, getGoodsInfo] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterial, {
-    onSuccess: (res) => {
-      /* res && setGoodsList((pre) => {
-        const data = arrayToObject(res as any)
-        const list = cloneDeep(pre)
-        list.push(data)
-        return map(list, item => {
-          if (ethers.utils.formatUnits(item?.material?.id, 0) === String(goodsId)) {
-            return 
-          }
-          return item
-        })
-      }) */
-      res && setGoodsList([arrayToObject(res as any)])
-      console.log(res?.data, "res?.data")
-    }
-  }, [goodsId])
+  const [collectList, getCollectList] = useImmediateReadContractRequest(PixelsMetaverse_GetCollection, { arg: address ? { from: address } : undefined })
+  const [materialLength] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterialLength)
+  const [getGoodsInfo] = useRequest(PixelsMetaverse_GetMaterial, { isGlobalTransactionHookValid: false })
 
-  const [, getCollectList] = useImmediateReadContractRequest(PixelsMetaverse_GetCollection, {
-    onSuccess: (res) => {
-      res?.data && setCollectList(res?.data)
+  const getFirstGoodsList = useCallback(async () => {
+    openLoading()
+    const arr: MaterialItem[] = []
+    for (let i = Number(materialLength); i >= 1; i--) {
+      const res = await getGoodsInfo({ id: i })
+      if (res?.successValue) arr.push(arrayToObject(res?.successValue as MaterialItem))
+      if (res?.failError) {
+        console.log(res?.failError, i, "error")
+      }
     }
-  })
+    closeDelayLoading()
+    setGoodsList(arr)
+  }, [getGoodsInfo, materialLength])
 
   useEffect(() => {
-    if (!address) return
-    getCollectList({ from: address })
-  }, [address, contracts, networkId])
-
-  useEffect(() => {
-    if (!goodsId) return
-    getGoodsInfo({ id: goodsId })
-  }, [goodsId, contracts, networkId])
+    if (Number(materialLength) && networkId) getFirstGoodsList()
+  }, [materialLength, networkId])
 
   useEffect(() => {
     if (isEmpty(goodsList)) return
+    if (goodsList?.length !== Number(materialLength)) return
     const obj: Dictionary<MaterialItem> = keyBy(goodsList, (item: MaterialItem) => item?.material?.id);
     const getData = (items: MaterialItem) => {
       const data: MaterialItem[] = []
@@ -117,11 +131,10 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UserInfoContext.Provider value={{
-      userInfo,
+      userInfo, getUserInfo,
+      collectList, getCollectList,
       goodsList, setGoodsList,
       goodsId, setGoodsId,
-      collectList, setCollectList,
-      getUserInfo,
       composeList, setComposeList,
       goodsListObj, setGoodsListObj
     }}>

@@ -1,30 +1,22 @@
-import React, { useEffect, useMemo } from "react"
+import React, { useMemo } from "react"
 import { Dictionary, isEmpty, map } from "lodash";
-import { useLocation } from "react-router";
 import { useUserInfo } from "../../components/UserProvider";
-import { PixelsMetaverseHandleImgProvider, useConvertedPostion, usePixelsMetaverseUserInfo } from "../../pixels-metaverse";
+import { PixelsMetaverseHandleImgProvider, useConvertedPostion } from "../../pixels-metaverse";
 import { BaseInfo } from "./components/BaseInfo";
 import { AssetsInfo } from "./components/AssetsInfo";
-import { useWeb3Info } from "../../abi-to-request";
-import { useLoading } from "../../components/Loading";
-import { message } from "antd";
 import { useGetPersonData } from "../play";
 
 export const PersonCenter = () => {
-  const { address: addresss, networkId } = useWeb3Info()
   const { userInfo } = useUserInfo()
-  const { search } = useLocation()
-  const address = search ? search.split("=")[1] : addresss
-  const { closeDelayLoading, openLoading } = useLoading()
   const convertedPostion = useConvertedPostion()
   const { avater } = useGetPersonData()
 
-  const avaterData = useMemo(()=>{ 
+  const avaterData = useMemo(() => {
     avater?.composeData?.push(avater)
     return avater
-  },[avater?.composeData])
+  }, [avater?.composeData])
 
-  const positions = useMemo(() => {
+  const positions = React.useMemo(() => {
     if (isEmpty(avaterData?.composeData)) return "empty"
     let data: Dictionary<any> = {}
     map(avaterData?.composeData, item => {
@@ -47,30 +39,6 @@ export const PersonCenter = () => {
     }
     return `${str}${min}`
   }, [avaterData?.composeData])
-
-  const getUserInfo = usePixelsMetaverseUserInfo({
-    onRequestBefore: () => {
-      openLoading()
-    },
-    onSuccess: (arg) => {
-      closeDelayLoading()
-    },
-    onFail: (arg) => {
-      message.error({
-        content: arg?.message,
-        style: {
-          width: 500,
-          margin: "auto"
-        }
-      })
-      closeDelayLoading()
-    }
-  })
-
-  useEffect(() => {
-    if (!address || !networkId) return
-    getUserInfo(address)
-  }, [address, networkId])
 
   return (
     <>{positions && <PixelsMetaverseHandleImgProvider

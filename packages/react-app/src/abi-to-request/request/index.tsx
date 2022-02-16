@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
-import { lowerCase } from "lodash";
+import { lowerFirst } from "lodash";
 import { TContract, useContractRequest } from "../contract";
 
 /**
  * contractName 当前合约的名字
- * functionName 当前调用函数的名字（小写）
+ * functionName 当前调用函数的名字
  * data 返回的数据，包括read获取的数据、write写入的返回的数据以及待打包的返回值、报错信息等
  */
 export type THandleHookArg<K> = {
@@ -59,7 +59,7 @@ const useRequestContract = <T, K>(
     return useCallback(async (arg?: T) => {
         if (!contracts) return
         const contractName = fetch.name.split("_")[0]
-        const functionName = lowerCase(fetch.name.split("_")[1])
+        const functionName = lowerFirst(fetch.name.split("_")[1])
         const contract = contracts[contractName];
         if (!contract) return
         const name = { functionName, contractName }
@@ -109,7 +109,9 @@ export const useRequest = <T, K>(
     const contract = contracts && contracts[contractName] ? contracts[contractName] : undefined;
 
     const writeFun = useCallback(async (params?: T) => {
-        setFun({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
+        const res = await setFun({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
+        if (res?.onSuccess) return { successValue: res?.onSuccess() }
+        if (res?.onFail) return { failError: res?.onFail() }
     }, [contract, setFun, option?.arg])
 
     return [writeFun, returnValue] as const
@@ -144,7 +146,9 @@ export const useImmediateReadContractRequest = <T, K>(
     }, [contract])
 
     const getFun = useCallback(async (params?: T) => {
-        getData({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
+        const res = await getData({ ...(option?.arg ? option?.arg : {}), ...(params ? params : {}) } as any)
+        if (res?.onSuccess) return { successValue: res?.onSuccess() }
+        if (res?.onFail) return { failError: res?.onFail() }
     }, [contract, getData, option?.arg, ...rely])
 
     return [returnValue, getFun] as const

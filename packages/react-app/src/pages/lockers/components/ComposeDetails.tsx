@@ -1,13 +1,13 @@
-import { Dispatch, InputHTMLAttributes, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, InputHTMLAttributes, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Select, message, Tabs, Button, Radio } from 'antd';
 import { isEmpty, map } from 'lodash';
 import { useUserInfo } from '../../../components/UserProvider';
 import { PixelsMetaverseImgByPositionData } from '../../../pixels-metaverse';
-import { fetchCompose, fetchGetGoodsIdList, fetchSubjoin, useRequest } from '../../../hook/api';
 import { ClearIcon } from './SearchQuery';
-import React from 'react';
 import { MaterialItem } from '../../../components/Card';
 import { categoryData, IMerchandise } from '../../produced/components/Submit';
+import { useRequest } from '../../../abi-to-request';
+import { PixelsMetaverse_Addition, PixelsMetaverse_Compose } from '../../../client/PixelsMetaverse';
 const { Option } = Select;
 const { TabPane } = Tabs;
 
@@ -25,7 +25,6 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   const [type, setType] = useState<ICompose>()
   const [tab, setTab] = useState<string>("new")
   const [value, setValue] = React.useState<string>("-1");
-  const getGoodsIdList = useRequest(fetchGetGoodsIdList)
   const { composeList, setComposeList, setGoodsList, goodsListObj, userInfo } = useUserInfo()
   const [{
     name,
@@ -38,20 +37,20 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
     weight: "",
   })
 
-  const compose = useRequest(fetchCompose, {
+  const [compose] = useRequest(PixelsMetaverse_Compose, {
     onSuccess: () => {
       message.success("合成成功！")
       setComposeList && setComposeList([])
-      getGoodsIdList({ setValue: setGoodsList, createAmount: 1, list: composeList })
+      //getGoodsIdList({ setValue: setGoodsList, createAmount: 1, list: composeList })
       setIsModalVisible(false)
     }
   }, [composeList])
 
-  const join = useRequest(fetchSubjoin, {
+  const [join] = useRequest(PixelsMetaverse_Addition, {
     onSuccess: () => {
       message.success(`合成至 ${value} 成功！`)
       setComposeList && setComposeList([])
-      getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: composeList })
+      //getGoodsIdList({ setValue: setGoodsList, createAmount: 0, list: composeList })
       setIsModalVisible(false)
     }
   }, [value, composeList])
@@ -131,7 +130,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
             }
 
             if (tab === "new") {
-              compose({ ids: composeList, name, category })
+              compose({ ids: composeList, name, category: category || "", data: "", decode: "" })
             } else {
               const idList = [...composeList];
               idList.splice(idList?.indexOf(value), 1);

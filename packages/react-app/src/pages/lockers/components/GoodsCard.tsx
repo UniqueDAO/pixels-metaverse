@@ -5,15 +5,12 @@ import { useHistory } from "react-router";
 import { PixelsMetaverseImgByPositionData } from "../../../pixels-metaverse";
 import { useMemo, useState } from "react";
 import { ellipseAddress } from "../../../helpers/utilities";
-import { useWeb3Info } from "../../../abi-to-request";
 import { Collection, Composes, Details, MaterialItem, MaterialLabel } from "../../../components/Card";
 import { Modal } from "antd";
-import { ethers } from "ethers";
 
 export const GoodsCard = ({ item }: { item: MaterialItem }) => {
   const { userInfo, goodsListObj } = useUserInfo()
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const { address } = useWeb3Info()
   const history = useHistory()
   const data = useMemo(() => {
     if (isEmpty(item) || isEmpty(goodsListObj)) return []
@@ -23,7 +20,7 @@ export const GoodsCard = ({ item }: { item: MaterialItem }) => {
 
   return (
     <div
-      key={ethers.utils.formatUnits(item?.material?.id, 0)}
+      key={item?.material?.id}
       className="p-2 mb-4 flex-col flex rounded-md bg-white bg-opacity-10"
       style={{
         height: 216 + 100,
@@ -41,7 +38,7 @@ export const GoodsCard = ({ item }: { item: MaterialItem }) => {
         <div className="text-right flex-1" style={{ height: 40, textOverflow: "ellipsis", overflow: "hidden" }}>{item?.baseInfo?.name || "这什么鬼"}</div>
         <div className="flex justify-between items-center mt-2">
           <div className="flex justify-between items-center">
-            <MaterialLabel toDetails>{ethers.utils.formatUnits(item?.material?.id, 0)}</MaterialLabel>
+            <MaterialLabel toDetails>{item?.material?.id}</MaterialLabel>
             <MaterialLabel>{(find(categoryData, ite => ite?.value === item?.baseInfo?.category) || {})?.label}</MaterialLabel>
           </div>
           <Composes item={item} />
@@ -63,7 +60,7 @@ export const GoodsCard = ({ item }: { item: MaterialItem }) => {
         footer={null}
         onCancel={() => { setIsModalVisible(false) }}
       >
-        <Details id={ethers.utils.formatUnits(item?.material?.id, 0)} setIsModalVisible={setIsModalVisible} />
+        <Details id={item?.material?.id} setIsModalVisible={setIsModalVisible} />
       </Modal>}
     </div>
   )
