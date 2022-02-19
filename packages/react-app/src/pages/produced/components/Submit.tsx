@@ -7,7 +7,7 @@ import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
 import { ClearIcon } from '../../lockers/components/SearchQuery';
 import React from 'react';
 import { PixelsMetaverse_Make, PixelsMetaverse_Register } from '../../../client/PixelsMetaverse';
-import { useWeb3Info, useRequest } from '../../../abi-to-request';
+import { useWeb3Info, useRequest } from 'abi-to-request';
 const { Option } = Select;
 
 export const Label = ({ children, noNeed }: { children: ReactNode, noNeed?: boolean }) => {

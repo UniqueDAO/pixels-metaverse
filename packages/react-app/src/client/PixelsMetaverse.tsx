@@ -1,4 +1,4 @@
-import { TContract, convertedBigNumber } from '../abi-to-request';
+import { TContract, convertedBigNumber } from 'abi-to-request';
 import { Contract } from 'web3-eth-contract';
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { TransactionReceipt } from 'web3-core';
@@ -230,42 +230,42 @@ export const PixelsMetaverse_GetMaterial = async (
 		let res = await (contract as ethers.Contract).getMaterial(id)
 		return convertedBigNumber(res) as {
 			material: {
-				id: string; //uint256
-				compose: string; //uint256
-				time: string; //string
-				position: string; //string
-				zIndex: string; //string
-				owner: string; //address
-				data: string; //bytes32
-			},
+			id: string; //uint256
+			compose: string; //uint256
+			time: string; //string
+			position: string; //string
+			zIndex: string; //string
+			owner: string; //address
+			data: string; //bytes32
+		}, 
 			baseInfo: {
-				data: string; //string
-				category: string; //string
-				decode: string; //string
-				name: string; //string
-				userId: string; //uint256
-			},
+			data: string; //string
+			category: string; //string
+			decode: string; //string
+			name: string; //string
+			userId: string; //uint256
+		}, 
 			composes: string[]; //uint256[]
 		}
 	} else {
 		let res = await (contract as Contract).methods.getMaterial(id).call()
 		return res as {
 			material: {
-				id: string; //uint256
-				compose: string; //uint256
-				time: string; //string
-				position: string; //string
-				zIndex: string; //string
-				owner: string; //address
-				data: string; //bytes32
-			},
+			id: string; //uint256
+			compose: string; //uint256
+			time: string; //string
+			position: string; //string
+			zIndex: string; //string
+			owner: string; //address
+			data: string; //bytes32
+		}, 
 			baseInfo: {
-				data: string; //string
-				category: string; //string
-				decode: string; //string
-				name: string; //string
-				userId: string; //uint256
-			},
+			data: string; //string
+			category: string; //string
+			decode: string; //string
+			name: string; //string
+			userId: string; //uint256
+		}, 
 			composes: string[]; //uint256[]
 		}
 	}

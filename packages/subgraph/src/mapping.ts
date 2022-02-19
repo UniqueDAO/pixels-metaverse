@@ -1,33 +1,40 @@
-import { BigInt, Address } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts"
 import {
-  YourContract,
-  SetPurpose,
-} from "../generated/YourContract/YourContract";
-import { Purpose, Sender } from "../generated/schema";
+  ClaimSuccess,
+  CreationSuccess,
+  RefundSuccess
+} from "../generated/HappyRedPacket/HappyRedPacket"
+import { HappyRedPacket, Claimer, RedPacketIDs } from "../generated/schema"
 
-export function handleSetPurpose(event: SetPurpose): void {
-  let senderString = event.params.sender.toHexString();
-
-  let sender = Sender.load(senderString);
-
-  if (sender === null) {
-    sender = new Sender(senderString);
-    sender.address = event.params.sender;
-    sender.createdAt = event.block.timestamp;
-    sender.purposeCount = BigInt.fromI32(1);
-  } else {
-    sender.purposeCount = sender.purposeCount.plus(BigInt.fromI32(1));
+export function handleClaimSuccess(event: ClaimSuccess): void {
+  // Entities can be loaded from the store using a string ID; this ID
+  // needs to be unique across all entities of the same type
+  let redpacket = HappyRedPacket.load(event.params.id.toHex());
+  if (redpacket == null) {
+    redpacket = new HappyRedPacket(event.params.id.toHex());
   }
 
-  let purpose = new Purpose(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  );
+  let claimer = Claimer.load(redpacket.id);
+  if (claimer === null) {
+    claimer = new Claimer(redpacket.id + '#' + event.params.claimer.toHex());
+    claimer.user = event.params.claimer;
+    claimer.amount = event.params.claimed_value;
+    claimer.redpacket = redpacket.id;
+  }
+  redpacket.save();
+  claimer.save();
 
-  purpose.purpose = event.params.purpose;
-  purpose.sender = senderString;
-  purpose.createdAt = event.block.timestamp;
-  purpose.transactionHash = event.transaction.hash.toHex();
-
-  purpose.save();
-  sender.save();
 }
+
+export function handleCreationSuccess(event: CreationSuccess): void {
+  // Entities can be loaded from the store using a string ID; this ID
+  // needs to be unique across all entities of the same type
+
+  let redPacketIDs = RedPacketIDs.load(event.params.id.toHex());
+  if (redPacketIDs === null) {
+    redPacketIDs = new RedPacketIDs(event.params.id.toHex());
+  }
+  redPacketIDs.save();
+}
+
+export function handleRefundSuccess(event: RefundSuccess): void { }

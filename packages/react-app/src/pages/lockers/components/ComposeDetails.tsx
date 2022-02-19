@@ -6,7 +6,7 @@ import { PixelsMetaverseImgByPositionData } from '../../../pixels-metaverse';
 import { ClearIcon } from './SearchQuery';
 import { MaterialItem } from '../../../components/Card';
 import { categoryData, IMerchandise } from '../../produced/components/Submit';
-import { useRequest } from '../../../abi-to-request';
+import { useRequest } from 'abi-to-request';
 import { PixelsMetaverse_Addition, PixelsMetaverse_Compose } from '../../../client/PixelsMetaverse';
 const { Option } = Select;
 const { TabPane } = Tabs;

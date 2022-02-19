@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { useUserInfo } from "../../../components/UserProvider";
 import { PixelsMetaverseHandleImg, usePixelsMetaverseHandleImg } from "../../../pixels-metaverse";
 import { ReactNode, useEffect, useMemo } from "react";
-import { useRequest, useWeb3Info } from "../../../abi-to-request";
+import { useRequest, useWeb3Info } from "abi-to-request";
 import { isEmpty, split } from "lodash";
 import { ellipseAddress } from "../../../helpers/utilities";
 import { PixelsMetaverse_Register, PixelsMetaverse_SetConfig } from "../../../client/PixelsMetaverse";

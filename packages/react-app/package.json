@@ -51,7 +51,7 @@
     "html": "npm run converted && cd out && http-server",
     "push:dev": "git push origin dev",
     "copy": "shx cp ./electron/main.js build && shx cp ./electron/package.json build",
-    "desktop": "npm run build && npm run copy && cd build && npm install && npm run pack",
+    "desktop": "npm run build && npm run copy && cd build && npm run pack",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "surge ./build",
     "s3": "node ./scripts/s3.js",

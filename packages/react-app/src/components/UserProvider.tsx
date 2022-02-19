@@ -3,7 +3,7 @@ import { Dictionary, isEmpty, keyBy, map } from "lodash";
 import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
-import { useImmediateReadContractRequest, useRequest, useWeb3Info } from "../abi-to-request";
+import { useImmediateReadContractRequest, useRequest, useWeb3Info } from "abi-to-request";
 import {
   PixelsMetaverse_GetCollection,
   PixelsMetaverse_GetMaterial,
