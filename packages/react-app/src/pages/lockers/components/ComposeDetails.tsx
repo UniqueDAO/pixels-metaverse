@@ -199,8 +199,8 @@ export const MergeMaterial = ({ composes, value, setValue }: { composes?: string
         return (
           <Radio value={item} key={item} style={{ marginTop: 20 }}>
             <div className="flex items-center">
-              <div className="inline-block" style={{ width: 50 }}>ID: {item}</div>
-              <div className="ellipsis inline-block" style={{ width: 300 }}>{materialListObj[item]?.baseInfo?.name}</div>
+              <div className="inline-block" style={{ width: 50 }}>ID:{item} </div>
+              <div className="ellipsis inline-block" style={{ width: 300 }}>&emsp;{materialListObj[item]?.baseInfo?.name}</div>
             </div>
           </Radio>
         )

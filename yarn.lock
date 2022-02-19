@@ -4149,10 +4149,10 @@ abab@^2.0.3, abab@^2.0.5:
   resolved "https://registry.npmjs.org/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
   integrity sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q==
 
-abi-to-request@^0.0.34:
-  version "0.0.34"
-  resolved "https://registry.npmjs.org/abi-to-request/-/abi-to-request-0.0.34.tgz#46619920cf2bae63bafb90e16282a65f6cd75609"
-  integrity sha512-wQPd3jQC+Otk3VtLs8w9/7MC59V5FZWRs6+HJEnprp9KOHry3u/Pd/XkM7IqD1gXjRTxsLg/JaQ+SrgNVDUm9g==
+abi-to-request@^0.0.37:
+  version "0.0.37"
+  resolved "https://registry.npmjs.org/abi-to-request/-/abi-to-request-0.0.37.tgz#b988a275cf564b3b58f4ee849b9c058200509314"
+  integrity sha512-za79mrgMkt4afLctJypRaQrFO2ZBLmfSDAUDs4ImaTQivZhISI6ssedoKqNrrRO9eOkxoJOdM8UwxhhDngE0Pw==
   dependencies:
     "@types/lodash" "^4.14.178"
     "@types/react" "^17.0.39"
@@ -4163,6 +4163,7 @@ abi-to-request@^0.0.34:
     react "^17.0.2"
     react-dom "^17.0.2"
     web3 "^1.7.0"
+    web3-core "^1.7.0"
     web3-eth-contract "^1.7.0"
     web3modal "^1.9.5"
 
