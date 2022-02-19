@@ -5,7 +5,6 @@ import { PixelsMetaverseContextProvider } from './pixels-metaverse';
 import { Header } from './components/Header';
 import bgSvg from "./assets/image/bg.svg"
 import { Routes } from './routes';
-import { abis } from "./client/abis";
 import { ContractRequestContextProvider, useWeb3Info, Web3InfoProvider } from "abi-to-request";
 
 declare global {
@@ -29,7 +28,6 @@ const Main = () => {
   return (
     <ContractRequestContextProvider
       library={library}
-      abis={abis}
       transactionHook={{
         onSuccessBefore: (res) => {
           openLoading()
