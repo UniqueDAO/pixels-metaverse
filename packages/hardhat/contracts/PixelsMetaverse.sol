@@ -13,7 +13,6 @@ contract PixelsMetaverse {
         uint256 id;
         uint256 avater;
         string role;
-        string other;
     }
     mapping(address => User) public user;
 
@@ -35,7 +34,7 @@ contract PixelsMetaverse {
         string category;
         string decode;
         string name;
-        uint256 userId;
+        uint256 ownerID;
     }
     mapping(bytes32 => BaseInfo) public baseInfo;
 
@@ -80,12 +79,10 @@ contract PixelsMetaverse {
         user[msg.sender].id = ++amount;
     }
 
-    function setConfig(
-        string memory role,
-        uint256 id,
-        string memory other
-    ) public IsOwner(msg.sender, id) {
-        user[msg.sender].other = other;
+    function setConfig(string memory role, uint256 id)
+        public
+        IsOwner(msg.sender, id)
+    {
         user[msg.sender].role = role;
         user[msg.sender].avater = id;
     }
@@ -135,7 +132,7 @@ contract PixelsMetaverse {
             _make(d, msg.sender);
         }
 
-        if (baseInfo[d].userId == 0) {
+        if (baseInfo[d].ownerID == 0) {
             baseInfo[d] = BaseInfo(
                 data,
                 category,
@@ -148,7 +145,7 @@ contract PixelsMetaverse {
 
     function reMake(uint256 id, uint256 num) public IsOwner(msg.sender, id) {
         Material storage m = material[id];
-        require(baseInfo[m.data].userId == user[msg.sender].id, "error");
+        require(baseInfo[m.data].ownerID == user[msg.sender].id, "error");
         for (uint256 i; i < num; i++) {
             _make(m.data, msg.sender);
         }
@@ -198,7 +195,7 @@ contract PixelsMetaverse {
         uint256 curID = IPMT721(PMT721).currentID();
         uint256 nextID = curID + 1;
         bytes32 d = keccak256(abi.encodePacked(curID + 1));
-        require(baseInfo[d].userId == 0, "error");
+        require(baseInfo[d].ownerID == 0, "error");
         _make(d, msg.sender);
         for (uint256 i; i < len; i++) {
             uint256 id = ids[i];
