@@ -3,7 +3,7 @@ import { Dictionary, isEmpty, keyBy, map } from "lodash";
 import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
-import { useImmediateReadContractRequest, useRequest, useWeb3Info } from "abi-to-request";
+import { useReadContractRequest, useRequest, useWeb3Info } from "abi-to-request";
 import {
   PixelsMetaverse_GetCollection,
   PixelsMetaverse_GetMaterial,
@@ -91,9 +91,9 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { openLoading, closeDelayLoading } = useLoading()
   const { address, chainId } = useWeb3Info()
-  const [userInfo, getUserInfo] = useImmediateReadContractRequest(PixelsMetaverse_User, { arg: address ? { addressParams1: address } : undefined })
-  const [collectList, getCollectList] = useImmediateReadContractRequest(PixelsMetaverse_GetCollection, { arg: address ? { from: address } : undefined })
-  const [materialLength, getMaterialLength] = useImmediateReadContractRequest(PixelsMetaverse_GetMaterialLength)
+  const [userInfo, getUserInfo] = useReadContractRequest(PixelsMetaverse_User, { arg: address ? { addressParams1: address } : undefined })
+  const [collectList, getCollectList] = useReadContractRequest(PixelsMetaverse_GetCollection, { arg: address ? { from: address } : undefined })
+  const [materialLength, getMaterialLength] = useReadContractRequest(PixelsMetaverse_GetMaterialLength)
   const [getMaterialInfo] = useRequest(PixelsMetaverse_GetMaterial, { isGlobalTransactionHookValid: false })
 
   const getMaterialList = useCallback(async () => {

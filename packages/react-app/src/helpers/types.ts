@@ -1,4 +1,4 @@
-import { IAssetData } from "abi-to-request/lib/components/chains";
+import { IAssetData } from "abi-to-request/lib/chain";
 
 export interface ITxData {
   from: string;

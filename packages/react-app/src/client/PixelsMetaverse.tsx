@@ -1,4 +1,4 @@
-import { TContract, convertedBigNumber } from 'abi-to-request';
+import { TContract, convertedBigNumber } from "abi-to-request";
 import { Contract } from 'web3-eth-contract';
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { TransactionReceipt } from 'web3-core';

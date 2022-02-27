@@ -39,7 +39,7 @@
     "web3-utils": "^1.7.0",
     "web3modal": "^1.9.4",
     "ethers": "^5.5.3",
-    "abi-to-request": "^0.0.37",
+    "abi-to-request": "^1.0.1",
     "web3-core": "^1.7.0"
   },
   "scripts": {
@@ -57,7 +57,7 @@
     "s3": "node ./scripts/s3.js",
     "ship": "npm run surge",
     "watch": "node ./scripts/watch.js",
-    "abi:api": "converted -d --entry './src/contracts/' --chainId 1337 --contractName PixelsMetaverse"
+    "abi:api": "converted -d --entry './src/contracts/' --chainId 31337"
   },
   "eslintConfig": {
     "extends": [
@@ -95,6 +95,10 @@
     "s3-folder-upload": "^2.3.1",
     "shx": "^0.3.4",
     "surge": "^0.21.5",
-    "webpack-dev-server": "3.11.1"
+    "webpack-dev-server": "3.11.1",
+    "react-error-overlay": "6.0.9"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   }
 }
