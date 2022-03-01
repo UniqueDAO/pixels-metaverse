@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./IPMT721.sol";
+import "hardhat/console.sol";
 
 contract PixelsMetaverse {
     IPMT721 private PMT721;
@@ -152,10 +153,9 @@ contract PixelsMetaverse {
         Owner(msg.sender, ids)
     {
         Material memory m = material[ids];
-        require(m.owner == msg.sender, "error");
+        require(m.owner == msg.sender, "Only your Material can addtion");
         for (uint256 i; i < idList.length; i++) {
-            require(material[i].compose == 0, "error");
-            _compose(ids, i, msg.sender);
+            _compose(ids, idList[i], msg.sender);
         }
     }
 
@@ -164,9 +164,9 @@ contract PixelsMetaverse {
         uint256 id,
         address _sender
     ) private Owner(_sender, id) {
-        require(material[id].compose == 0, "error");
+        require(material[id].compose == 0, "this Material composed");
         material[id].compose = ids;
-        emit ComposeEvent(msg.sender, ids, id);
+        emit ComposeEvent(_sender, ids, id);
     }
 
     function subtract(uint256 ids, uint256[] memory idList) public {
@@ -174,9 +174,10 @@ contract PixelsMetaverse {
         require(m.compose == 0, "error");
         require(m.owner == msg.sender, "error");
         for (uint256 i; i < idList.length; i++) {
-            require(material[i].compose == ids, "error");
-            material[i].compose = 0;
-            emit ComposeEvent(msg.sender, 0, i);
+            uint256 id = idList[i];
+            require(material[id].compose == ids, "error");
+            material[id].compose = 0;
+            emit ComposeEvent(msg.sender, 0, id);
         }
     }
 
