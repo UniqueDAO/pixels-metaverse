@@ -24,14 +24,19 @@ export const PixelsMetaverse_Addition = async (
 }
 
 //view
-export const PixelsMetaverse_Amount = async (
+export const PixelsMetaverse_Avater = async (
 	contract: TContract,
+	arg?: {
+		addressParams1: string; //address
+	}
 ) => {
+	if (!arg) return
+	const { addressParams1 } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).amount()
+		let res = await (contract as ethers.Contract).avater(addressParams1)
 		return convertedBigNumber(res) as string; //uint256
 	} else {
-		let res = await (contract as Contract).methods.amount().call()
+		let res = await (contract as Contract).methods.avater(addressParams1).call()
 		return res as string; //uint256
 	}
 }
@@ -48,95 +53,19 @@ export const PixelsMetaverse_BaseInfo = async (
 	if ((contract as any)?.address && !(contract as any)?.methods) {
 		let res = await (contract as ethers.Contract).baseInfo(bytes32Params1)
 		return convertedBigNumber(res) as {
-			data: string; //string
-			category: string; //string
-			decode: string; //string
+			owner: string; //address
 			name: string; //string
-			userId: string; //uint256
+			data: string; //string
+			decode: string; //string
 		}
 	} else {
 		let res = await (contract as Contract).methods.baseInfo(bytes32Params1).call()
 		return res as {
-			data: string; //string
-			category: string; //string
-			decode: string; //string
+			owner: string; //address
 			name: string; //string
-			userId: string; //uint256
+			data: string; //string
+			decode: string; //string
 		}
-	}
-}
-
-//nonpayable
-export const PixelsMetaverse_CancelCollect = async (
-	contract: TContract,
-	arg?: {
-		id: string | number; //uint256
-		index: string | number; //uint256
-	}
-) => {
-	if (!arg) return
-	const { id, index } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).cancelCollect(id, index)
-		return res as TransactionResponse
-	} else {
-		let res = await (contract as Contract).methods.cancelCollect(id, index).send({ from: contract.sendAccount })
-		return res as TransactionReceipt
-	}
-}
-
-//nonpayable
-export const PixelsMetaverse_CancelCompose = async (
-	contract: TContract,
-	arg?: {
-		ids: string | number; //uint256
-	}
-) => {
-	if (!arg) return
-	const { ids } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).cancelCompose(ids)
-		return res as TransactionResponse
-	} else {
-		let res = await (contract as Contract).methods.cancelCompose(ids).send({ from: contract.sendAccount })
-		return res as TransactionReceipt
-	}
-}
-
-//nonpayable
-export const PixelsMetaverse_Collect = async (
-	contract: TContract,
-	arg?: {
-		id: string | number; //uint256
-	}
-) => {
-	if (!arg) return
-	const { id } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).collect(id)
-		return res as TransactionResponse
-	} else {
-		let res = await (contract as Contract).methods.collect(id).send({ from: contract.sendAccount })
-		return res as TransactionReceipt
-	}
-}
-
-//view
-export const PixelsMetaverse_Collection = async (
-	contract: TContract,
-	arg?: {
-		addressParams1: string; //address
-		uint256Params2: string | number; //uint256
-	}
-) => {
-	if (!arg) return
-	const { addressParams1, uint256Params2 } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).collection(addressParams1, uint256Params2)
-		return convertedBigNumber(res) as string; //uint256
-	} else {
-		let res = await (contract as Contract).methods.collection(addressParams1, uint256Params2).call()
-		return res as string; //uint256
 	}
 }
 
@@ -144,76 +73,23 @@ export const PixelsMetaverse_Collection = async (
 export const PixelsMetaverse_Compose = async (
 	contract: TContract,
 	arg?: {
-		ids: (string | number)[]; //uint256[]
+		idList: (string | number)[]; //uint256[]
 		name: string; //string
-		category: string; //string
-		data: string; //string
 		decode: string; //string
+		time: string; //string
+		position: string; //string
+		zIndex: string; //string
+		data: string; //bytes32
 	}
 ) => {
 	if (!arg) return
-	const { ids, name, category, data, decode } = arg;
+	const { idList, name, decode, time, position, zIndex, data } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).compose(ids, name, category, data, decode)
+		let res = await (contract as ethers.Contract).compose(idList, name, decode, time, position, zIndex, data)
 		return res as TransactionResponse
 	} else {
-		let res = await (contract as Contract).methods.compose(ids, name, category, data, decode).send({ from: contract.sendAccount })
+		let res = await (contract as Contract).methods.compose(idList, name, decode, time, position, zIndex, data).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
-	}
-}
-
-//view
-export const PixelsMetaverse_Composes = async (
-	contract: TContract,
-	arg?: {
-		uint256Params1: string | number; //uint256
-		uint256Params2: string | number; //uint256
-	}
-) => {
-	if (!arg) return
-	const { uint256Params1, uint256Params2 } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).composes(uint256Params1, uint256Params2)
-		return convertedBigNumber(res) as string; //uint256
-	} else {
-		let res = await (contract as Contract).methods.composes(uint256Params1, uint256Params2).call()
-		return res as string; //uint256
-	}
-}
-
-//view
-export const PixelsMetaverse_GetCollection = async (
-	contract: TContract,
-	arg?: {
-		from: string; //address
-	}
-) => {
-	if (!arg) return
-	const { from } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).getCollection(from)
-		return convertedBigNumber(res) as string[]; //uint256[]
-	} else {
-		let res = await (contract as Contract).methods.getCollection(from).call()
-		return res as string[]; //uint256[]
-	}
-}
-
-//view
-export const PixelsMetaverse_GetCompose = async (
-	contract: TContract,
-	arg?: {
-		id: string | number; //uint256
-	}
-) => {
-	if (!arg) return
-	const { id } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).getCompose(id)
-		return convertedBigNumber(res) as string[]; //uint256[]
-	} else {
-		let res = await (contract as Contract).methods.getCompose(id).call()
-		return res as string[]; //uint256[]
 	}
 }
 
@@ -239,13 +115,11 @@ export const PixelsMetaverse_GetMaterial = async (
 			data: string; //bytes32
 		}, 
 			baseInfo: {
-			data: string; //string
-			category: string; //string
-			decode: string; //string
+			owner: string; //address
 			name: string; //string
-			userId: string; //uint256
+			data: string; //string
+			decode: string; //string
 		}, 
-			composes: string[]; //uint256[]
 		}
 	} else {
 		let res = await (contract as Contract).methods.getMaterial(id).call()
@@ -260,27 +134,12 @@ export const PixelsMetaverse_GetMaterial = async (
 			data: string; //bytes32
 		}, 
 			baseInfo: {
-			data: string; //string
-			category: string; //string
-			decode: string; //string
+			owner: string; //address
 			name: string; //string
-			userId: string; //uint256
+			data: string; //string
+			decode: string; //string
 		}, 
-			composes: string[]; //uint256[]
 		}
-	}
-}
-
-//view
-export const PixelsMetaverse_GetMaterialLength = async (
-	contract: TContract,
-) => {
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).getMaterialLength()
-		return convertedBigNumber(res) as string; //uint256
-	} else {
-		let res = await (contract as Contract).methods.getMaterialLength().call()
-		return res as string; //uint256
 	}
 }
 
@@ -309,19 +168,21 @@ export const PixelsMetaverse_Make = async (
 	contract: TContract,
 	arg?: {
 		name: string; //string
-		category: string; //string
 		data: string; //string
 		decode: string; //string
+		time: string; //string
+		position: string; //string
+		zIndex: string; //string
 		num: string | number; //uint256
 	}
 ) => {
 	if (!arg) return
-	const { name, category, data, decode, num } = arg;
+	const { name, data, decode, time, position, zIndex, num } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).make(name, category, data, decode, num)
+		let res = await (contract as ethers.Contract).make(name, data, decode, time, position, zIndex, num)
 		return res as TransactionResponse
 	} else {
-		let res = await (contract as Contract).methods.make(name, category, data, decode, num).send({ from: contract.sendAccount })
+		let res = await (contract as Contract).methods.make(name, data, decode, time, position, zIndex, num).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
 	}
 }
@@ -380,52 +241,76 @@ export const PixelsMetaverse_ReMake = async (
 }
 
 //nonpayable
-export const PixelsMetaverse_Register = async (
-	contract: TContract,
-) => {
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).register()
-		return res as TransactionResponse
-	} else {
-		let res = await (contract as Contract).methods.register().send({ from: contract.sendAccount })
-		return res as TransactionReceipt
-	}
-}
-
-//nonpayable
-export const PixelsMetaverse_SetConfig = async (
+export const PixelsMetaverse_SetAvater = async (
 	contract: TContract,
 	arg?: {
-		role: string; //string
 		id: string | number; //uint256
-		other: string; //string
 	}
 ) => {
 	if (!arg) return
-	const { role, id, other } = arg;
+	const { id } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).setConfig(role, id, other)
+		let res = await (contract as ethers.Contract).setAvater(id)
 		return res as TransactionResponse
 	} else {
-		let res = await (contract as Contract).methods.setConfig(role, id, other).send({ from: contract.sendAccount })
+		let res = await (contract as Contract).methods.setAvater(id).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
 	}
 }
 
 //nonpayable
-export const PixelsMetaverse_SetPMT721 = async (
+export const PixelsMetaverse_SetPosition = async (
 	contract: TContract,
 	arg?: {
-		pmt721: string; //address
+		id: string | number; //uint256
+		position: string; //string
 	}
 ) => {
 	if (!arg) return
-	const { pmt721 } = arg;
+	const { id, position } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).setPMT721(pmt721)
+		let res = await (contract as ethers.Contract).setPosition(id, position)
 		return res as TransactionResponse
 	} else {
-		let res = await (contract as Contract).methods.setPMT721(pmt721).send({ from: contract.sendAccount })
+		let res = await (contract as Contract).methods.setPosition(id, position).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
+	}
+}
+
+//nonpayable
+export const PixelsMetaverse_SetTime = async (
+	contract: TContract,
+	arg?: {
+		id: string | number; //uint256
+		time: string; //string
+	}
+) => {
+	if (!arg) return
+	const { id, time } = arg;
+	if ((contract as any)?.address && !(contract as any)?.methods) {
+		let res = await (contract as ethers.Contract).setTime(id, time)
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.setTime(id, time).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
+	}
+}
+
+//nonpayable
+export const PixelsMetaverse_SetZIndex = async (
+	contract: TContract,
+	arg?: {
+		id: string | number; //uint256
+		zIndex: string; //string
+	}
+) => {
+	if (!arg) return
+	const { id, zIndex } = arg;
+	if ((contract as any)?.address && !(contract as any)?.methods) {
+		let res = await (contract as ethers.Contract).setZIndex(id, zIndex)
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.setZIndex(id, zIndex).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
 	}
 }
@@ -435,45 +320,16 @@ export const PixelsMetaverse_Subtract = async (
 	contract: TContract,
 	arg?: {
 		ids: string | number; //uint256
-		id: string | number; //uint256
-		index: string | number; //uint256
+		idList: (string | number)[]; //uint256[]
 	}
 ) => {
 	if (!arg) return
-	const { ids, id, index } = arg;
+	const { ids, idList } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).subtract(ids, id, index)
+		let res = await (contract as ethers.Contract).subtract(ids, idList)
 		return res as TransactionResponse
 	} else {
-		let res = await (contract as Contract).methods.subtract(ids, id, index).send({ from: contract.sendAccount })
+		let res = await (contract as Contract).methods.subtract(ids, idList).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
-	}
-}
-
-//view
-export const PixelsMetaverse_User = async (
-	contract: TContract,
-	arg?: {
-		addressParams1: string; //address
-	}
-) => {
-	if (!arg) return
-	const { addressParams1 } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).user(addressParams1)
-		return convertedBigNumber(res) as {
-			id: string; //uint256
-			avater: string; //uint256
-			role: string; //string
-			other: string; //string
-		}
-	} else {
-		let res = await (contract as Contract).methods.user(addressParams1).call()
-		return res as {
-			id: string; //uint256
-			avater: string; //uint256
-			role: string; //string
-			other: string; //string
-		}
 	}
 }

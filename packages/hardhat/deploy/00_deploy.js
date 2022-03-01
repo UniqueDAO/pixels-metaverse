@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  console.log(deployer,"deployer")
+  console.log(deployer, "deployer")
 
   const PMT721 = await deploy("PMT721", {
     from: deployer,

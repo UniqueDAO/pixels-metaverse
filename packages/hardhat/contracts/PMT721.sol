@@ -36,8 +36,8 @@ contract PMT721 is ERC721 {
         return _exists(id);
     }
 
-    function setMinter(address minter) public MustOwner(_msgSender()) {
-        minter = minter;
+    function setMinter(address _minter) public MustOwner(_msgSender()) {
+        minter = _minter;
     }
 
     function setOwner(address owner) public MustOwner(_msgSender()) {

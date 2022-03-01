@@ -109,19 +109,6 @@ export const PMT721_GetApproved = async (
 }
 
 //view
-export const PMT721_GetMinter = async (
-	contract: TContract,
-) => {
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).getMinter()
-		return convertedBigNumber(res) as string; //address
-	} else {
-		let res = await (contract as Contract).methods.getMinter().call()
-		return res as string; //address
-	}
-}
-
-//view
 export const PMT721_IsApprovedForAll = async (
 	contract: TContract,
 	arg?: {
@@ -263,6 +250,24 @@ export const PMT721_SetMinter = async (
 		return res as TransactionResponse
 	} else {
 		let res = await (contract as Contract).methods.setMinter(minter).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
+	}
+}
+
+//nonpayable
+export const PMT721_SetOwner = async (
+	contract: TContract,
+	arg?: {
+		owner: string; //address
+	}
+) => {
+	if (!arg) return
+	const { owner } = arg;
+	if ((contract as any)?.address && !(contract as any)?.methods) {
+		let res = await (contract as ethers.Contract).setOwner(owner)
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.setOwner(owner).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
 	}
 }
