@@ -5,8 +5,6 @@ import "./IPMT721.sol";
 
 contract PixelsMetaverse {
     IPMT721 private PMT721;
-    address private immutable _owner;
-
     mapping(address => uint256) public avater;
 
     struct Material {
@@ -33,51 +31,50 @@ contract PixelsMetaverse {
         BaseInfo baseInfo;
     }
 
-    event ComposeEvent(address indexed owner, uint256 indexed id);
+    event MakeEvent(uint256 indexed id, bytes32 indexed data);
+
+    event ComposeEvent(
+        address indexed owner,
+        uint256 indexed fatherID,
+        uint256 indexed childrenID
+    );
 
     modifier Exist(uint256 id) {
         require(IPMT721(PMT721).exits(id), "error");
         _;
     }
 
-    modifier IsOwner(address sender, uint256 id) {
+    modifier Owner(address sender, uint256 id) {
         Material memory m = material[id];
         require(sender == m.owner, "error");
         _;
     }
 
-    modifier NoCompose(uint256 id) {
-        Material memory m = material[id];
-        require(m.compose == 0, "error");
-        _;
-    }
-
     constructor(address pmt721) {
-        _owner = msg.sender;
         PMT721 = IPMT721(pmt721);
     }
 
-    function setAvater(uint256 id) public IsOwner(msg.sender, id) {
+    function setAvater(uint256 id) public Owner(msg.sender, id) {
         avater[msg.sender] = id;
     }
 
     function setTime(uint256 id, string memory time)
         public
-        IsOwner(msg.sender, id)
+        Owner(msg.sender, id)
     {
         material[id].time = time;
     }
 
     function setPosition(uint256 id, string memory position)
         public
-        IsOwner(msg.sender, id)
+        Owner(msg.sender, id)
     {
         material[id].position = position;
     }
 
     function setZIndex(uint256 id, string memory zIndex)
         public
-        IsOwner(msg.sender, id)
+        Owner(msg.sender, id)
     {
         material[id].zIndex = zIndex;
     }
@@ -108,13 +105,33 @@ contract PixelsMetaverse {
         baseInfo[d] = BaseInfo(msg.sender, name, data, decode);
     }
 
-    function reMake(uint256 id, uint256 num) public IsOwner(msg.sender, id) {
+    function reMake(uint256 id, uint256 num) public Owner(msg.sender, id) {
         Material storage m = material[id];
         BaseInfo storage b = baseInfo[m.data];
         require(b.owner == msg.sender, "error");
         for (uint256 i; i < num; i++) {
             _make(m.time, m.position, m.zIndex, msg.sender, m.data);
         }
+    }
+
+    function compose(
+        uint256[] memory idList,
+        string memory name,
+        string memory decode,
+        string memory time,
+        string memory position,
+        string memory zIndex,
+        bytes32 data
+    ) public {
+        uint256 len = idList.length;
+        require(len > 1, "error");
+        require(baseInfo[data].owner == address(0), "error");
+        _make(time, position, zIndex, msg.sender, data);
+        uint256 currentID = IPMT721(PMT721).currentID();
+        for (uint256 i; i < len; i++) {
+            _compose(currentID, idList[i], msg.sender);
+        }
+        baseInfo[data] = BaseInfo(msg.sender, name, "", decode);
     }
 
     function _make(
@@ -127,39 +144,18 @@ contract PixelsMetaverse {
         IPMT721(PMT721).mint(sender);
         uint256 id = IPMT721(PMT721).currentID();
         material[id] = Material(id, 0, time, position, zIndex, sender, data);
+        emit MakeEvent(id, data);
     }
 
-    function compose(
-        uint256[] memory ids,
-        string memory name,
-        string memory data,
-        string memory decode,
-        string memory time,
-        string memory position,
-        string memory zIndex
-    ) public {
-        uint256 len = ids.length;
-        require(len > 1, "error");
-        uint256 nextID = IPMT721(PMT721).currentID() + 1;
-        bytes32 d = keccak256(abi.encodePacked(data));
-        require(baseInfo[d].owner == address(0), "error");
-        _make(time, position, zIndex, msg.sender, d);
-        for (uint256 i; i < len; i++) {
-            uint256 id = ids[i];
-            _compose(nextID, id, msg.sender);
-        }
-        baseInfo[d] = BaseInfo(msg.sender, name, data, decode);
-        emit ComposeEvent(msg.sender, nextID);
-    }
-
-    function addition(uint256 id, uint256[] memory ids)
+    function addition(uint256 ids, uint256[] memory idList)
         public
-        IsOwner(msg.sender, id)
-        NoCompose(id)
+        Owner(msg.sender, ids)
     {
-        for (uint256 i; i < ids.length; i++) {
+        Material memory m = material[ids];
+        require(m.owner == msg.sender, "error");
+        for (uint256 i; i < idList.length; i++) {
             require(material[i].compose == 0, "error");
-            _compose(id, i, msg.sender);
+            _compose(ids, i, msg.sender);
         }
     }
 
@@ -167,49 +163,35 @@ contract PixelsMetaverse {
         uint256 ids,
         uint256 id,
         address _sender
-    ) private IsOwner(_sender, ids) IsOwner(_sender, id) {
-        Material memory m = material[id];
-        require(_sender == m.owner, "error");
-        require(m.compose == 0, "error");
+    ) private Owner(_sender, id) {
+        require(material[id].compose == 0, "error");
         material[id].compose = ids;
+        emit ComposeEvent(msg.sender, ids, id);
     }
 
-    function cancelCompose(uint256[] memory ids, uint256 id)
-        public
-        IsOwner(msg.sender, id)
-        NoCompose(id)
-    {
-        for (uint256 i; i < ids.length; i++) {
-            require(material[i].compose == id, "error");
+    function subtract(uint256 ids, uint256[] memory idList) public {
+        Material memory m = material[ids];
+        require(m.compose == 0, "error");
+        require(m.owner == msg.sender, "error");
+        for (uint256 i; i < idList.length; i++) {
+            require(material[i].compose == ids, "error");
             material[i].compose = 0;
+            emit ComposeEvent(msg.sender, 0, i);
         }
-        IPMT721(PMT721).burn(id);
-    }
-
-    function subtract(uint256[] memory ids, uint256 id)
-        public
-        IsOwner(msg.sender, id)
-        NoCompose(id)
-    {
-        for (uint256 i; i < ids.length; i++) {
-            require(material[i].compose == id, "error");
-            material[i].compose = 0;
-        }
-    }
-
-    function setPMT721(address pmt721) public {
-        require(msg.sender == _owner, "error");
-        PMT721 = IPMT721(pmt721);
     }
 
     function handleTransfer(
         address from,
         address to,
         uint256 id
-    ) public NoCompose(id) {
+    ) public {
+        Material memory m = material[id];
+        require(m.compose == 0, "error");
+
         require(msg.sender == address(PMT721), "error");
         if (to == address(0)) {
             delete material[id];
+            emit MakeEvent(id, keccak256(abi.encodePacked("")));
         } else if (from != address(0)) {
             material[id].owner = to;
         }
