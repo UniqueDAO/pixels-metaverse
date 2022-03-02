@@ -28,7 +28,8 @@ contract PMT721 is ERC721 {
         _approve(minter, _tokenId);
     }
 
-    function burn(uint256 id) public MustMinter(_msgSender()) {
+    function burn(uint256 id) public {
+        require(ownerOf(id) == _msgSender(), "Only Owner Can Do It!");
         _burn(id);
     }
 
@@ -48,7 +49,7 @@ contract PMT721 is ERC721 {
         return _tokenId;
     }
 
-    function _beforeTokenTransfer(
+    function _afterTokenTransfer(
         address from,
         address to,
         uint256 tokenId

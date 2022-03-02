@@ -32,11 +32,12 @@ contract PixelsMetaverse {
         BaseInfo baseInfo;
     }
 
-    event MakeEvent(uint256 indexed id, bytes32 indexed data);
+    event MakeEvent(uint256 indexed id, string indexed data);
 
     event ComposeEvent(
-        address indexed owner,
-        uint256 indexed fatherID,
+        address owner,
+        uint256 indexed beforeFatherID,
+        uint256 indexed afterFatherID,
         uint256 indexed childrenID
     );
 
@@ -97,10 +98,11 @@ contract PixelsMetaverse {
     ) public {
         require(num > 0, "error");
         bytes32 d = keccak256(abi.encodePacked(data));
+        require(d != keccak256(abi.encodePacked("")), "error");
         require(baseInfo[d].owner == address(0), "error");
 
         for (uint256 i; i < num; i++) {
-            _make(time, position, zIndex, msg.sender, d);
+            _make(time, position, zIndex, msg.sender, d, data);
         }
 
         baseInfo[d] = BaseInfo(msg.sender, name, data, decode);
@@ -111,7 +113,7 @@ contract PixelsMetaverse {
         BaseInfo storage b = baseInfo[m.data];
         require(b.owner == msg.sender, "error");
         for (uint256 i; i < num; i++) {
-            _make(m.time, m.position, m.zIndex, msg.sender, m.data);
+            _make(m.time, m.position, m.zIndex, msg.sender, m.data, b.data);
         }
     }
 
@@ -121,18 +123,17 @@ contract PixelsMetaverse {
         string memory decode,
         string memory time,
         string memory position,
-        string memory zIndex,
-        bytes32 data
+        string memory zIndex
     ) public {
         uint256 len = idList.length;
         require(len > 1, "error");
-        require(baseInfo[data].owner == address(0), "error");
-        _make(time, position, zIndex, msg.sender, data);
-        uint256 currentID = IPMT721(PMT721).currentID();
+        uint256 nextID = IPMT721(PMT721).currentID() + 1;
+        bytes32 d = keccak256(abi.encodePacked(msg.sender, nextID));
+        _make(time, position, zIndex, msg.sender, d, "");
         for (uint256 i; i < len; i++) {
-            _compose(currentID, idList[i], msg.sender);
+            _compose(nextID, idList[i], msg.sender);
         }
-        baseInfo[data] = BaseInfo(msg.sender, name, "", decode);
+        baseInfo[d] = BaseInfo(msg.sender, name, "", decode);
     }
 
     function _make(
@@ -140,11 +141,12 @@ contract PixelsMetaverse {
         string memory position,
         string memory zIndex,
         address sender,
-        bytes32 data
+        bytes32 d,
+        string memory data
     ) private {
         IPMT721(PMT721).mint(sender);
         uint256 id = IPMT721(PMT721).currentID();
-        material[id] = Material(id, 0, time, position, zIndex, sender, data);
+        material[id] = Material(id, 0, time, position, zIndex, sender, d);
         emit MakeEvent(id, data);
     }
 
@@ -166,7 +168,7 @@ contract PixelsMetaverse {
     ) private Owner(_sender, id) {
         require(material[id].compose == 0, "this Material composed");
         material[id].compose = ids;
-        emit ComposeEvent(_sender, ids, id);
+        emit ComposeEvent(_sender, 0, ids, id);
     }
 
     function subtract(uint256 ids, uint256[] memory idList) public {
@@ -177,7 +179,7 @@ contract PixelsMetaverse {
             uint256 id = idList[i];
             require(material[id].compose == ids, "error");
             material[id].compose = 0;
-            emit ComposeEvent(msg.sender, 0, id);
+            emit ComposeEvent(msg.sender, ids, 0, id);
         }
     }
 
@@ -192,7 +194,7 @@ contract PixelsMetaverse {
         require(msg.sender == address(PMT721), "error");
         if (to == address(0)) {
             delete material[id];
-            emit MakeEvent(id, keccak256(abi.encodePacked("")));
+            emit MakeEvent(id, "");
         } else if (from != address(0)) {
             material[id].owner = to;
         }

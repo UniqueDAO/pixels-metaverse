@@ -52,7 +52,7 @@ module.exports = {
    * More here: https://hardhat.org/plugins/hardhat-gas-reporter.html
    */
   gasReporter: {
-    enabled: false,
+    enabled: true,
     currency: "USD",
     coinmarketcap: process.env.COINMARKETCAP || null,
   },
