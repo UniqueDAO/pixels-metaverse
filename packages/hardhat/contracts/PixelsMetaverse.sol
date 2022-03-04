@@ -10,7 +10,6 @@ contract PixelsMetaverse {
 
     struct Material {
         uint256 compose;
-        uint256 configID;
         bytes32 dataBytes;
         bool remake;
     }
@@ -46,16 +45,11 @@ contract PixelsMetaverse {
         address owner,
         uint256 indexed beforeFatherID,
         uint256 indexed afterFatherID,
-        uint256 indexed childrenID
+        uint256 indexed id
     );
 
-    modifier Exist(uint256 id) {
-        require(IPMT721(PMT721).exits(id), "Items must exist");
-        _;
-    }
-
     modifier Owner(address sender, uint256 id) {
-        Material memory m = material[id];
+        require(IPMT721(PMT721).exits(id), "Items must exist");
         require(sender == IPMT721(PMT721).ownerOf(id), "Only the owner");
         _;
     }
@@ -94,10 +88,11 @@ contract PixelsMetaverse {
 
         bytes32 d = keccak256(abi.encodePacked(rawData));
         require(baseInfo[d].owner == address(0), "Only have not the owner");
+
         uint256 currentID = IPMT721(PMT721).currentID() + num;
 
         for (uint256 i; i < num; i++) {
-            _make(msg.sender, rawData, d, 0, currentID, false);
+            _make(msg.sender, rawData, d, 0, currentID);
         }
 
         baseInfo[d] = BaseInfo(msg.sender, rawData);
@@ -111,23 +106,26 @@ contract PixelsMetaverse {
         require(d.owner == msg.sender, "Only the owner");
 
         for (uint256 i; i < num; i++) {
-            _make(msg.sender, d.rawData, m.dataBytes, id, m.configID, false);
+            _make(msg.sender, d.rawData, m.dataBytes, id, 0);
         }
+        material[id].remake = true;
+        emit MakeEvent(msg.sender, id, m.dataBytes, "", 0, 0, true);
     }
 
     function compose(
         uint256[] memory idList,
         string memory name,
-        string memory decode,
         string memory time,
         string memory position,
-        string memory zIndex
+        string memory zIndex,
+        string memory decode
     ) public {
         uint256 len = idList.length;
         require(len > 1, "The quantity must be greater than 1");
+
         uint256 nextID = IPMT721(PMT721).currentID() + 1;
         bytes32 dataBytes = keccak256(abi.encodePacked(msg.sender, nextID));
-        _make(msg.sender, "", dataBytes, 0, nextID, false);
+        _make(msg.sender, "", dataBytes, 0, nextID);
 
         for (uint256 i; i < len; i++) {
             _compose(nextID, idList[i], msg.sender);
@@ -142,12 +140,11 @@ contract PixelsMetaverse {
         string memory rawData,
         bytes32 dataBytes,
         uint256 dataID,
-        uint256 configID,
-        bool remake
+        uint256 configID
     ) private {
         IPMT721(PMT721).mint(sender);
         uint256 id = IPMT721(PMT721).currentID();
-        material[id] = Material(0, configID, dataBytes, remake);
+        material[id] = Material(0, dataBytes, false);
         emit MakeEvent(
             msg.sender,
             id,
@@ -155,7 +152,7 @@ contract PixelsMetaverse {
             rawData,
             dataID,
             configID,
-            remake
+            false
         );
     }
 
@@ -202,12 +199,14 @@ contract PixelsMetaverse {
     ) public {
         Material memory m = material[id];
         require(m.compose == 0, "The item must not have been synthesized");
+        require(!m.remake, "This id been remake");
         require(msg.sender == address(PMT721), "Only the owner");
+        require(avater[from] != id, "This id been avater");
 
-        if (to == address(0) && !m.remake) {
+        if (to == address(0)) {
             delete material[id];
             emit MakeEvent(
-                msg.sender,
+                address(0),
                 id,
                 keccak256(abi.encodePacked("")),
                 "",
@@ -216,7 +215,7 @@ contract PixelsMetaverse {
                 false
             );
         } else if (from != address(0)) {
-            //material[id].owner = to;
+            emit MakeEvent(from, id, m.dataBytes, "", 0, 0, false);
         }
     }
 }
