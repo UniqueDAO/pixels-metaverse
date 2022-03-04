@@ -144,7 +144,9 @@ describe("Test My Dapp", function () {
     });
     it("转账11给" + otherAccount, async function () {
       expect(await PMT721Contract.ownerOf(11)).to.equal(owner.address);
-      await PMT721Contract.transferFrom(owner.address, otherAccount, 11)
+      expect(await PMT721Contract.transferFrom(owner.address, otherAccount, 11)).to.
+        emit(PixelsMetaverseContract, "MaterialEvent").
+        withArgs(otherAccount, 11, "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470", "", 0, 0, false);
       expect(await PMT721Contract.ownerOf(11)).to.equal(otherAccount);
       const m1111 = await PixelsMetaverseContract.material(11)
       expect(m1111.composed).to.equal(0);
