@@ -34,6 +34,18 @@ describe("Test My Dapp", function () {
       expect(currentID).to.equal(2);
     });
 
+    it("设置头像为1和2", async function () {
+      expect(await PixelsMetaverseContract.avater(owner.address)).to.equal(0)
+      expect(await PixelsMetaverseContract.setAvater(1)).to.
+        emit(PixelsMetaverseContract, "AvaterEvent").
+        withArgs(owner.address, 1);
+      expect(await PixelsMetaverseContract.avater(owner.address)).to.equal(1)
+      expect(await PixelsMetaverseContract.setAvater(2)).to.
+        emit(PixelsMetaverseContract, "AvaterEvent").
+        withArgs(owner.address, 2);
+      expect(await PixelsMetaverseContract.avater(owner.address)).to.equal(2)
+    });
+
     it("设置1的配置信息", async function () {
       expect(await PixelsMetaverseContract.setConfig(1, "name1", "time1", "position1", "zIndex1", "decode1", 0)).to.
         emit(PixelsMetaverseContract, "ConfigEvent").
@@ -42,11 +54,11 @@ describe("Test My Dapp", function () {
 
     it("设置2的配置信息", async function () {
       expect(await PixelsMetaverseContract.setConfig(2, "name12222222", "time1222222", "position12222222", "zIndex1222222", "decode1222222", 0)).to.
-        emit(PixelsMetaverseContract, "ConfigEvent").
-        withArgs(2, "name12222222", "time1222222", "position12222222", "zIndex1222222", "decode1222222", 0);
+        emit(PixelsMetaverseContract, "MaterialEvent").
+        withArgs(owner.address, 2, '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470', "", 0, 2, false);
     });
 
-    it("再次制作同样的2个虚拟物品3和4", async function () {
+    it("再次制作和2同样的2个虚拟物品3和4", async function () {
       const currentID1 = await PMT721Contract.currentID()
       expect(currentID1).to.equal(2);
       await PixelsMetaverseContract.reMake(2, 2);
@@ -56,7 +68,7 @@ describe("Test My Dapp", function () {
 
     it("再制作1个虚拟物品5", async function () {
       expect(await PixelsMetaverseContract.make("name5", "x-43-fdfad4-54343dfdfd4-43543543dffds-443543d4-45354353d453567554653-dfsafads", "time5", "position5", "zIndex5", "decode5", 1)).to.
-        emit(PixelsMetaverseContract, "MakeEvent").
+        emit(PixelsMetaverseContract, "MaterialEvent").
         withArgs(owner.address, 5, "0x5cdfc9128006242cf2147a76b4338919ac29b89c492a108c33aafbce2e1a5d4b", "x-43-fdfad4-54343dfdfd4-43543543dffds-443543d4-45354353d453567554653-dfsafads", 0, 5, false);
     });
 
@@ -77,19 +89,19 @@ describe("Test My Dapp", function () {
     it("再次制作3个不同的虚拟物品9、10、11", async function () {
       await PixelsMetaverseContract.make("name9", "rawData9", "time9", "position9", "zIndex9", "decode9", 3);
       const m9 = await PixelsMetaverseContract.material(9)
-      expect(m9.compose).to.equal(0);
+      expect(m9.composed).to.equal(0);
     });
 
     it("合并9到6里面去", async function () {
       const m6 = await PixelsMetaverseContract.material(6)
-      expect(m6.compose).to.equal(8);
+      expect(m6.composed).to.equal(8);
       expect(await PixelsMetaverseContract.addition(6, [9])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
         withArgs(owner.address, 0, 6, 9);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m9 = await PixelsMetaverseContract.material(9)
-      expect(m9.compose).to.equal(6);
+      expect(m9.composed).to.equal(6);
     });
 
     it("合并10和7到8里面去", async function () {
@@ -97,21 +109,21 @@ describe("Test My Dapp", function () {
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m7 = await PixelsMetaverseContract.material(7)
-      expect(m7.compose).to.equal(8);
+      expect(m7.composed).to.equal(8);
     });
 
     it("移除8里面的10", async function () {
       const m10 = await PixelsMetaverseContract.material(10)
-      expect(m10.compose).to.equal(8);
+      expect(m10.composed).to.equal(8);
       expect(await PixelsMetaverseContract.subtract(8, [10])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
         withArgs(owner.address, 8, 0, 10);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m1010 = await PixelsMetaverseContract.material(10)
-      expect(m1010.compose).to.equal(0);
+      expect(m1010.composed).to.equal(0);
       const m1 = await PixelsMetaverseContract.material(1)
-      expect(m1.compose).to.equal(7);
+      expect(m1.composed).to.equal(7);
     });
 
     it("制作1个虚拟物品12", async function () {
@@ -135,17 +147,17 @@ describe("Test My Dapp", function () {
       await PMT721Contract.transferFrom(owner.address, otherAccount, 11)
       expect(await PMT721Contract.ownerOf(11)).to.equal(otherAccount);
       const m1111 = await PixelsMetaverseContract.material(11)
-      expect(m1111.compose).to.equal(0);
+      expect(m1111.composed).to.equal(0);
     });
     it("销毁10", async function () {
       const m10 = await PixelsMetaverseContract.material(10)
-      expect(m10.compose).to.equal(0);
+      expect(m10.composed).to.equal(0);
 
       expect(await PMT721Contract.burn(10)).to.
         emit(PMT721Contract, "Transfer").
         withArgs(owner.address, ethers.constants.AddressZero, 10);
       const m1010 = await PixelsMetaverseContract.material(10)
-      expect(m1010.compose).to.equal(0);
+      expect(m1010.composed).to.equal(0);
       expect(await PMT721Contract.balanceOf(otherAccount)).to.equal(1);
     });
   });
