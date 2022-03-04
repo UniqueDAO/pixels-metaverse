@@ -39,7 +39,7 @@
     "web3-utils": "^1.7.0",
     "web3modal": "^1.9.4",
     "ethers": "^5.5.3",
-    "abi-to-request": "^1.0.1",
+    "abi-to-request": "1.0.1",
     "web3-core": "^1.7.0"
   },
   "scripts": {
