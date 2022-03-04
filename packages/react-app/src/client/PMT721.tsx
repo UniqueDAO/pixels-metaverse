@@ -4,7 +4,6 @@ import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { TransactionReceipt } from 'web3-core';
 import { ethers } from "ethers";
 
-
 //nonpayable
 export const PMT721_Approve = async (
 	contract: TContract,
@@ -147,6 +146,19 @@ export const PMT721_Mint = async (
 }
 
 //view
+export const PMT721_Minter = async (
+	contract: TContract,
+) => {
+	if ((contract as any)?.address && !(contract as any)?.methods) {
+		let res = await (contract as ethers.Contract).minter()
+		return convertedBigNumber(res) as string; //address
+	} else {
+		let res = await (contract as Contract).methods.minter().call()
+		return res as string; //address
+	}
+}
+
+//view
 export const PMT721_Name = async (
 	contract: TContract,
 ) => {
@@ -241,16 +253,16 @@ export const PMT721_SetApprovalForAll = async (
 export const PMT721_SetMinter = async (
 	contract: TContract,
 	arg?: {
-		minter: string; //address
+		_minter: string; //address
 	}
 ) => {
 	if (!arg) return
-	const { minter } = arg;
+	const { _minter } = arg;
 	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).setMinter(minter)
+		let res = await (contract as ethers.Contract).setMinter(_minter)
 		return res as TransactionResponse
 	} else {
-		let res = await (contract as Contract).methods.setMinter(minter).send({ from: contract.sendAccount })
+		let res = await (contract as Contract).methods.setMinter(_minter).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
 	}
 }

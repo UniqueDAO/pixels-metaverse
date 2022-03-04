@@ -224,6 +224,19 @@ export const abis: TAbiItem[] = [
       },
       {
         "inputs": [],
+        "name": "minter",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
         "name": "name",
         "outputs": [
           {
@@ -327,7 +340,7 @@ export const abis: TAbiItem[] = [
         "inputs": [
           {
             "internalType": "address",
-            "name": "minter",
+            "name": "_minter",
             "type": "address"
           }
         ],
@@ -425,7 +438,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "31337",
-    "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+    "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
     "frame": "hardhat",
     "netName": "localhost"
   },
@@ -449,19 +462,44 @@ export const abis: TAbiItem[] = [
           {
             "indexed": true,
             "internalType": "address",
+            "name": "onwer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "avater",
+            "type": "uint256"
+          }
+        ],
+        "name": "AvaterEvent",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "internalType": "address",
             "name": "owner",
             "type": "address"
           },
           {
             "indexed": true,
             "internalType": "uint256",
-            "name": "fatherID",
+            "name": "beforeFatherID",
             "type": "uint256"
           },
           {
             "indexed": true,
             "internalType": "uint256",
-            "name": "childrenID",
+            "name": "afterFatherID",
+            "type": "uint256"
+          },
+          {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "id",
             "type": "uint256"
           }
         ],
@@ -478,13 +516,92 @@ export const abis: TAbiItem[] = [
             "type": "uint256"
           },
           {
-            "indexed": true,
-            "internalType": "bytes32",
-            "name": "data",
-            "type": "bytes32"
+            "indexed": false,
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "time",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "position",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "zIndex",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "decode",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "sort",
+            "type": "uint256"
           }
         ],
-        "name": "MakeEvent",
+        "name": "ConfigEvent",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "onwer",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "indexed": true,
+            "internalType": "bytes32",
+            "name": "dataBytes",
+            "type": "bytes32"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "rawData",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "dataID",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "configID",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "bool",
+            "name": "remake",
+            "type": "bool"
+          }
+        ],
+        "name": "MaterialEvent",
         "type": "event"
       },
       {
@@ -541,17 +658,7 @@ export const abis: TAbiItem[] = [
           },
           {
             "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "data",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "decode",
+            "name": "rawData",
             "type": "string"
           }
         ],
@@ -572,11 +679,6 @@ export const abis: TAbiItem[] = [
           },
           {
             "internalType": "string",
-            "name": "decode",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
             "name": "time",
             "type": "string"
           },
@@ -591,104 +693,14 @@ export const abis: TAbiItem[] = [
             "type": "string"
           },
           {
-            "internalType": "bytes32",
-            "name": "data",
-            "type": "bytes32"
+            "internalType": "string",
+            "name": "decode",
+            "type": "string"
           }
         ],
         "name": "compose",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
-          }
-        ],
-        "name": "getMaterial",
-        "outputs": [
-          {
-            "components": [
-              {
-                "components": [
-                  {
-                    "internalType": "uint256",
-                    "name": "id",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "compose",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "string",
-                    "name": "time",
-                    "type": "string"
-                  },
-                  {
-                    "internalType": "string",
-                    "name": "position",
-                    "type": "string"
-                  },
-                  {
-                    "internalType": "string",
-                    "name": "zIndex",
-                    "type": "string"
-                  },
-                  {
-                    "internalType": "address",
-                    "name": "owner",
-                    "type": "address"
-                  },
-                  {
-                    "internalType": "bytes32",
-                    "name": "data",
-                    "type": "bytes32"
-                  }
-                ],
-                "internalType": "struct PixelsMetaverse.Material",
-                "name": "material",
-                "type": "tuple"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "address",
-                    "name": "owner",
-                    "type": "address"
-                  },
-                  {
-                    "internalType": "string",
-                    "name": "name",
-                    "type": "string"
-                  },
-                  {
-                    "internalType": "string",
-                    "name": "data",
-                    "type": "string"
-                  },
-                  {
-                    "internalType": "string",
-                    "name": "decode",
-                    "type": "string"
-                  }
-                ],
-                "internalType": "struct PixelsMetaverse.BaseInfo",
-                "name": "baseInfo",
-                "type": "tuple"
-              }
-            ],
-            "internalType": "struct PixelsMetaverse.MaterialInfo",
-            "name": "",
-            "type": "tuple"
-          }
-        ],
-        "stateMutability": "view",
         "type": "function"
       },
       {
@@ -723,12 +735,7 @@ export const abis: TAbiItem[] = [
           },
           {
             "internalType": "string",
-            "name": "data",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "decode",
+            "name": "rawData",
             "type": "string"
           },
           {
@@ -744,6 +751,11 @@ export const abis: TAbiItem[] = [
           {
             "internalType": "string",
             "name": "zIndex",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "decode",
             "type": "string"
           },
           {
@@ -769,38 +781,18 @@ export const abis: TAbiItem[] = [
         "outputs": [
           {
             "internalType": "uint256",
-            "name": "id",
+            "name": "composed",
             "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "compose",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "time",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "position",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "zIndex",
-            "type": "string"
-          },
-          {
-            "internalType": "address",
-            "name": "owner",
-            "type": "address"
           },
           {
             "internalType": "bytes32",
-            "name": "data",
+            "name": "dataBytes",
             "type": "bytes32"
+          },
+          {
+            "internalType": "bool",
+            "name": "remake",
+            "type": "bool"
           }
         ],
         "stateMutability": "view",
@@ -846,47 +838,36 @@ export const abis: TAbiItem[] = [
           },
           {
             "internalType": "string",
-            "name": "position",
+            "name": "name",
             "type": "string"
-          }
-        ],
-        "name": "setPosition",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
           },
           {
             "internalType": "string",
             "name": "time",
             "type": "string"
-          }
-        ],
-        "name": "setTime",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
+          },
           {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
+            "internalType": "string",
+            "name": "position",
+            "type": "string"
           },
           {
             "internalType": "string",
             "name": "zIndex",
             "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "decode",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sort",
+            "type": "uint256"
           }
         ],
-        "name": "setZIndex",
+        "name": "setConfig",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -911,7 +892,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "31337",
-    "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+    "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
     "frame": "hardhat",
     "netName": "localhost"
   }

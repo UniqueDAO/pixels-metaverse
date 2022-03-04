@@ -12,5 +12,5 @@ interface IPMT721 is IERC721 {
 
     function mint(address to) external;
     function burn(uint256 tokenId) external;
-    function currentID() external view returns (uint);
+    function currentID() external view returns (uint256);
 }
