@@ -1,15 +1,5 @@
-type HappyRedPacket @entity {
+type Avater @entity {
   id: ID!
-  claimers: [Claimer!]! @derivedFrom(field: "redpacket")
-}
-
-type Claimer @entity {
-  id: ID!
-  user: Bytes!
-  amount: BigInt!
-  redpacket: HappyRedPacket!
-}
-
-type RedPacketIDs @entity {
-  id: ID!
+  onwer: Bytes!
+  avater: BigInt!
 }

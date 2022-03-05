@@ -4144,9 +4144,9 @@ abab@^2.0.3, abab@^2.0.5:
   resolved "https://registry.npmjs.org/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
   integrity sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q==
 
-abi-to-request@^1.0.1:
+abi-to-request@1.0.1:
   version "1.0.1"
-  resolved "https://registry.npmjs.org/abi-to-request/-/abi-to-request-1.0.1.tgz#52090c40c9bfca5780bdfbcbbc34a61e0c6824b1"
+  resolved "https://registry.yarnpkg.com/abi-to-request/-/abi-to-request-1.0.1.tgz#52090c40c9bfca5780bdfbcbbc34a61e0c6824b1"
   integrity sha512-lzdPkqElVONP2SxrIq2D8i6f8q2FLsbyPOkyv9kdC4UZDCliC2PfDAG9GBderIzMVhnWd+Np6sX2nbqQhvaqXQ==
   dependencies:
     "@types/lodash" "^4.14.178"
