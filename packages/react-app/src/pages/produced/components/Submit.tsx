@@ -9,7 +9,7 @@ import React from 'react';
 import { PixelsMetaverse_Avater, PixelsMetaverse_Make, PixelsMetaverse_SetAvater } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { useQuery } from "@apollo/client"
-import { pixelsGraphAvaterLists } from '../../../gql';
+import { happyRedPacketsGraph, pixelsGraphavaterLists, pixelsGraphmaterialLists } from '../../../gql';
 import { PMT721_TransferFrom } from '../../../client/PMT721';
 const { Option } = Select;
 
@@ -214,13 +214,27 @@ export const Submit = () => {
 
   const isUser = useMemo(() => userInfo?.id !== "0", [userInfo]);
 
-  const avaterData = useQuery(pixelsGraphAvaterLists, {
-    pollInterval: 1000
+  const avaterData = useQuery(happyRedPacketsGraph, {
+    variables: { address: address?.toLowerCase() }
   })
 
+  /* const materialData = useQuery(pixelsGraphmaterialLists, {
+    pollInterval: 1000
+  }) */
+
   useEffect(() => {
-    console.log(avaterData, "avaterData")
+    if (avaterData.data) {
+      console.log(avaterData)
+      avaterData?.refetch().then(res=>{
+        console.log(res, "res")
+      })
+    }
   }, [avaterData?.data])
+  console.log(avaterData.data, "avaterData")
+
+  /* useEffect(() => {
+    console.log(materialData?.data, "materialData")
+  }, [materialData?.data]) */
 
   const [transfer] = useRequest(PMT721_TransferFrom)
 

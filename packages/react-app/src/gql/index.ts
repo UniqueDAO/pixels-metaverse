@@ -1,25 +1,27 @@
 import { gql } from "@apollo/client"
 
-export const pixelsGraphAvaterLists = gql`
+export const pixelsGraphavaterLists = gql`
     {
         avaterLists(first: 5){
             id
-            onwer
             avater
         }
     }
 `
 
-/* 
+export const happyRedPacketsGraph = gql`
+query getRedPacket($address:Bytes){
+        avaterLists(where: {id: $address} ) {
+        id
+        avater
+      }
+    }
+  `;
 
-export const pixelsGraphAvaterLists = gql`
-    query transcoders($address:Bytes){
-        avaterLists(first: 5){
-            id
-            onwer
-            avater
-        }
-        materialLists(first: 5){
+
+export const pixelsGraphmaterialLists = gql`
+    {
+        materialLists(first: 50){
             id
             owner
             dataBytes
@@ -30,4 +32,3 @@ export const pixelsGraphAvaterLists = gql`
         }
     }
 `
-*/
