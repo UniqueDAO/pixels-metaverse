@@ -7,7 +7,7 @@ contract PixelsMetaverse {
     IPMT721 private PMT721;
     bytes32 emptyBytes;
     mapping(address => uint256) public avater;
-    event AvaterEvent(address indexed onwer, uint256 indexed avater);
+    event AvaterEvent(address indexed owner, uint256 indexed avater);
 
     struct Material {
         uint256 composed; //被合并到哪个id去了
@@ -28,7 +28,7 @@ contract PixelsMetaverse {
         configID 当前ID的配置信息来自于哪个id
      */
     event MaterialEvent(
-        address indexed onwer,
+        address indexed owner,
         uint256 indexed id,
         bytes32 indexed dataBytes,
         string rawData,

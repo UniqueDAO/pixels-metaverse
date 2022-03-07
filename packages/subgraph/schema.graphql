@@ -1,5 +1,14 @@
-type Avater @entity {
+type AvaterList @entity {
   id: ID!
-  onwer: Bytes!
   avater: BigInt!
+}
+
+type MaterialList @entity {
+  id: ID!
+  owner: Bytes!
+  dataBytes: Bytes!
+  rawData: String
+  dataID: BigInt
+  configID: BigInt
+  remake: Boolean
 }

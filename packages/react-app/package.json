@@ -18,6 +18,7 @@
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
     "@walletconnect/web3-provider": "^1.6.5",
+    "@apollo/client": "^3.5.10",
     "antd": "^4.16.13",
     "authereum": "^0.1.14",
     "bignumber.js": "^9.0.1",
@@ -57,7 +58,7 @@
     "s3": "node ./scripts/s3.js",
     "ship": "npm run surge",
     "watch": "node ./scripts/watch.js",
-    "abi:api": "converted -d --entry './src/contracts/' --chainId 31337"
+    "abi:api": "converted -d --entry './src/contracts/' --chainId 1337"
   },
   "eslintConfig": {
     "extends": [

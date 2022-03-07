@@ -4,13 +4,8 @@ import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
 import { useReadContractRequest, useRequest, useWeb3Info } from "abi-to-request";
-import {
-  PixelsMetaverse_GetCollection,
-  PixelsMetaverse_GetMaterial,
-  PixelsMetaverse_GetMaterialLength,
-  PixelsMetaverse_User
-} from "../client/PixelsMetaverse";
 import { useLoading } from "./Loading";
+import { PixelsMetaverse_Material } from "../client/PixelsMetaverse";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -91,12 +86,12 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { openLoading, closeDelayLoading } = useLoading()
   const { address, chainId } = useWeb3Info()
-  const [userInfo, getUserInfo] = useReadContractRequest(PixelsMetaverse_User, { arg: address ? { addressParams1: address } : undefined })
-  const [collectList, getCollectList] = useReadContractRequest(PixelsMetaverse_GetCollection, { arg: address ? { from: address } : undefined })
-  const [materialLength, getMaterialLength] = useReadContractRequest(PixelsMetaverse_GetMaterialLength)
-  const [getMaterialInfo] = useRequest(PixelsMetaverse_GetMaterial, { isGlobalTransactionHookValid: false })
+  //const [userInfo, getUserInfo] = useReadContractRequest(PixelsMetaverse_Material, { arg: address ? { uint256Params1: address } : undefined })
+  //const [collectList, getCollectList] = useReadContractRequest(PixelsMetaverse_Material, { arg: address ? { uint256Params1: address } : undefined })
+  //const [materialLength, getMaterialLength] = useReadContractRequest(PixelsMetaverse_Material)
+  //const [getMaterialInfo] = useRequest(PixelsMetaverse_Material, { isGlobalTransactionHookValid: false })
 
-  const getMaterialList = useCallback(async () => {
+ /*  const getMaterialList = useCallback(async () => {
     openLoading()
     const arr: MaterialItem[] = []
     for (let i = Number(materialLength); i >= 1; i--) {
@@ -109,14 +104,14 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     closeDelayLoading()
     setMaterialList(arr)
   }, [getMaterialInfo, materialLength])
-
-  useEffect(() => {
+ */
+  /* useEffect(() => {
     if (Number(materialLength) && chainId) getMaterialList()
-  }, [materialLength, chainId])
+  }, [materialLength, chainId]) */
 
   useEffect(() => {
     if (isEmpty(materialList)) return
-    if (materialList?.length !== Number(materialLength)) return
+    //if (materialList?.length !== Number(materialLength)) return
     const obj: Dictionary<MaterialItem> = keyBy(materialList, (item: MaterialItem) => item?.material?.id);
     const getData = (items: MaterialItem) => {
       const data: MaterialItem[] = []
@@ -138,18 +133,21 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     setMaterialListObj(obj)
   }, [materialList])
 
+  const getUserInfo:any = ()=>{}
+  const getMaterialInfo:any = ()=>{}
+  const getMaterialList:any = ()=>{}
+  const userInfo:any = {}
+
   return (
     <UserInfoContext.Provider value={{
       getMaterialInfo,
-      getMaterialLength,
       getMaterialList,
       userInfo, getUserInfo,
-      collectList, getCollectList,
       materialList, setMaterialList,
       materialId, setMaterialId,
       composeList, setComposeList,
       materialListObj, setMaterialListObj
-    }}>
+    } as any}>
       {children}
     </UserInfoContext.Provider>
   )

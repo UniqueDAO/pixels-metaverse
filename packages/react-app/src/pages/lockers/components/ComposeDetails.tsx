@@ -132,7 +132,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
             }
 
             if (tab === "new") {
-              compose({ ids: composeList, name, category: category || "", data: "", decode: "" })
+              //compose({ ids: composeList, name, category: category || "", data: "", decode: "" })
             } else {
               const idList = [...composeList];
               idList.splice(idList?.indexOf(value), 1);

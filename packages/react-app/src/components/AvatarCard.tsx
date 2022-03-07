@@ -8,7 +8,7 @@ import { useUserInfo } from "./UserProvider";
 import { categoryData } from "../pages/produced/components/Submit";
 import { useWeb3Info } from "abi-to-request";
 import { useMemo } from "react";
-import { Collection, Composes, MaterialItem, MaterialLabel } from "./Card";
+import { Composes, MaterialItem, MaterialLabel } from "./Card";
 
 export const AvatarCard = ({ item, star }: {
   item: MaterialItem, star?: boolean
@@ -55,7 +55,7 @@ export const AvatarCard = ({ item, star }: {
             <MaterialLabel toRight toDetails>{item?.material?.id}</MaterialLabel>
             <MaterialLabel toRight>{(find(categoryData, ite => ite?.value === item?.baseInfo?.category) || {})?.label}</MaterialLabel>
           </div>
-          {star && <Collection item={item} />}
+          {/* {star && <Collection item={item} />} */}
         </div>
       </div>
     </div>

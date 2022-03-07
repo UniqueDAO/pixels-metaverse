@@ -75,7 +75,7 @@ module.exports = {
     },
 
     ganache: {
-      url: "http://127.0.0.1:8546",
+      url: "http://127.0.0.1:7545",
       chainId: 1337
     },
 
@@ -83,10 +83,10 @@ module.exports = {
     //   url: `https://rinkeby.infura.io/v3/${process.env.RINKEBY_INFURA_KEY}`,
     //   accounts: [`${process.env.RINKEBY_DEPLOYER_PRIV_KEY}`],
     // },
-    // kovan: {
-    //   url: `https://rinkeby.infura.io/v3/${process.env.KOVAN_INFURA_KEY}`,
-    //   accounts: [`${process.env.KOVAN_DEPLOYER_PRIV_KEY}`],
-    // },
+    kovan: {
+      url: `https://kovan.infura.io/v3/${process.env.KOVAN_INFURA_KEY}`,
+      accounts: [`${process.env.KOVAN_DEPLOYER_PRIV_KEY}`],
+    },
     // mainnet: {
     //   url: `https://mainnet.infura.io/v3/${process.env.MAINNET_INFURA_KEY}`,
     //   accounts: [`${process.env.MAINNET_DEPLOYER_PRIV_KEY}`],
@@ -105,7 +105,7 @@ module.exports = {
     //   accounts: [`${process.env.XDAI_DEPLOYER_PRIV_KEY}`],
     // },
 
-    rinkeby: {
+    /* rinkeby: {
       url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
 
       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
@@ -113,8 +113,8 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
-    },
-    kovan: {
+    }, */
+    /* kovan: {
       url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
 
       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/kovan", // <---- YOUR MORALIS ID! (not limited to infura)
@@ -122,7 +122,7 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
-    },
+    }, */
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
 

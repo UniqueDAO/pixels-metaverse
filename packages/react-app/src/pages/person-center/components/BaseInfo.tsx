@@ -7,7 +7,7 @@ import { ReactNode, useEffect, useMemo } from "react";
 import { useRequest, useWeb3Info } from "abi-to-request";
 import { isEmpty, split } from "lodash";
 import { ellipseAddress } from "../../../helpers/utilities";
-import { PixelsMetaverse_Register, PixelsMetaverse_SetConfig } from "../../../client/PixelsMetaverse";
+import { PixelsMetaverse_SetConfig } from "../../../client/PixelsMetaverse";
 
 const InfoLabel = ({ children, label }: { children: ReactNode, label: string }) => {
   return (
@@ -48,12 +48,6 @@ export const BaseInfo = () => {
   const address = search ? search.split("=")[1] : addresss
   const { userInfo, getUserInfo } = useUserInfo()
 
-  const [register] = useRequest(PixelsMetaverse_Register, {
-    onTransactionSuccess: () => {
-      address && getUserInfo()
-    }
-  }, [address])
-
   const [goSetConfig] = useRequest(PixelsMetaverse_SetConfig, {
     onTransactionSuccess: () => {
       message.success("更新信息成功！")
@@ -86,13 +80,13 @@ export const BaseInfo = () => {
             {ellipseAddress(address, 10) || "0x000000000000000000000000000000000000000000000000000"}
           </div>
         </InfoLabel>
-        <InfoLabel label="类型">
+       {/*  <InfoLabel label="类型">
           <div className="flex">
             {userInfo?.id === "0"
               ? <>访客<div className="cursor-pointer text-red-500 ml-2" onClick={register}>激活</div></>
               : (isEmpty(userInfo) ? "请部署合约" : "宇宙居民")}
           </div>
-        </InfoLabel>
+        </InfoLabel> */}
         <InfoLabel label="显示辅助线">
           <AppstoreOutlined style={{ color: config?.withGrid ? 'white' : "gray", fontSize: 22 }}
             onClick={() => setConfig((pre) => ({ ...pre, withGrid: !config?.withGrid }))} />
@@ -114,7 +108,7 @@ export const BaseInfo = () => {
                 role: userInfo?.role,
                 id: userInfo?.avater
               }
-              goSetConfig(arg)
+              //goSetConfig(arg)
             }
           }}
         >{address?.toUpperCase() === addresss?.toUpperCase() ? "更新设置" : "不可更新设置"}</Button>

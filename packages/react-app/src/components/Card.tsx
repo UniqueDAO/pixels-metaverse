@@ -8,9 +8,7 @@ import { useRequest, useWeb3Info } from "abi-to-request";
 import { categoryData } from "../pages/produced/components/Submit";
 import { PixelsMetaverseImgByPositionData } from "../pixels-metaverse";
 import {
-  PixelsMetaverse_CancelCollect,
-  PixelsMetaverse_CancelCompose,
-  PixelsMetaverse_Collect,
+  PixelsMetaverse_SetAvater,
   PixelsMetaverse_SetConfig,
   PixelsMetaverse_Subtract
 } from "../client/PixelsMetaverse";
@@ -44,7 +42,7 @@ export interface MaterialItem {
 export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
   const { composeList, getMaterialList } = useUserInfo()
 
-  const [cancelCompose] = useRequest(PixelsMetaverse_CancelCompose, {
+  const [cancelCompose] = useRequest(PixelsMetaverse_Subtract, {
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
       message.success("分解成功！")
@@ -53,7 +51,7 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
     }
   }, [composeList, item])
 
-  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { cancelCompose({ ids: item?.material?.id }) }}>
+  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { cancelCompose({ ids: item?.material?.id, idList: [] }) }}>
     分解
   </span>)
 }
@@ -70,7 +68,7 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
     }
   }, [item])
 
-  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { substract({ ids: item?.material?.compose, id: item?.material?.id, index: materialListObj[item?.material?.compose]?.composes?.indexOf(item?.material?.id) }) }}>
+  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { substract({ ids: item?.material?.compose, idList: [] }) }}>
     移除所属ID
   </span>)
 }
@@ -78,7 +76,7 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 export const SetAvater = ({ item }: { item: MaterialItem }) => {
   const { userInfo, getUserInfo } = useUserInfo()
 
-  const [setAvater] = useRequest(PixelsMetaverse_SetConfig, {
+  const [setAvater] = useRequest(PixelsMetaverse_SetAvater, {
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
       getUserInfo().then((res) => {
@@ -87,7 +85,7 @@ export const SetAvater = ({ item }: { item: MaterialItem }) => {
     }
   })
 
-  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvater({ role: userInfo?.role, id: item?.material?.id, other: userInfo?.other }) }}>
+  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvater({ id: "" }) }}>
     设置为头像
   </span>)
 }
@@ -121,7 +119,7 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
           {item?.material?.owner}
         </Text></div>
         <div>所属ID：{Number(item?.material?.compose) > 0 ? <>{item?.material?.compose}{/* <RemoveCompose item={item} setIsModalVisible={setIsModalVisible}/> */}</> : "暂未被合成"}</div>
-        <div className="flex">是否收藏：{isCollect ? "是" : `否`} {!isCollect && <div className="ml-8 flex w-90" style={{ color: !isCollect && item?.material?.owner === address ? "rgba(0,0,0,0.7)" : "white" }}><Collection item={item} /></div>}</div>
+        {/* <div className="flex">是否收藏：{isCollect ? "是" : `否`} {!isCollect && <div className="ml-8 flex w-90" style={{ color: !isCollect && item?.material?.owner === address ? "rgba(0,0,0,0.7)" : "white" }}><Collection item={item} /></div>}</div> */}
       </div>
     </div>
   )
@@ -228,7 +226,7 @@ export const MaterialLabel = ({
   )
 }
 
-export const Collection = ({ item }: { item: MaterialItem }) => {
+/* export const Collection = ({ item }: { item: MaterialItem }) => {
   const { collectList } = useUserInfo()
   const { address } = useWeb3Info()
 
@@ -258,7 +256,7 @@ export const Collection = ({ item }: { item: MaterialItem }) => {
       >{index !== undefined && index >= 0 ? "取消收藏" : "收藏"}</button> : <div>当前账户</div>}
     </>
   )
-}
+} */
 
 export const Composes = ({
   item

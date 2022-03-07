@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 import { PixelsMetaverseImgByPositionData } from "../../../pixels-metaverse";
 import { useMemo, useState } from "react";
 import { ellipseAddress } from "../../../helpers/utilities";
-import { Collection, Composes, Details, MaterialItem, MaterialLabel } from "../../../components/Card";
+import { Composes, Details, MaterialItem, MaterialLabel } from "../../../components/Card";
 import { Modal } from "antd";
 
 export const MaterialCard = ({ item }: { item: MaterialItem }) => {
@@ -50,7 +50,7 @@ export const MaterialCard = ({ item }: { item: MaterialItem }) => {
               history.push(`/person-center?address=${item?.material?.owner}`)
             }}
           >{ellipseAddress(item?.material?.owner, 8)}</div>}
-          <Collection item={item} />
+          {/* <Collection item={item} /> */}
         </div>
       </div>
       {isModalVisible && item?.material?.id && <Modal
