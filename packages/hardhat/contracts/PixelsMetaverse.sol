@@ -15,12 +15,7 @@ contract PixelsMetaverse {
         bool remake; //是否基于当前id再次制作了与该id同样的其他虚拟物品
     }
     mapping(uint256 => Material) public material;
-
-    struct BaseInfo {
-        address owner; //原始数据的所有者
-        string rawData; //原始数据
-    }
-    mapping(bytes32 => BaseInfo) public baseInfo;
+    mapping(bytes32 => address) public dataOwner;
 
     /**
         rawData 当前ID的原始数据
@@ -51,13 +46,19 @@ contract PixelsMetaverse {
     );
 
     /**
-        beforeFatherID 被合并或解除合并之前的上级id
-        afterFatherID 被合并或解除合并之后的上级id
+        fromID 被合并或解除合并之前的上级id
+        toID 被合并或解除合并之后的上级id
      */
     event ComposeEvent(
         uint256 indexed id,
-        uint256 indexed beforeFatherID,
-        uint256 indexed afterFatherID
+        uint256 indexed fromID,
+        uint256 indexed toID
+    );
+
+    event TransferEvent(
+        uint256 indexed id,
+        address indexed from,
+        address indexed to
     );
 
     modifier Owner(address sender, uint256 id) {
@@ -101,10 +102,7 @@ contract PixelsMetaverse {
         require(num > 0, "The quantity must be greater than 0");
 
         bytes32 d = keccak256(abi.encodePacked(rawData));
-        require(
-            baseInfo[d].owner == address(0),
-            "This data already has an owner"
-        );
+        require(dataOwner[d] == address(0), "This data already has an owner");
 
         uint256 ID = IPMT721(PMT721).currentID() + num;
 
@@ -112,18 +110,17 @@ contract PixelsMetaverse {
             _make(msg.sender, rawData, d, 0, ID);
         }
 
-        baseInfo[d] = BaseInfo(msg.sender, rawData);
+        dataOwner[d] = msg.sender;
 
         emit ConfigEvent(ID, name, time, position, zIndex, decode, 0);
     }
 
     function reMake(uint256 id, uint256 num) public Owner(msg.sender, id) {
         Material storage m = material[id];
-        BaseInfo storage d = baseInfo[m.dataBytes];
-        require(d.owner == msg.sender, "Only the owner");
+        require(dataOwner[m.dataBytes] == msg.sender, "Only the owner");
 
         for (uint256 i; i < num; i++) {
-            _make(msg.sender, d.rawData, m.dataBytes, id, 0);
+            _make(msg.sender, "", m.dataBytes, id, 0);
         }
         material[id].remake = true;
         emit MaterialEvent(msg.sender, id, emptyBytes, "", 0, 0, true);
@@ -148,7 +145,7 @@ contract PixelsMetaverse {
             _compose(nextID, idList[i], msg.sender);
         }
 
-        baseInfo[dataBytes] = BaseInfo(msg.sender, "");
+        dataOwner[dataBytes] = msg.sender;
         emit ConfigEvent(nextID, name, time, position, zIndex, decode, 0);
     }
 
@@ -222,9 +219,7 @@ contract PixelsMetaverse {
 
         if (to == address(0)) {
             delete material[id];
-            emit MaterialEvent(address(0), id, emptyBytes, "", 0, 0, false);
-        } else if (from != address(0)) {
-            emit MaterialEvent(to, id, emptyBytes, "", 0, 0, false);
         }
+        emit MaterialEvent(to, id, emptyBytes, "", 0, 0, false);
     }
 }
