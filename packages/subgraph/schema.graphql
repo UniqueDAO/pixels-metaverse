@@ -6,9 +6,20 @@ type AvaterList @entity {
 type MaterialList @entity {
   id: ID!
   owner: Bytes!
-  dataBytes: Bytes!
   rawData: String
-  dataID: BigInt
-  configID: BigInt
   remake: Boolean
+  composed: BigInt
+  composeData: [BigInt!]
+  config: [TConfig!]! @derivedFrom(field: "meterial")
+}
+
+type TConfig @entity {
+  id: ID!
+  name: String
+  time: String
+  position: String
+  zIndex: String
+  decode: String
+  sort: BigInt,
+  meterial: MaterialList!
 }

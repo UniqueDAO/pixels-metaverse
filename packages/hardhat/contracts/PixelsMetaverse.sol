@@ -55,10 +55,9 @@ contract PixelsMetaverse {
         afterFatherID 被合并或解除合并之后的上级id
      */
     event ComposeEvent(
-        address owner,
+        uint256 indexed id,
         uint256 indexed beforeFatherID,
-        uint256 indexed afterFatherID,
-        uint256 indexed id
+        uint256 indexed afterFatherID
     );
 
     modifier Owner(address sender, uint256 id) {
@@ -190,7 +189,7 @@ contract PixelsMetaverse {
     ) private Owner(_sender, id) {
         require(material[id].composed == 0, "this Material composed");
         material[id].composed = ids;
-        emit ComposeEvent(_sender, 0, ids, id);
+        emit ComposeEvent(id, 0, ids);
     }
 
     function subtract(uint256 ids, uint256[] memory idList)
@@ -206,7 +205,7 @@ contract PixelsMetaverse {
                 "The item was not synthesized into the ids"
             );
             material[id].composed = 0;
-            emit ComposeEvent(msg.sender, ids, 0, id);
+            emit ComposeEvent(id, ids, 0);
         }
     }
 

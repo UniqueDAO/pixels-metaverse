@@ -1,10 +1,13 @@
 import React, { Dispatch, useEffect, useMemo, useState } from "react";
-import { Dictionary, filter, groupBy, orderBy } from "lodash";
-import { Button, Modal, Select } from "antd";
+import { Dictionary, filter, groupBy, map, orderBy } from "lodash";
+import { Button, Input, Modal, Select } from "antd";
 import { useUserInfo } from "../../../components/UserProvider";
 import { CloseSquareOutlined } from "@ant-design/icons";
 import { MaterialItem } from "../../../components/Card";
 import { ComposeDetails } from "./ComposeDetails";
+import { useQuery } from "@apollo/client";
+import { happyRedPacketsGraph, materialLists } from "../../../gql";
+import { useWeb3Info } from "abi-to-request";
 const { Option } = Select;
 
 export const ClearIcon = () => <div className="relative bg-white bg-opacity-10"><CloseSquareOutlined className="absolute" style={{ top: -2, left: -2, fontSize: 16 }} /></div>
@@ -12,10 +15,42 @@ export const ClearIcon = () => <div className="relative bg-white bg-opacity-10">
 export const SearchQuery = ({
   setData,
 }: {
-  setData: Dispatch<React.SetStateAction<any[]>>;
+  setData: Dispatch<React.SetStateAction<MaterialItem[]>>;
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { composeList } = useUserInfo()
+
+  const materialListsRes = useQuery(materialLists)
+
+  useEffect(() => {
+    const data = materialListsRes?.data?.materialLists
+    if (data?.length > 0) {
+      setData(() => {
+        return map(data, item => {
+          return {
+            composes: [],
+            material: {
+              id: item?.id,
+              compose: "0",
+              time: "time",
+              position: "position",
+              zIndex: "zIndex",
+              owner: item?.owner,
+              data: item?.dataBytes
+            },
+            baseInfo: {
+              data: item?.rawData,
+              category: "category",
+              decode: "decode",
+              name: "name",
+              userId: "userId"
+            },
+            composeData: []
+          }
+        })
+      })
+    }
+  }, [materialListsRes.data])
 
   const { materialList } = useUserInfo()
   const [{
@@ -96,16 +131,16 @@ export const SearchQuery = ({
       >
         <ComposeDetails setIsModalVisible={setIsModalVisible} />
       </Modal>
-      {/* <Input
-        style={{ width: 120, marginLeft: 10 }}
+      <Input
+        style={{ width: 400, marginLeft: 10 }}
         allowClear
-        placeholder="用户ID"
+        placeholder="所有者地址"
         onChange={(val) => {
           setList((pre) => ({ ...pre, owner: val }))
         }}
       >
-      </Input> */}
-      {/* <Input
+      </Input>
+      <Input
         style={{ width: 120, marginLeft: 10 }}
         allowClear
         placeholder="物品ID"
@@ -114,7 +149,7 @@ export const SearchQuery = ({
         }}
       >
       </Input>
-      <Select
+      {/* <Select
         showSearch
         style={{ width: 330, marginLeft: 10 }}
         allowClear

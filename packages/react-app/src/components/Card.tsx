@@ -29,7 +29,7 @@ export interface IBaseInfo {
   category: string;
   decode: string;
   name: string;
-  userId: string;
+  userId?: string;
 }
 
 export interface MaterialItem {

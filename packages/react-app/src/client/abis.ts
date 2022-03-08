@@ -438,7 +438,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "42",
-    "address": "0x1346a72948879eb891a0533587b69C84981A20EE",
+    "address": "0x0A8ebE042C2306531E7ec724D9d038a07b538b85",
     "frame": "hardhat",
     "netName": "kovan"
   },
@@ -462,7 +462,7 @@ export const abis: TAbiItem[] = [
           {
             "indexed": true,
             "internalType": "address",
-            "name": "onwer",
+            "name": "owner",
             "type": "address"
           },
           {
@@ -561,7 +561,7 @@ export const abis: TAbiItem[] = [
           {
             "indexed": true,
             "internalType": "address",
-            "name": "onwer",
+            "name": "owner",
             "type": "address"
           },
           {
@@ -892,7 +892,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "42",
-    "address": "0x09758fd8698582a7a185d5DE0384ecc41D1523CC",
+    "address": "0xDeAD47Eb20D52562543e88E20AE160f5CfD56Ac1",
     "frame": "hardhat",
     "netName": "kovan"
   },
@@ -1332,10 +1332,10 @@ export const abis: TAbiItem[] = [
         "type": "function"
       }
     ],
-    "chainId": "1337",
-    "address": "0xf56B7eD3fBc4e251e443F920783FaE4fB2363e4e",
+    "chainId": "31337",
+    "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
     "frame": "hardhat",
-    "netName": "ganache"
+    "netName": "localhost"
   },
   {
     "contractName": "PixelsMetaverse",
@@ -1357,7 +1357,7 @@ export const abis: TAbiItem[] = [
           {
             "indexed": true,
             "internalType": "address",
-            "name": "onwer",
+            "name": "owner",
             "type": "address"
           },
           {
@@ -1456,7 +1456,7 @@ export const abis: TAbiItem[] = [
           {
             "indexed": true,
             "internalType": "address",
-            "name": "onwer",
+            "name": "owner",
             "type": "address"
           },
           {
@@ -1786,9 +1786,9 @@ export const abis: TAbiItem[] = [
         "type": "function"
       }
     ],
-    "chainId": "1337",
-    "address": "0xBfc1cB80fCD4B950a1406Bf97531D3f5d05ce9c9",
+    "chainId": "31337",
+    "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
     "frame": "hardhat",
-    "netName": "ganache"
+    "netName": "localhost"
   }
 ]

@@ -9,7 +9,7 @@ import React from 'react';
 import { PixelsMetaverse_Avater, PixelsMetaverse_Make, PixelsMetaverse_SetAvater } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { useQuery } from "@apollo/client"
-import { happyRedPacketsGraph, pixelsGraphavaterLists, pixelsGraphmaterialLists } from '../../../gql';
+import { happyRedPacketsGraph, pixelsGraphavaterLists } from '../../../gql';
 import { PMT721_TransferFrom } from '../../../client/PMT721';
 const { Option } = Select;
 
@@ -214,23 +214,21 @@ export const Submit = () => {
 
   const isUser = useMemo(() => userInfo?.id !== "0", [userInfo]);
 
-  const avaterData = useQuery(happyRedPacketsGraph, {
-    variables: { address: address?.toLowerCase() }
-  })
+  const avaterRes = useQuery(happyRedPacketsGraph)
 
   /* const materialData = useQuery(pixelsGraphmaterialLists, {
     pollInterval: 1000
   }) */
 
   useEffect(() => {
-    if (avaterData.data) {
-      console.log(avaterData)
-      avaterData?.refetch().then(res=>{
+    if (avaterRes?.data?.avaterLists?.length > 0 && address) {
+      avaterRes?.refetch({
+        address: address?.toLowerCase()//"0x2FB2320BbdD9f6b8AD5a3821eF49A1668f668c53"
+      }).then(res=>{
         console.log(res, "res")
       })
     }
-  }, [avaterData?.data])
-  console.log(avaterData.data, "avaterData")
+  }, [avaterRes?.data, address])
 
   /* useEffect(() => {
     console.log(materialData?.data, "materialData")

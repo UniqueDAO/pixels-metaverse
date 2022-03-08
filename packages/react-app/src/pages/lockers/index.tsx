@@ -7,6 +7,7 @@ import { MaterialItem } from "../../components/Card";
 
 export const Lockers = () => {
   const [data, setData] = React.useState<MaterialItem[]>([])
+  console.log(data)
 
   return (
     <main className="pt-20">

@@ -97,7 +97,7 @@ describe("Test My Dapp", function () {
       expect(m6.composed).to.equal(8);
       expect(await PixelsMetaverseContract.addition(6, [9])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(owner.address, 0, 6, 9);
+        withArgs(9, 0, 6);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m9 = await PixelsMetaverseContract.material(9)
@@ -117,7 +117,7 @@ describe("Test My Dapp", function () {
       expect(m10.composed).to.equal(8);
       expect(await PixelsMetaverseContract.subtract(8, [10])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(owner.address, 8, 0, 10);
+        withArgs(10, 8, 0);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m1010 = await PixelsMetaverseContract.material(10)

@@ -19,9 +19,9 @@ query getRedPacket($address:Bytes){
   `;
 
 
-export const pixelsGraphmaterialLists = gql`
+export const materialLists = gql`
     {
-        materialLists(first: 50){
+        materialLists(first: 10){
             id
             owner
             dataBytes
