@@ -10,7 +10,12 @@ type MaterialList @entity {
   remake: Boolean
   composed: BigInt
   composeData: [BigInt!]
-  config: [TConfig!]! @derivedFrom(field: "meterial")
+}
+
+type ComposeList @entity {
+  id: ID!
+  fromID: BigInt!
+  toID: BigInt!
 }
 
 type TConfig @entity {
@@ -20,6 +25,5 @@ type TConfig @entity {
   position: String
   zIndex: String
   decode: String
-  sort: BigInt,
-  meterial: MaterialList!
+  sort: BigInt
 }

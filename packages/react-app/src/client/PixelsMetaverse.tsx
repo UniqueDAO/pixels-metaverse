@@ -41,30 +41,6 @@ export const PixelsMetaverse_Avater = async (
 	}
 }
 
-//view
-export const PixelsMetaverse_BaseInfo = async (
-	contract: TContract,
-	arg?: {
-		bytes32Params1: string; //bytes32
-	}
-) => {
-	if (!arg) return
-	const { bytes32Params1 } = arg;
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract).baseInfo(bytes32Params1)
-		return convertedBigNumber(res) as {
-			owner: string; //address
-			rawData: string; //string
-		}
-	} else {
-		let res = await (contract as Contract).methods.baseInfo(bytes32Params1).call()
-		return res as {
-			owner: string; //address
-			rawData: string; //string
-		}
-	}
-}
-
 //nonpayable
 export const PixelsMetaverse_Compose = async (
 	contract: TContract,
@@ -85,6 +61,24 @@ export const PixelsMetaverse_Compose = async (
 	} else {
 		let res = await (contract as Contract).methods.compose(idList, name, time, position, zIndex, decode).send({ from: contract.sendAccount })
 		return res as TransactionReceipt
+	}
+}
+
+//view
+export const PixelsMetaverse_DataOwner = async (
+	contract: TContract,
+	arg?: {
+		bytes32Params1: string; //bytes32
+	}
+) => {
+	if (!arg) return
+	const { bytes32Params1 } = arg;
+	if ((contract as any)?.address && !(contract as any)?.methods) {
+		let res = await (contract as ethers.Contract).dataOwner(bytes32Params1)
+		return convertedBigNumber(res) as string; //address
+	} else {
+		let res = await (contract as Contract).methods.dataOwner(bytes32Params1).call()
+		return res as string; //address
 	}
 }
 

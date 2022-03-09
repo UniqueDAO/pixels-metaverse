@@ -6,7 +6,7 @@ import { useUserInfo } from '../../../components/UserProvider';
 import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
 import { ClearIcon } from '../../lockers/components/SearchQuery';
 import React from 'react';
-import { PixelsMetaverse_Avater, PixelsMetaverse_Make, PixelsMetaverse_SetAvater } from '../../../client/PixelsMetaverse';
+import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { useQuery } from "@apollo/client"
 import { happyRedPacketsGraph, pixelsGraphavaterLists } from '../../../gql';
@@ -235,6 +235,8 @@ export const Submit = () => {
   }, [materialData?.data]) */
 
   const [transfer] = useRequest(PMT721_TransferFrom)
+  const [compose] = useRequest(PixelsMetaverse_Compose)
+  const [add] = useRequest(PixelsMetaverse_Addition)
 
   useEffect(() => {
     const contract = contracts["PixelsMetaverse"]
@@ -248,6 +250,18 @@ export const Submit = () => {
       to: "0xEcfE156671443471884EA9d81e346621fF4d6AAf", 
       tokenId: 3
     }) */
+    /* compose({
+      idList: [1,3],
+      name: "name",
+      position: "position",
+      zIndex: "zIndex",
+      time: "time",
+      decode: "decode"
+    }) */
+    add({
+      idList: [5],
+      ids:  4
+    })
   }, [contracts])
 
   return (
@@ -316,7 +330,7 @@ export const Submit = () => {
         {<div className="mt-4">你还不是宇宙创始居民，请
           <span className="text-red-500 cursor-pointer" onClick={() => {
             setAvater({
-              id: 1
+              id: 2
             })
           }}>激活</span>自己的元宇宙身份！</div>}
       </div>

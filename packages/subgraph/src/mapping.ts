@@ -5,7 +5,7 @@ import {
   ConfigEvent,
   MaterialEvent
 } from "../generated/PixelsMetaverse/PixelsMetaverse"
-import { AvaterList, MaterialList, TConfig } from "../generated/schema"
+import { AvaterList, ComposeList, MaterialList, TConfig } from "../generated/schema"
 
 export function handleAvaterEvent(event: AvaterEvent): void {
   let avater = AvaterList.load(event.params.owner.toHex());
@@ -36,7 +36,7 @@ export function handleMaterialEvent(event: MaterialEvent): void {
 }
 
 export function handleComposeEvent(event: ComposeEvent): void {
-  let material = MaterialList.load(event.params.id.toString());
+  /* let material = MaterialList.load(event.params.id.toString());
   // let beforeFather = MaterialList.load(event.params.beforeFatherID.toString());
   // let afterFather = MaterialList.load(event.params.afterFatherID.toString());
   if (material == null) {
@@ -51,28 +51,30 @@ export function handleComposeEvent(event: ComposeEvent): void {
 
   // beforeFather.save();
   // afterFather.save();
-  material.save();
+  material.save(); */
+
+  let compose = ComposeList.load(event.params.id.toString());
+  if (compose == null) {
+    compose = new ComposeList(event.params.id.toString());
+    compose.fromID = event.params.fromID;
+    compose.toID = event.params.toID;
+  }else{
+    compose.fromID = event.params.fromID;
+    compose.toID = event.params.toID;
+  }
+  compose.save()
 }
 
 export function handleConfigEvent(event: ConfigEvent): void {
-  let material = MaterialList.load(event.params.id.toString());
-  if (material == null) {
-    material = new MaterialList(event.params.id.toString());
-    material.config = [event.params.id.toString()]
-  }
-
-  let config = TConfig.load(material.id);
+  let config = TConfig.load(event.params.id.toString());
   if (config == null) {
-    config = new TConfig(material.id);
+    config = new TConfig(event.params.id.toString());
   }
-  config.name = event.params.name;
   config.position = event.params.position;
   config.time = event.params.time;
   config.zIndex = event.params.zIndex;
   config.decode = event.params.decode;
   config.sort = event.params.sort;
-  config.meterial = material.id;
 
-  material.save()
   config.save()
 }

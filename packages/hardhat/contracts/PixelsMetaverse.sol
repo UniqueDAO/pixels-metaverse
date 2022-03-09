@@ -19,22 +19,15 @@ contract PixelsMetaverse {
 
     /**
         rawData 当前ID的原始数据
-        dataID 当前ID的图案数据来自于哪个id  
-        configID 当前ID的配置信息来自于哪个id
+        dataID 当前ID的基本数据来自于哪个id
      */
     event MaterialEvent(
         address indexed owner,
         uint256 indexed id,
-        uint256 configID,
-        bytes32 dataBytes,
-        bool remake
-    );
-
-    event BaseInfoEvent(
-        bytes32 indexed dataBytes,
         uint256 indexed dataID,
-        address indexed owner,
-        string rawData
+        uint256 configID,
+        string rawData,
+        bool remake
     );
 
     /**
@@ -42,7 +35,7 @@ contract PixelsMetaverse {
      */
     event ConfigEvent(
         uint256 indexed id,
-        string name,
+        string indexed name,
         string time,
         string position,
         string zIndex,
@@ -58,12 +51,6 @@ contract PixelsMetaverse {
         uint256 indexed id,
         uint256 indexed fromID,
         uint256 indexed toID
-    );
-
-    event TransferEvent(
-        uint256 indexed id,
-        address indexed from,
-        address indexed to
     );
 
     modifier Owner(address sender, uint256 id) {
@@ -92,7 +79,7 @@ contract PixelsMetaverse {
         uint256 sort
     ) public Owner(msg.sender, id) {
         emit ConfigEvent(id, name, time, position, zIndex, decode, sort);
-        emit MaterialEvent(msg.sender, id, emptyBytes, "", 0, id, false);
+        emit MaterialEvent(msg.sender, id, 0, id, "", false);
     }
 
     function make(
@@ -110,25 +97,24 @@ contract PixelsMetaverse {
         require(dataOwner[d] == address(0), "This data already has an owner");
 
         uint256 ID = IPMT721(PMT721).currentID() + num;
+        emit ConfigEvent(ID, name, time, position, zIndex, decode, 0);
 
         for (uint256 i; i < num; i++) {
             _make(msg.sender, rawData, d, 0, ID);
         }
 
         dataOwner[d] = msg.sender;
-
-        emit ConfigEvent(ID, name, time, position, zIndex, decode, 0);
     }
 
     function reMake(uint256 id, uint256 num) public Owner(msg.sender, id) {
         Material storage m = material[id];
         require(dataOwner[m.dataBytes] == msg.sender, "Only the owner");
 
+        emit MaterialEvent(msg.sender, id, 0, 0, "", true);
         for (uint256 i; i < num; i++) {
-            _make(msg.sender, "", m.dataBytes, id, 0);
+            _make(msg.sender, "", m.dataBytes, id, id);
         }
         material[id].remake = true;
-        emit MaterialEvent(msg.sender, id, emptyBytes, "", 0, 0, true);
     }
 
     function compose(
@@ -144,14 +130,14 @@ contract PixelsMetaverse {
 
         uint256 nextID = IPMT721(PMT721).currentID() + 1;
         bytes32 dataBytes = keccak256(abi.encodePacked(msg.sender, nextID));
-        _make(msg.sender, "", dataBytes, 0, nextID);
+        emit ConfigEvent(nextID, name, time, position, zIndex, decode, 0);
+        _make(msg.sender, "", dataBytes, nextID, nextID);
 
         for (uint256 i; i < len; i++) {
             _compose(nextID, idList[i], msg.sender);
         }
 
         dataOwner[dataBytes] = msg.sender;
-        emit ConfigEvent(nextID, name, time, position, zIndex, decode, 0);
     }
 
     function _make(
@@ -164,15 +150,7 @@ contract PixelsMetaverse {
         IPMT721(PMT721).mint(sender);
         uint256 id = IPMT721(PMT721).currentID();
         material[id] = Material(0, dataBytes, false);
-        emit MaterialEvent(
-            msg.sender,
-            id,
-            dataBytes,
-            rawData,
-            dataID,
-            configID,
-            false
-        );
+        emit MaterialEvent(msg.sender, id, dataID, configID, rawData, false);
     }
 
     function addition(uint256 ids, uint256[] memory idList)
@@ -225,6 +203,6 @@ contract PixelsMetaverse {
         if (to == address(0)) {
             delete material[id];
         }
-        emit TransferEvent(id, from, to);
+        emit MaterialEvent(to, id, 0, 0, "", false);
     }
 }
