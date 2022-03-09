@@ -26,43 +26,48 @@ export function handleMaterialEvent(event: MaterialEvent): void {
     material.owner = event.params.owner;
     material.rawData = event.params.rawData;
     material.remake = event.params.remake;
+    material.config = event.params.configID.toString();
+    material.composeData = [];
   } else {
     material.owner = event.params.owner;
     if (event.params.rawData !== "") material.rawData = event.params.rawData
     if (event.params.remake) material.remake = event.params.remake
+    if (event.params.configID.toString() !== "0") material.config = event.params.configID.toString();
+    material.composeData = [];
   }
 
   material.save();
 }
 
 export function handleComposeEvent(event: ComposeEvent): void {
-  /* let material = MaterialList.load(event.params.id.toString());
-  // let beforeFather = MaterialList.load(event.params.beforeFatherID.toString());
-  // let afterFather = MaterialList.load(event.params.afterFatherID.toString());
+  let material = MaterialList.load(event.params.id.toString());
   if (material == null) {
     material = new MaterialList(event.params.id.toString());
-  }
-
-  if (event.params.afterFatherID.toString() === "0") {
-    material.owner = Bytes.empty();
+    material.composed = event.params.toID;
   } else {
-    material.composed = event.params.afterFatherID;
+    material.composed = event.params.toID;
   }
 
-  // beforeFather.save();
-  // afterFather.save();
-  material.save(); */
-
-  let compose = ComposeList.load(event.params.id.toString());
-  if (compose == null) {
-    compose = new ComposeList(event.params.id.toString());
-    compose.fromID = event.params.fromID;
-    compose.toID = event.params.toID;
-  }else{
-    compose.fromID = event.params.fromID;
-    compose.toID = event.params.toID;
+  let beforeFather = MaterialList.load(event.params.fromID.toString());
+  if (beforeFather == null) {
+    beforeFather = new MaterialList(event.params.fromID.toString());
+    beforeFather.composeData = [];
+  } else {
+    const index = beforeFather.composeData.indexOf(event.params.id);
+    beforeFather.composeData.splice(index, 1);
   }
-  compose.save()
+
+  let afterFather = MaterialList.load(event.params.toID.toString());
+  if (afterFather == null) {
+    afterFather = new MaterialList(event.params.toID.toString());
+    afterFather.composeData = [event.params.id]
+  } else {
+    afterFather.composeData.push(event.params.id);
+  }
+
+  beforeFather.save();
+  afterFather.save();
+  material.save();
 }
 
 export function handleConfigEvent(event: ConfigEvent): void {
@@ -70,11 +75,13 @@ export function handleConfigEvent(event: ConfigEvent): void {
   if (config == null) {
     config = new TConfig(event.params.id.toString());
   }
+  config.name = event.params.name.toString();
   config.position = event.params.position;
   config.time = event.params.time;
   config.zIndex = event.params.zIndex;
   config.decode = event.params.decode;
   config.sort = event.params.sort;
+  //config.material = [event.params.id.toString()];
 
   config.save()
 }

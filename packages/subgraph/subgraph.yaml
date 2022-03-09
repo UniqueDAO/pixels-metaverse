@@ -24,7 +24,7 @@ dataSources:
       eventHandlers:
         - event: AvaterEvent(address,uint256)
           handler: handleAvaterEvent
-        - event: MaterialEvent(address,uint256,uint256,uint256,uint256,string,bool)
+        - event: MaterialEvent(address,uint256,uint256,uint256,string,bool)
           handler: handleMaterialEvent
         - event: ComposeEvent(uint256,uint256,uint256)
           handler: handleComposeEvent

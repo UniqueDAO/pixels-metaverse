@@ -9,7 +9,7 @@ import React from 'react';
 import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { useQuery } from "@apollo/client"
-import { happyRedPacketsGraph, pixelsGraphavaterLists } from '../../../gql';
+import { happyRedPacketsGraph, materialLists } from '../../../gql';
 import { PMT721_TransferFrom } from '../../../client/PMT721';
 const { Option } = Select;
 
@@ -216,23 +216,23 @@ export const Submit = () => {
 
   const avaterRes = useQuery(happyRedPacketsGraph)
 
-  /* const materialData = useQuery(pixelsGraphmaterialLists, {
+  const materialData = useQuery(materialLists, {
     pollInterval: 1000
-  }) */
+  })
 
   useEffect(() => {
     if (avaterRes?.data?.avaterLists?.length > 0 && address) {
       avaterRes?.refetch({
         address: address?.toLowerCase()//"0x2FB2320BbdD9f6b8AD5a3821eF49A1668f668c53"
-      }).then(res=>{
+      }).then(res => {
         console.log(res, "res")
       })
     }
   }, [avaterRes?.data, address])
 
-  /* useEffect(() => {
+  useEffect(() => {
     console.log(materialData?.data, "materialData")
-  }, [materialData?.data]) */
+  }, [materialData?.data])
 
   const [transfer] = useRequest(PMT721_TransferFrom)
   const [compose] = useRequest(PixelsMetaverse_Compose)
@@ -258,10 +258,10 @@ export const Submit = () => {
       time: "time",
       decode: "decode"
     }) */
-    add({
+    /* add({
       idList: [5],
       ids:  4
-    })
+    }) */
   }, [contracts])
 
   return (

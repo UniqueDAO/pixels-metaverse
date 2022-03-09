@@ -35,7 +35,7 @@ contract PixelsMetaverse {
      */
     event ConfigEvent(
         uint256 indexed id,
-        string indexed name,
+        string name,
         string time,
         string position,
         string zIndex,

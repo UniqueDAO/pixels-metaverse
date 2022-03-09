@@ -1,12 +1,12 @@
 import { gql } from "@apollo/client"
 
 export const pixelsGraphavaterLists = gql`
-    {
-        avaterLists(first: 5){
-            id
-            avater
-        }
+  {
+    avaterLists(first: 5){
+      id
+      avater
     }
+  }
 `
 
 export const happyRedPacketsGraph = gql`
@@ -21,14 +21,16 @@ query getRedPacket($address:Bytes){
 
 export const materialLists = gql`
     {
-        materialLists(first: 10){
+        materialLists(first: 5) {
             id
             owner
-            dataBytes
             rawData
-            dataID
-            configID
             remake
+            config{
+                id
+                time
+                position
+            }
         }
     }
 `

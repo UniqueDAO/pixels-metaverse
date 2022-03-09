@@ -9,7 +9,8 @@ type MaterialList @entity {
   rawData: String
   remake: Boolean
   composed: BigInt
-  composeData: [BigInt!]
+  composeData: [BigInt!]!
+  config: TConfig!
 }
 
 type ComposeList @entity {
