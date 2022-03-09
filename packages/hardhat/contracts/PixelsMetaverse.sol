@@ -25,11 +25,16 @@ contract PixelsMetaverse {
     event MaterialEvent(
         address indexed owner,
         uint256 indexed id,
-        bytes32 indexed dataBytes,
-        string rawData,
-        uint256 dataID,
         uint256 configID,
+        bytes32 dataBytes,
         bool remake
+    );
+
+    event BaseInfoEvent(
+        bytes32 indexed dataBytes,
+        uint256 indexed dataID,
+        address indexed owner,
+        string rawData
     );
 
     /**
@@ -220,6 +225,6 @@ contract PixelsMetaverse {
         if (to == address(0)) {
             delete material[id];
         }
-        emit MaterialEvent(to, id, emptyBytes, "", 0, 0, false);
+        emit TransferEvent(id, from, to);
     }
 }
