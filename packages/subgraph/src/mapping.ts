@@ -27,47 +27,47 @@ export function handleMaterialEvent(event: MaterialEvent): void {
     material.rawData = event.params.rawData;
     material.remake = event.params.remake;
     material.config = event.params.configID.toString();
-    material.composeData = [];
+    material.compose = event.params.id.toString();
   } else {
     material.owner = event.params.owner;
     if (event.params.rawData !== "") material.rawData = event.params.rawData
     if (event.params.remake) material.remake = event.params.remake
     if (event.params.configID.toString() !== "0") material.config = event.params.configID.toString();
-    material.composeData = [];
+    material.compose = event.params.id.toString();
   }
 
   material.save();
 }
 
 export function handleComposeEvent(event: ComposeEvent): void {
-  let material = MaterialList.load(event.params.id.toString());
-  if (material == null) {
-    material = new MaterialList(event.params.id.toString());
-    material.composed = event.params.toID;
+  let compose = ComposeList.load(event.params.id.toString());
+  if (compose == null) {
+    compose = new ComposeList(event.params.id.toString());
+    compose.composed = event.params.toID;
   } else {
-    material.composed = event.params.toID;
+    compose.composed = event.params.toID;
   }
 
-  let beforeFather = MaterialList.load(event.params.fromID.toString());
+  let beforeFather = ComposeList.load(event.params.fromID.toString());
   if (beforeFather == null) {
-    beforeFather = new MaterialList(event.params.fromID.toString());
+    beforeFather = new ComposeList(event.params.fromID.toString());
     beforeFather.composeData = [];
   } else {
     const index = beforeFather.composeData.indexOf(event.params.id);
     beforeFather.composeData.splice(index, 1);
   }
 
-  let afterFather = MaterialList.load(event.params.toID.toString());
+  let afterFather = ComposeList.load(event.params.toID.toString());
   if (afterFather == null) {
-    afterFather = new MaterialList(event.params.toID.toString());
-    afterFather.composeData = [event.params.id]
+    afterFather = new ComposeList(event.params.toID.toString());
+    afterFather.composeData.push(event.params.id);
   } else {
     afterFather.composeData.push(event.params.id);
   }
 
   beforeFather.save();
   afterFather.save();
-  material.save();
+  compose.save();
 }
 
 export function handleConfigEvent(event: ConfigEvent): void {
@@ -81,7 +81,41 @@ export function handleConfigEvent(event: ConfigEvent): void {
   config.zIndex = event.params.zIndex;
   config.decode = event.params.decode;
   config.sort = event.params.sort;
-  //config.material = [event.params.id.toString()];
 
   config.save()
 }
+
+/* 
+
+{
+  avaterLists(first: 5) {
+    id
+    avater
+  }
+  materialLists(first: 50) {
+    id
+    owner
+    rawData
+    remake
+    compose{
+      id
+      composed
+      composeData
+    }
+    config{
+      id
+    time
+    position
+    zIndex
+    }
+  }
+  tconfigs(first: 5){
+    id
+    time
+    position
+    zIndex
+  }
+}
+
+
+*/

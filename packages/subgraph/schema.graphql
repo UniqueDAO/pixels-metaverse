@@ -8,15 +8,14 @@ type MaterialList @entity {
   owner: Bytes!
   rawData: String
   remake: Boolean
-  composed: BigInt
-  composeData: [BigInt!]!
+  compose: ComposeList
   config: TConfig!
 }
 
 type ComposeList @entity {
   id: ID!
-  fromID: BigInt!
-  toID: BigInt!
+  composed: BigInt!
+  composeData: [BigInt!]!
 }
 
 type TConfig @entity {
