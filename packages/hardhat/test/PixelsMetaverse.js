@@ -97,7 +97,7 @@ describe("Test My Dapp", function () {
       expect(m6.composed).to.equal(8);
       expect(await PixelsMetaverseContract.addition(6, [9])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(9, 0, 6);
+        withArgs(0, 6, [9]);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m9 = await PixelsMetaverseContract.material(9)
@@ -105,7 +105,9 @@ describe("Test My Dapp", function () {
     });
 
     it("合并10和7到8里面去", async function () {
-      await PixelsMetaverseContract.addition(8, [10, 7]);
+      expect(await PixelsMetaverseContract.addition(8, [10, 7])).to.
+        emit(PixelsMetaverseContract, "ComposeEvent").
+        withArgs(0, 8, [10, 7]);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m7 = await PixelsMetaverseContract.material(7)
@@ -117,7 +119,7 @@ describe("Test My Dapp", function () {
       expect(m10.composed).to.equal(8);
       expect(await PixelsMetaverseContract.subtract(8, [10])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(10, 8, 0);
+        withArgs(8, 0, [10]);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m1010 = await PixelsMetaverseContract.material(10)

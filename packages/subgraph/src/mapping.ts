@@ -5,7 +5,7 @@ import {
   ConfigEvent,
   MaterialEvent
 } from "../generated/PixelsMetaverse/PixelsMetaverse"
-import { AvaterList, ComposeList, MaterialList, TConfig } from "../generated/schema"
+import { AvaterList, TCompose, MaterialList, TConfig } from "../generated/schema"
 
 export function handleAvaterEvent(event: AvaterEvent): void {
   let avater = AvaterList.load(event.params.owner.toHex());
@@ -32,7 +32,7 @@ export function handleMaterialEvent(event: MaterialEvent): void {
     material.owner = event.params.owner;
     if (event.params.rawData !== "") material.rawData = event.params.rawData
     if (event.params.remake) material.remake = event.params.remake
-    if (event.params.configID.toString() !== "0") material.config = event.params.configID.toString();
+    if (!event.params.configID.isZero()) material.config = event.params.configID.toString();
     material.compose = event.params.id.toString();
   }
 
@@ -40,34 +40,29 @@ export function handleMaterialEvent(event: MaterialEvent): void {
 }
 
 export function handleComposeEvent(event: ComposeEvent): void {
-  let compose = ComposeList.load(event.params.id.toString());
-  if (compose == null) {
-    compose = new ComposeList(event.params.id.toString());
-    compose.composed = event.params.toID;
+  let after = TCompose.load(event.params.toID.toString());
+  if (after == null) {
+    after = new TCompose(event.params.toID.toString());
+    after.composes = event.params.id;
   } else {
-    compose.composed = event.params.toID;
+    after.composes = after.composes.concat(event.params.id);
   }
 
-  let beforeFather = ComposeList.load(event.params.fromID.toString());
-  if (beforeFather == null) {
-    beforeFather = new ComposeList(event.params.fromID.toString());
-    beforeFather.composeData = [];
-  } else {
-    const index = beforeFather.composeData.indexOf(event.params.id);
-    beforeFather.composeData.splice(index, 1);
+  if (!event.params.toID.isZero()) {
+    for (let i = 0; i < event.params.id.length; i++) {
+      let id = event.params.id[i];
+      let compose = TCompose.load(id.toString());
+      if (compose == null) {
+        compose = new TCompose(id.toString());
+        compose.composed = event.params.toID;
+      } else {
+        compose.composed = event.params.toID;
+      }
+      compose.save()
+    }
   }
 
-  let afterFather = ComposeList.load(event.params.toID.toString());
-  if (afterFather == null) {
-    afterFather = new ComposeList(event.params.toID.toString());
-    afterFather.composeData.push(event.params.id);
-  } else {
-    afterFather.composeData.push(event.params.id);
-  }
-
-  beforeFather.save();
-  afterFather.save();
-  compose.save();
+  after.save();
 }
 
 export function handleConfigEvent(event: ConfigEvent): void {
@@ -75,7 +70,7 @@ export function handleConfigEvent(event: ConfigEvent): void {
   if (config == null) {
     config = new TConfig(event.params.id.toString());
   }
-  config.name = event.params.name.toString();
+  config.name = event.params.name;
   config.position = event.params.position;
   config.time = event.params.time;
   config.zIndex = event.params.zIndex;
@@ -85,7 +80,7 @@ export function handleConfigEvent(event: ConfigEvent): void {
   config.save()
 }
 
-/* 
+/*
 
 {
   avaterLists(first: 5) {
@@ -97,16 +92,14 @@ export function handleConfigEvent(event: ConfigEvent): void {
     owner
     rawData
     remake
+    config{
+      id
+      name
+    }
     compose{
       id
       composed
-      composeData
-    }
-    config{
-      id
-    time
-    position
-    zIndex
+      composes
     }
   }
   tconfigs(first: 5){
@@ -116,6 +109,7 @@ export function handleConfigEvent(event: ConfigEvent): void {
     zIndex
   }
 }
+
 
 
 */

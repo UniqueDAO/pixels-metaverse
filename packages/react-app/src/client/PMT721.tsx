@@ -4,19 +4,6 @@ import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { TransactionReceipt } from 'web3-core';
 import { ethers } from "ethers";
 
-//view
-export const PMT721__tokenId = async (
-	contract: TContract,
-) => {
-	if ((contract as any)?.address && !(contract as any)?.methods) {
-		let res = await (contract as ethers.Contract)._tokenId()
-		return convertedBigNumber(res) as string; //uint256
-	} else {
-		let res = await (contract as Contract).methods._tokenId().call()
-		return res as string; //uint256
-	}
-}
-
 //nonpayable
 export const PMT721_Approve = async (
 	contract: TContract,

@@ -6,7 +6,7 @@ import "./IPixelsMetaverse.sol";
 
 contract PMT721 is ERC721 {
     address public minter;
-    uint256 public _tokenId;
+    uint256 private _tokenId;
     address private _owner;
 
     modifier MustMinter(address from) {

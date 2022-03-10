@@ -8,22 +8,22 @@ type MaterialList @entity {
   owner: Bytes!
   rawData: String
   remake: Boolean
-  compose: ComposeList
   config: TConfig!
-}
-
-type ComposeList @entity {
-  id: ID!
-  composed: BigInt!
-  composeData: [BigInt!]!
+  compose: TCompose
 }
 
 type TConfig @entity {
   id: ID!
-  name: String
+  name: String!
   time: String
   position: String
   zIndex: String
   decode: String
   sort: BigInt
+}
+
+type TCompose @entity {
+  id: ID!
+  composed: BigInt
+  composes: [BigInt!]!
 }

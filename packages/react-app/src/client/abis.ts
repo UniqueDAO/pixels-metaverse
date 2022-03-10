@@ -85,19 +85,6 @@ export const abis: TAbiItem[] = [
         "type": "event"
       },
       {
-        "inputs": [],
-        "name": "_tokenId",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
         "inputs": [
           {
             "internalType": "address",
@@ -451,7 +438,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "42",
-    "address": "0xf67549026ae20e8fB2Fb77F1436c4FacF8bcDd68",
+    "address": "0x4338f967a7fB9Aa413c590A1807d0c767e35786E",
     "frame": "hardhat",
     "netName": "kovan"
   },
@@ -492,22 +479,22 @@ export const abis: TAbiItem[] = [
         "anonymous": false,
         "inputs": [
           {
-            "indexed": true,
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
-          },
-          {
-            "indexed": true,
+            "indexed": false,
             "internalType": "uint256",
             "name": "fromID",
             "type": "uint256"
           },
           {
-            "indexed": true,
+            "indexed": false,
             "internalType": "uint256",
             "name": "toID",
             "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256[]",
+            "name": "id",
+            "type": "uint256[]"
           }
         ],
         "name": "ComposeEvent",
@@ -523,7 +510,7 @@ export const abis: TAbiItem[] = [
             "type": "uint256"
           },
           {
-            "indexed": true,
+            "indexed": false,
             "internalType": "string",
             "name": "name",
             "type": "string"
@@ -888,7 +875,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "42",
-    "address": "0xe4E4e903F4Cb5Db71F5038E1f3C176D9f054CB4e",
+    "address": "0x205e7C1B121Cf99624D2D1313384f64781C9A8EB",
     "frame": "hardhat",
     "netName": "kovan"
   },
@@ -976,19 +963,6 @@ export const abis: TAbiItem[] = [
         "type": "event"
       },
       {
-        "inputs": [],
-        "name": "_tokenId",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
         "inputs": [
           {
             "internalType": "address",
@@ -1342,7 +1316,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "31337",
-    "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+    "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
     "frame": "hardhat",
     "netName": "localhost"
   },
@@ -1383,22 +1357,22 @@ export const abis: TAbiItem[] = [
         "anonymous": false,
         "inputs": [
           {
-            "indexed": true,
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
-          },
-          {
-            "indexed": true,
+            "indexed": false,
             "internalType": "uint256",
             "name": "fromID",
             "type": "uint256"
           },
           {
-            "indexed": true,
+            "indexed": false,
             "internalType": "uint256",
             "name": "toID",
             "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256[]",
+            "name": "id",
+            "type": "uint256[]"
           }
         ],
         "name": "ComposeEvent",
@@ -1414,7 +1388,7 @@ export const abis: TAbiItem[] = [
             "type": "uint256"
           },
           {
-            "indexed": true,
+            "indexed": false,
             "internalType": "string",
             "name": "name",
             "type": "string"
@@ -1779,7 +1753,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "31337",
-    "address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+    "address": "0x9A676e781A523b5d0C0e43731313A708CB607508",
     "frame": "hardhat",
     "netName": "localhost"
   }

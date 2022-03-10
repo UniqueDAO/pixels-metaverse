@@ -47,11 +47,7 @@ contract PixelsMetaverse {
         fromID 被合并或解除合并之前的上级id
         toID 被合并或解除合并之后的上级id
      */
-    event ComposeEvent(
-        uint256 indexed id,
-        uint256 indexed fromID,
-        uint256 indexed toID
-    );
+    event ComposeEvent(uint256 fromID, uint256 toID, uint256[] id);
 
     modifier Owner(address sender, uint256 id) {
         require(IPMT721(PMT721).exits(id), "Items must exist");
@@ -136,7 +132,7 @@ contract PixelsMetaverse {
         for (uint256 i; i < len; i++) {
             _compose(nextID, idList[i], msg.sender);
         }
-
+        emit ComposeEvent(0, nextID, idList);
         dataOwner[dataBytes] = msg.sender;
     }
 
@@ -160,6 +156,7 @@ contract PixelsMetaverse {
         for (uint256 i; i < idList.length; i++) {
             _compose(ids, idList[i], msg.sender);
         }
+        emit ComposeEvent(0, ids, idList);
     }
 
     function _compose(
@@ -169,7 +166,6 @@ contract PixelsMetaverse {
     ) private Owner(_sender, id) {
         require(material[id].composed == 0, "this Material composed");
         material[id].composed = ids;
-        emit ComposeEvent(id, 0, ids);
     }
 
     function subtract(uint256 ids, uint256[] memory idList)
@@ -185,8 +181,8 @@ contract PixelsMetaverse {
                 "The item was not synthesized into the ids"
             );
             material[id].composed = 0;
-            emit ComposeEvent(id, ids, 0);
         }
+        emit ComposeEvent(ids, 0, idList);
     }
 
     function handleTransfer(

@@ -251,17 +251,17 @@ export const Submit = () => {
       tokenId: 3
     }) */
     /* compose({
-      idList: [1,3],
-      name: "name",
-      position: "position",
-      zIndex: "zIndex",
-      time: "time",
-      decode: "decode"
+      idList: [2,6],
+      name: "name10",
+      position: "position10",
+      zIndex: "zIndex10",
+      time: "time10",
+      decode: "decode10"
     }) */
-    /* add({
-      idList: [5],
-      ids:  4
-    }) */
+    add({
+      idList: [7, 9],
+      ids: 10
+    })
   }, [contracts])
 
   return (
