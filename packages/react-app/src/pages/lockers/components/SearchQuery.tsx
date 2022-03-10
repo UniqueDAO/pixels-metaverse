@@ -23,7 +23,7 @@ export const SearchQuery = ({
   const materialListsRes = useQuery(materialLists)
 
   useEffect(() => {
-    const data = materialListsRes?.data?.materialLists
+    const data = materialListsRes?.data?.materials
     if (data?.length > 0) {
       console.log(data)
       setData(() => {

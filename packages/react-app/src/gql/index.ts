@@ -20,7 +20,7 @@ query getRedPacket($address:Bytes){
 
 export const materialLists = gql`
     {
-        materialLists(first: 50) {
+        materials(first: 50) {
             id
             owner
             rawData

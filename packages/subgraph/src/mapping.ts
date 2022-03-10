@@ -1,4 +1,3 @@
-import { BigInt } from "@graphprotocol/graph-ts";
 import {
   AvaterEvent,
   ComposeEvent,
@@ -93,7 +92,7 @@ export function handleConfigEvent(event: ConfigEvent): void {
     if (event.params.time.length > 0) config.time = event.params.time;
     if (event.params.zIndex.length > 0) config.zIndex = event.params.zIndex;
     if (event.params.decode.length > 0) config.decode = event.params.decode;
-    if (!event.params.sort.isZero()) config.sort = event.params.sort;
+    //if (!event.params.sort.isZero()) config.sort = event.params.sort;
   }
 
   config.save()

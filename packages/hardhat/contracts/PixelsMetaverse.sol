@@ -74,6 +74,10 @@ contract PixelsMetaverse {
         string memory decode,
         uint256 sort
     ) public Owner(msg.sender, id) {
+        require(
+            material[id].composed == 0,
+            "The item must not have been synthesized"
+        );
         emit ConfigEvent(id, name, time, position, zIndex, decode, sort);
         emit MaterialEvent(msg.sender, id, 0, id, "", false);
     }
@@ -192,11 +196,11 @@ contract PixelsMetaverse {
     ) public {
         Material memory m = material[id];
         require(m.composed == 0, "The item must not have been synthesized");
-        require(!m.remake, "This id been remake");
         require(msg.sender == address(PMT721), "Only the owner");
         require(avater[from] != id, "This id been avater");
 
         if (to == address(0)) {
+            require(!m.remake, "This id been remake");
             delete material[id];
         }
         if (from != address(0)) {
