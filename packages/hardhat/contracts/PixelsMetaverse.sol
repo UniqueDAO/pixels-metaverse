@@ -199,6 +199,8 @@ contract PixelsMetaverse {
         if (to == address(0)) {
             delete material[id];
         }
-        emit MaterialEvent(to, id, 0, 0, "", false);
+        if (from != address(0)) {
+            emit MaterialEvent(to, id, 0, 0, "", false);
+        }
     }
 }

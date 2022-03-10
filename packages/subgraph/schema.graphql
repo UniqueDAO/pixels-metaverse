@@ -1,9 +1,9 @@
-type AvaterList @entity {
+type Avater @entity {
   id: ID!
   avater: BigInt!
 }
 
-type MaterialList @entity {
+type Material @entity {
   id: ID!
   owner: Bytes!
   rawData: String

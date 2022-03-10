@@ -18,18 +18,25 @@ query getRedPacket($address:Bytes){
     }
   `;
 
-
 export const materialLists = gql`
     {
-        materialLists(first: 5) {
+        materialLists(first: 50) {
             id
             owner
             rawData
             remake
             config{
                 id
+                name
                 time
                 position
+                zIndex
+                decode
+                sort
+            }
+            compose{
+              composed
+              composes
             }
         }
     }

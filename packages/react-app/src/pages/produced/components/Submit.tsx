@@ -6,11 +6,11 @@ import { useUserInfo } from '../../../components/UserProvider';
 import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
 import { ClearIcon } from '../../lockers/components/SearchQuery';
 import React from 'react';
-import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater } from '../../../client/PixelsMetaverse';
+import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater, PixelsMetaverse_Subtract } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { useQuery } from "@apollo/client"
 import { happyRedPacketsGraph, materialLists } from '../../../gql';
-import { PMT721_TransferFrom } from '../../../client/PMT721';
+import { PMT721_Burn, PMT721_TransferFrom } from '../../../client/PMT721';
 const { Option } = Select;
 
 export const Label = ({ children, noNeed }: { children: ReactNode, noNeed?: boolean }) => {
@@ -237,6 +237,8 @@ export const Submit = () => {
   const [transfer] = useRequest(PMT721_TransferFrom)
   const [compose] = useRequest(PixelsMetaverse_Compose)
   const [add] = useRequest(PixelsMetaverse_Addition)
+  const [subtract] = useRequest(PixelsMetaverse_Subtract)
+  const [burn] = useRequest(PMT721_Burn)
 
   useEffect(() => {
     const contract = contracts["PixelsMetaverse"]
@@ -244,24 +246,7 @@ export const Submit = () => {
       (contract as any)?.on("AvaterEvent", (owner: string, avatar: string) => {
         console.log(owner, avatar, "AvaterEvent")
       })
-    }
-    /* transfer({
-      from: "0xf0A3FdF9dC875041DFCF90ae81D7E01Ed9Bc2033", 
-      to: "0xEcfE156671443471884EA9d81e346621fF4d6AAf", 
-      tokenId: 3
-    }) */
-    /* compose({
-      idList: [2,6],
-      name: "name10",
-      position: "position10",
-      zIndex: "zIndex10",
-      time: "time10",
-      decode: "decode10"
-    }) */
-    add({
-      idList: [7, 9],
-      ids: 10
-    })
+    }  
   }, [contracts])
 
   return (
@@ -310,6 +295,70 @@ export const Submit = () => {
             setIsModalVisible(true);
           }}
         >提交</Button>
+        <Button
+          type="primary"
+          size="large"
+          className="mt-6 w-full rounded"
+          style={{ cursor: isUser ? "pointer" : "no-drop" }}
+          onClick={() => {
+            compose({
+              idList: [10,12,13],
+              name: "name10",
+              position: "position10",
+              zIndex: "zIndex10",
+              time: "time10",
+              decode: "decode10"
+            })
+          }}
+        >合并</Button>
+        <Button
+          type="primary"
+          size="large"
+          className="mt-6 w-full rounded"
+          style={{ cursor: isUser ? "pointer" : "no-drop" }}
+          onClick={() => {
+            transfer({
+              from: "0xf0A3FdF9dC875041DFCF90ae81D7E01Ed9Bc2033", 
+              to: "0xEcfE156671443471884EA9d81e346621fF4d6AAf", 
+              tokenId: 16
+            })
+          }}
+        >转账</Button>
+        <Button
+          type="primary"
+          size="large"
+          className="mt-6 w-full rounded"
+          style={{ cursor: isUser ? "pointer" : "no-drop" }}
+          onClick={() => {
+            burn({
+              id: 11
+            })
+          }}
+        >销毁</Button>
+        <Button
+          type="primary"
+          size="large"
+          className="mt-6 w-full rounded"
+          style={{ cursor: isUser ? "pointer" : "no-drop" }}
+          onClick={() => {
+            add({
+              idList: [11, 4],
+              ids: 21
+            })
+          }}
+        >添加</Button>
+        <Button
+          type="primary"
+          size="large"
+          className="mt-6 w-full rounded"
+          style={{ cursor: isUser ? "pointer" : "no-drop" }}
+          onClick={() => {
+            subtract({
+              idList: [2, 6],
+              ids: 18
+            })
+          }}
+        >去掉</Button>
         {/* <Label noNeed>开始时间(毫秒)</Label>
         <Input value={amount} placeholder="物品数量" maxLength={1} onChange={(e) => setMerchandies((pre) => ({ ...pre, amount: mustNum(e) }))} />
         <div className="flex items-center mt-4 mb-1">

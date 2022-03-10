@@ -25,6 +25,7 @@ export const SearchQuery = ({
   useEffect(() => {
     const data = materialListsRes?.data?.materialLists
     if (data?.length > 0) {
+      console.log(data)
       setData(() => {
         return map(data, item => {
           return {

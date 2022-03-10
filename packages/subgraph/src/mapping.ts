@@ -1,28 +1,26 @@
-import { Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   AvaterEvent,
   ComposeEvent,
   ConfigEvent,
   MaterialEvent
 } from "../generated/PixelsMetaverse/PixelsMetaverse"
-import { AvaterList, TCompose, MaterialList, TConfig } from "../generated/schema"
+import { Avater, TCompose, Material, TConfig } from "../generated/schema"
 
 export function handleAvaterEvent(event: AvaterEvent): void {
-  let avater = AvaterList.load(event.params.owner.toHex());
+  let avater = Avater.load(event.params.owner.toHex());
   if (avater == null) {
-    avater = new AvaterList(event.params.owner.toHex());
-    avater.avater = event.params.avater;
-  } else {
-    avater.avater = event.params.avater;
+    avater = new Avater(event.params.owner.toHex());
   }
+  avater.avater = event.params.avater;
 
   avater.save();
 }
 
 export function handleMaterialEvent(event: MaterialEvent): void {
-  let material = MaterialList.load(event.params.id.toString());
+  let material = Material.load(event.params.id.toString());
   if (material == null) {
-    material = new MaterialList(event.params.id.toString());
+    material = new Material(event.params.id.toString());
     material.owner = event.params.owner;
     material.rawData = event.params.rawData;
     material.remake = event.params.remake;
@@ -30,8 +28,9 @@ export function handleMaterialEvent(event: MaterialEvent): void {
     material.compose = event.params.id.toString();
   } else {
     material.owner = event.params.owner;
-    if (event.params.rawData !== "") material.rawData = event.params.rawData
-    if (event.params.remake) material.remake = event.params.remake
+    // fuck: event.params.rawData !== "" is true, but graph query event.params.rawDat is "" ?????
+    if (event.params.rawData.length > 0) material.rawData = event.params.rawData;
+    if (event.params.remake) material.remake = false
     if (!event.params.configID.isZero()) material.config = event.params.configID.toString();
     material.compose = event.params.id.toString();
   }
@@ -48,20 +47,30 @@ export function handleComposeEvent(event: ComposeEvent): void {
     after.composes = after.composes.concat(event.params.id);
   }
 
-  if (!event.params.toID.isZero()) {
-    for (let i = 0; i < event.params.id.length; i++) {
-      let id = event.params.id[i];
-      let compose = TCompose.load(id.toString());
-      if (compose == null) {
-        compose = new TCompose(id.toString());
-        compose.composed = event.params.toID;
-      } else {
-        compose.composed = event.params.toID;
-      }
-      compose.save()
+  for (let i = 0; i < event.params.id.length; i++) {
+    let id = event.params.id[i];
+    let compose = TCompose.load(id.toString());
+    if (compose == null) {
+      compose = new TCompose(id.toString());
     }
+    compose.composed = event.params.toID;
+    compose.save()
   }
 
+  let before = TCompose.load(event.params.fromID.toString());
+  if (before == null) {
+    before = new TCompose(event.params.fromID.toString());
+  } else {
+    let composes = before.composes;
+    for (let i = 0; i < event.params.id.length; i++) {
+      let id = event.params.id[i];
+      let index = composes.indexOf(id);
+      composes.splice(index, 1);
+    }
+    before.composes = composes;
+  }
+
+  before.save()
   after.save();
 }
 
@@ -70,12 +79,22 @@ export function handleConfigEvent(event: ConfigEvent): void {
   if (config == null) {
     config = new TConfig(event.params.id.toString());
   }
-  config.name = event.params.name;
-  config.position = event.params.position;
-  config.time = event.params.time;
-  config.zIndex = event.params.zIndex;
-  config.decode = event.params.decode;
-  config.sort = event.params.sort;
+  if (config == null) {
+    config = new TConfig(event.params.id.toString());
+    config.name = event.params.name;
+    config.position = event.params.position;
+    config.time = event.params.time;
+    config.zIndex = event.params.zIndex;
+    config.decode = event.params.decode;
+    config.sort = event.params.sort;
+  } else {
+    if (event.params.name.length > 0) config.name = event.params.name;
+    if (event.params.position.length > 0) config.position = event.params.position;
+    if (event.params.time.length > 0) config.time = event.params.time;
+    if (event.params.zIndex.length > 0) config.zIndex = event.params.zIndex;
+    if (event.params.decode.length > 0) config.decode = event.params.decode;
+    if (!event.params.sort.isZero()) config.sort = event.params.sort;
+  }
 
   config.save()
 }
@@ -83,11 +102,11 @@ export function handleConfigEvent(event: ConfigEvent): void {
 /*
 
 {
-  avaterLists(first: 5) {
+  avaters(first: 5) {
     id
     avater
   }
-  materialLists(first: 50) {
+  materials(first: 50) {
     id
     owner
     rawData
@@ -101,12 +120,6 @@ export function handleConfigEvent(event: ConfigEvent): void {
       composed
       composes
     }
-  }
-  tconfigs(first: 5){
-    id
-    time
-    position
-    zIndex
   }
 }
 
