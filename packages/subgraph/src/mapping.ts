@@ -1,10 +1,11 @@
+import { Address, BigInt, Value } from "@graphprotocol/graph-ts";
 import {
   AvaterEvent,
   ComposeEvent,
   ConfigEvent,
   MaterialEvent
 } from "../generated/PixelsMetaverse/PixelsMetaverse"
-import { Avater, TCompose, Material, TConfig } from "../generated/schema"
+import { Avater, Material, TConfig } from "../generated/schema"
 
 export function handleAvaterEvent(event: AvaterEvent): void {
   let avater = Avater.load(event.params.owner.toHex());
@@ -17,6 +18,7 @@ export function handleAvaterEvent(event: AvaterEvent): void {
 }
 
 export function handleMaterialEvent(event: MaterialEvent): void {
+  let zeroAddr = Address.fromHexString("0x0000000000000000000000000000000000000000");
   let material = Material.load(event.params.id.toString());
   if (material == null) {
     material = new Material(event.params.id.toString());
@@ -24,23 +26,27 @@ export function handleMaterialEvent(event: MaterialEvent): void {
     material.rawData = event.params.rawData;
     material.remake = event.params.remake;
     material.config = event.params.configID.toString();
-    material.compose = event.params.id.toString();
+    material.composed = new BigInt(0);
+    material.createID = event.params.id;
   } else {
     material.owner = event.params.owner;
+    material.burned = event.params.owner == zeroAddr;
+
     // fuck: event.params.rawData !== "" is true, but graph query event.params.rawDat is "" ?????
+    // fuck: === not supper....... 
     if (event.params.rawData.length > 0) material.rawData = event.params.rawData;
     if (event.params.remake) material.remake = false
     if (!event.params.configID.isZero()) material.config = event.params.configID.toString();
-    material.compose = event.params.id.toString();
+    //material.compose = event.params.id.toString();
   }
 
   material.save();
 }
 
 export function handleComposeEvent(event: ComposeEvent): void {
-  let after = TCompose.load(event.params.toID.toString());
+  let after = Material.load(event.params.toID.toString());
   if (after == null) {
-    after = new TCompose(event.params.toID.toString());
+    after = new Material(event.params.toID.toString());
     after.composes = event.params.id;
   } else {
     after.composes = after.composes.concat(event.params.id);
@@ -48,17 +54,17 @@ export function handleComposeEvent(event: ComposeEvent): void {
 
   for (let i = 0; i < event.params.id.length; i++) {
     let id = event.params.id[i];
-    let compose = TCompose.load(id.toString());
+    let compose = Material.load(id.toString());
     if (compose == null) {
-      compose = new TCompose(id.toString());
+      compose = new Material(id.toString());
     }
     compose.composed = event.params.toID;
     compose.save()
   }
 
-  let before = TCompose.load(event.params.fromID.toString());
+  let before = Material.load(event.params.fromID.toString());
   if (before == null) {
-    before = new TCompose(event.params.fromID.toString());
+    before = new Material(event.params.fromID.toString());
   } else {
     let composes = before.composes;
     for (let i = 0; i < event.params.id.length; i++) {

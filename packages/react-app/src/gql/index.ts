@@ -1,16 +1,7 @@
 import { gql } from "@apollo/client"
 
 export const pixelsGraphavaterLists = gql`
-  {
-    avaterLists(first: 5){
-      id
-      avater
-    }
-  }
-`
-
-export const happyRedPacketsGraph = gql`
-query getRedPacket($address:Bytes){
+query($address:Bytes){
         avaterLists(where: {id: $address} ) {
         id
         avater
@@ -19,12 +10,14 @@ query getRedPacket($address:Bytes){
   `;
 
 export const materialLists = gql`
-  query($first: Int, $orderBy: BigInt, $orderDirection: String) {
-    materials(first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
+  query($first: Int, $orderBy: String, $orderDirection: String, $composed: BigInt) {
+    materials(first: $first, orderBy: "createID", orderDirection: $orderDirection, where: { composed: $composed, burned: false }) {
             id
             owner
             rawData
             remake
+            composed
+            composes
             config{
                 id
                 name
@@ -33,10 +26,6 @@ export const materialLists = gql`
                 zIndex
                 decode
                 sort
-            }
-            compose{
-              composed
-              composes
             }
         }
 }`

@@ -9,7 +9,10 @@ type Material @entity {
   rawData: String
   remake: Boolean
   config: TConfig!
-  compose: TCompose
+  composed: BigInt
+  composes: [BigInt!]!
+  burned: Boolean
+  createID: BigInt
 }
 
 type TConfig @entity {
@@ -20,10 +23,4 @@ type TConfig @entity {
   zIndex: String
   decode: String
   sort: BigInt
-}
-
-type TCompose @entity {
-  id: ID!
-  composed: BigInt
-  composes: [BigInt!]!
 }

@@ -6,7 +6,7 @@ import { CloseSquareOutlined } from "@ant-design/icons";
 import { MaterialItem } from "../../../components/Card";
 import { ComposeDetails } from "./ComposeDetails";
 import { useQuery } from "@apollo/client";
-import { happyRedPacketsGraph, materialLists } from "../../../gql";
+import { pixelsGraphavaterLists, materialLists } from "../../../gql";
 import { useWeb3Info } from "abi-to-request";
 const { Option } = Select;
 
@@ -22,9 +22,9 @@ export const SearchQuery = ({
 
   const materialListsRes = useQuery(materialLists, {
       variables: {
-        first: 50,
-        orderBy: "id",
-        orderDirection: 'desc'
+        first: 24,
+        orderDirection: 'asc',
+        composed: 0
       },
       //pollInterval: 10000
     })

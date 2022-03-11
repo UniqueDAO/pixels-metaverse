@@ -9,7 +9,7 @@ import React from 'react';
 import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater, PixelsMetaverse_Subtract } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { useQuery } from "@apollo/client"
-import { happyRedPacketsGraph, materialLists } from '../../../gql';
+import { pixelsGraphavaterLists, materialLists } from '../../../gql';
 import { PMT721_Burn, PMT721_TransferFrom } from '../../../client/PMT721';
 const { Option } = Select;
 
@@ -214,7 +214,7 @@ export const Submit = () => {
 
   const isUser = useMemo(() => userInfo?.id !== "0", [userInfo]);
 
-  const avaterRes = useQuery(happyRedPacketsGraph)
+  /* const avaterRes = useQuery(happyRedPacketsGraph)
 
   const materialData = useQuery(materialLists, {
     pollInterval: 1000
@@ -232,7 +232,7 @@ export const Submit = () => {
 
   useEffect(() => {
     console.log(materialData?.data, "materialData")
-  }, [materialData?.data])
+  }, [materialData?.data]) */
 
   const [transfer] = useRequest(PMT721_TransferFrom)
   const [compose] = useRequest(PixelsMetaverse_Compose)
@@ -302,7 +302,7 @@ export const Submit = () => {
           style={{ cursor: isUser ? "pointer" : "no-drop" }}
           onClick={() => {
             compose({
-              idList: [10,12,13],
+              idList: [17,15],
               name: "name10",
               position: "position10",
               zIndex: "zIndex10",

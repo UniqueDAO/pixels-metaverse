@@ -10,7 +10,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { abis } from "./client/abis";
 
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/qianduanxinlv/pixels",
+  uri: "https://api.thegraph.com/subgraphs/id/QmWqHN2G9Yyn5vxbTFcQq9TE5cD7Vt9JosEaEuhhGkmDd5",
   cache: new InMemoryCache()
 })
 
