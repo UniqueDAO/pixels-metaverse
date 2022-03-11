@@ -6,11 +6,11 @@ import { Header } from './components/Header';
 import bgSvg from "./assets/image/bg.svg"
 import { Routes } from './routes';
 import { ContractRequestContextProvider, useWeb3Info, Web3InfoProvider } from "abi-to-request";
-import { ApolloClient, ApolloProvider, ApolloLink, InMemoryCache, HttpLink } from "@apollo/client"
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { abis } from "./client/abis";
 
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/qianduanxinlv/pixels",//process.env.GRAPH_URL,
+  uri: "https://api.thegraph.com/subgraphs/name/qianduanxinlv/pixels",
   cache: new InMemoryCache()
 })
 
@@ -72,7 +72,7 @@ const App = () => {
       <div className="relative w-full h-full min-h-screen mx-auto bg-no-repeat md:bg-contain bg-cover bg-gray-900"
         style={{ backgroundImage: `url(${bgSvg})` }}>
         <ApolloProvider client={client}>
-          <Web3InfoProvider defaultNetwork="kovan">
+          <Web3InfoProvider defaultNetwork="mainnet">
             <LoadingProvider>
               <Main />
             </LoadingProvider>

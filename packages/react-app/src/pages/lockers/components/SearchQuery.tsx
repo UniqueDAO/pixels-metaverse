@@ -20,7 +20,14 @@ export const SearchQuery = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { composeList } = useUserInfo()
 
-  const materialListsRes = useQuery(materialLists)
+  const materialListsRes = useQuery(materialLists, {
+      variables: {
+        first: 50,
+        orderBy: "id",
+        orderDirection: 'desc'
+      },
+      //pollInterval: 10000
+    })
 
   useEffect(() => {
     const data = materialListsRes?.data?.materials
@@ -51,7 +58,7 @@ export const SearchQuery = ({
         })
       })
     }
-  }, [materialListsRes.data])
+  }, [materialListsRes.data?.materials])
 
   const { materialList } = useUserInfo()
   const [{

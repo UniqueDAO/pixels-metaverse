@@ -19,8 +19,8 @@ query getRedPacket($address:Bytes){
   `;
 
 export const materialLists = gql`
-    {
-        materials(first: 50) {
+  query($first: Int, $orderBy: BigInt, $orderDirection: String) {
+    materials(first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
             id
             owner
             rawData
@@ -39,5 +39,4 @@ export const materialLists = gql`
               composes
             }
         }
-    }
-`
+}`
