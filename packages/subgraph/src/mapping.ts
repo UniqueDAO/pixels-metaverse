@@ -1,4 +1,4 @@
-import { Address, BigInt, Value } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   AvaterEvent,
   ComposeEvent,
@@ -18,7 +18,7 @@ export function handleAvaterEvent(event: AvaterEvent): void {
 }
 
 export function handleMaterialEvent(event: MaterialEvent): void {
-  let zeroAddr = Address.fromHexString("0x0000000000000000000000000000000000000000");
+  //let zeroAddr = Address.fromHexString("0x0000000000000000000000000000000000000000");
   let material = Material.load(event.params.id.toString());
   if (material == null) {
     material = new Material(event.params.id.toString());
@@ -30,14 +30,13 @@ export function handleMaterialEvent(event: MaterialEvent): void {
     material.createID = event.params.id;
   } else {
     material.owner = event.params.owner;
-    material.burned = event.params.owner == zeroAddr;
+    //material.burned = event.params.owner == zeroAddr;
 
     // fuck: event.params.rawData !== "" is true, but graph query event.params.rawDat is "" ?????
     // fuck: === not supper....... 
     if (event.params.rawData.length > 0) material.rawData = event.params.rawData;
     if (event.params.remake) material.remake = false
     if (!event.params.configID.isZero()) material.config = event.params.configID.toString();
-    //material.compose = event.params.id.toString();
   }
 
   material.save();
@@ -83,9 +82,6 @@ export function handleConfigEvent(event: ConfigEvent): void {
   let config = TConfig.load(event.params.id.toString());
   if (config == null) {
     config = new TConfig(event.params.id.toString());
-  }
-  if (config == null) {
-    config = new TConfig(event.params.id.toString());
     config.name = event.params.name;
     config.position = event.params.position;
     config.time = event.params.time;
@@ -103,31 +99,3 @@ export function handleConfigEvent(event: ConfigEvent): void {
 
   config.save()
 }
-
-/*
-
-{
-  avaters(first: 5) {
-    id
-    avater
-  }
-  materials(first: 50) {
-    id
-    owner
-    rawData
-    remake
-    config{
-      id
-      name
-    }
-    compose{
-      id
-      composed
-      composes
-    }
-  }
-}
-
-
-
-*/

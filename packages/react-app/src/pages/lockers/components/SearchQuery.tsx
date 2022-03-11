@@ -6,8 +6,7 @@ import { CloseSquareOutlined } from "@ant-design/icons";
 import { MaterialItem } from "../../../components/Card";
 import { ComposeDetails } from "./ComposeDetails";
 import { useQuery } from "@apollo/client";
-import { pixelsGraphavaterLists, materialLists } from "../../../gql";
-import { useWeb3Info } from "abi-to-request";
+import { MATERIAL_LIST, COMPOSE_LIST } from "../../../gql";
 const { Option } = Select;
 
 export const ClearIcon = () => <div className="relative bg-white bg-opacity-10"><CloseSquareOutlined className="absolute" style={{ top: -2, left: -2, fontSize: 16 }} /></div>
@@ -20,19 +19,28 @@ export const SearchQuery = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { composeList } = useUserInfo()
 
-  const materialListsRes = useQuery(materialLists, {
-      variables: {
-        first: 24,
-        orderDirection: 'asc',
-        composed: 0
-      },
-      //pollInterval: 10000
-    })
+  const materialListsRes = useQuery(MATERIAL_LIST, {
+    variables: {
+      first: 24,
+      orderDirection: 'asc',
+      createID: 50,
+    },
+    //pollInterval: 10000
+  })
+
+  const ids = [20, 30, 40, 50, 60, 70];
+  const materialListsRes1 = useQuery(COMPOSE_LIST, {
+    variables: { ids, first: ids.length },
+    skip: true
+  })
+
+  console.log(materialListsRes1?.data?.materials)
 
   useEffect(() => {
     const data = materialListsRes?.data?.materials
     if (data?.length > 0) {
       console.log(data)
+      materialListsRes1.refetch()
       setData(() => {
         return map(data, item => {
           return {

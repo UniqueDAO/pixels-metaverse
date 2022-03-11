@@ -11,7 +11,6 @@ type Material @entity {
   config: TConfig!
   composed: BigInt
   composes: [BigInt!]!
-  burned: Boolean
   createID: BigInt
 }
 

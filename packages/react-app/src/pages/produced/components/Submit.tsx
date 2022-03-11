@@ -4,12 +4,9 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Dictionary, keys, map } from 'lodash';
 import { useUserInfo } from '../../../components/UserProvider';
 import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
-import { ClearIcon } from '../../lockers/components/SearchQuery';
 import React from 'react';
 import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater, PixelsMetaverse_Subtract } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
-import { useQuery } from "@apollo/client"
-import { pixelsGraphavaterLists, materialLists } from '../../../gql';
 import { PMT721_Burn, PMT721_TransferFrom } from '../../../client/PMT721';
 const { Option } = Select;
 
@@ -100,7 +97,7 @@ export const Submit = () => {
   const [positionData, setPostionData] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { address: addresss } = useWeb3Info()
-  const { userInfo, setMaterialList, getUserInfo } = useUserInfo()
+  const { userInfo, setMaterialList } = useUserInfo()
 
   const address = addresss
 
