@@ -6,6 +6,8 @@ import { MaterialItem } from "./Card";
 import { useReadContractRequest, useRequest, useWeb3Info } from "abi-to-request";
 import { useLoading } from "./Loading";
 import { PixelsMetaverse_Material } from "../client/PixelsMetaverse";
+import { useQuery } from "@apollo/client";
+import { COMPOSE_LIST, MATERIAL_LIST } from "../gql";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -84,6 +86,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [materialListObj, setMaterialListObj] = useState<Dictionary<MaterialItem>>({});
   const [materialId, setMaterialId] = useState<number | undefined>();
   const [composeList, setComposeList] = React.useState<string[]>([])
+  const [composes, setComposes] = React.useState<string[]>([])
   const { openLoading, closeDelayLoading } = useLoading()
   const { address, chainId } = useWeb3Info()
   //const [userInfo, getUserInfo] = useReadContractRequest(PixelsMetaverse_Material, { arg: address ? { uint256Params1: address } : undefined })
@@ -91,23 +94,71 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   //const [materialLength, getMaterialLength] = useReadContractRequest(PixelsMetaverse_Material)
   //const [getMaterialInfo] = useRequest(PixelsMetaverse_Material, { isGlobalTransactionHookValid: false })
 
- /*  const getMaterialList = useCallback(async () => {
-    openLoading()
-    const arr: MaterialItem[] = []
-    for (let i = Number(materialLength); i >= 1; i--) {
-      const res = await getMaterialInfo({ id: i })
-      if (res?.successValue) arr.push(arrayToObject(res?.successValue as MaterialItem))
-      if (res?.failError) {
-        console.log(res?.failError, i, "error")
-      }
-    }
-    closeDelayLoading()
-    setMaterialList(arr)
-  }, [getMaterialInfo, materialLength])
- */
+  /*  const getMaterialList = useCallback(async () => {
+     openLoading()
+     const arr: MaterialItem[] = []
+     for (let i = Number(materialLength); i >= 1; i--) {
+       const res = await getMaterialInfo({ id: i })
+       if (res?.successValue) arr.push(arrayToObject(res?.successValue as MaterialItem))
+       if (res?.failError) {
+         console.log(res?.failError, i, "error")
+       }
+     }
+     closeDelayLoading()
+     setMaterialList(arr)
+   }, [getMaterialInfo, materialLength])
+  */
   /* useEffect(() => {
     if (Number(materialLength) && chainId) getMaterialList()
   }, [materialLength, chainId]) */
+
+  const materialListsRes = useQuery(MATERIAL_LIST, {
+    variables: {
+      first: 20,
+      orderDirection: 'asc',
+      createID: 20,
+    },
+    //pollInterval: 10000
+  })
+
+  const getComposeList = useQuery(COMPOSE_LIST, {
+    variables: { ids: composes },
+    skip: composes?.length === 0
+  })
+
+  console.log(getComposeList?.data?.materials)
+
+  useEffect(() => {
+    const data = materialListsRes?.data?.materials
+    if (data?.length > 0) {
+      const composes: string[] = []
+      const list = map(data, item => {
+        composes.push(...(item?.composes || []))
+        return {
+          composes: [],
+          material: {
+            id: item?.id,
+            compose: "0",
+            time: "time",
+            position: "position",
+            zIndex: "zIndex",
+            owner: item?.owner,
+            data: item?.dataBytes
+          },
+          baseInfo: {
+            data: item?.rawData,
+            category: "category",
+            decode: "decode",
+            name: "name",
+            userId: "userId"
+          },
+          composeData: []
+        }
+      })
+      setMaterialList(list);
+      setComposes([])
+    }
+  }, [materialListsRes.data?.materials])
 
   useEffect(() => {
     if (isEmpty(materialList)) return
@@ -133,10 +184,10 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     setMaterialListObj(obj)
   }, [materialList])
 
-  const getUserInfo:any = ()=>{}
-  const getMaterialInfo:any = ()=>{}
-  const getMaterialList:any = ()=>{}
-  const userInfo:any = {}
+  const getUserInfo: any = () => { }
+  const getMaterialInfo: any = () => { }
+  const getMaterialList: any = () => { }
+  const userInfo: any = {}
 
   return (
     <UserInfoContext.Provider value={{

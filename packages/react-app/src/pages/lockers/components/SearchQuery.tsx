@@ -19,28 +19,27 @@ export const SearchQuery = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { composeList } = useUserInfo()
 
-  const materialListsRes = useQuery(MATERIAL_LIST, {
+  /* const materialListsRes = useQuery(MATERIAL_LIST, {
     variables: {
-      first: 24,
+      first: 20,
       orderDirection: 'asc',
-      createID: 50,
+      createID: 20,
     },
     //pollInterval: 10000
-  })
+  }) */
 
-  const ids = [20, 30, 40, 50, 60, 70];
+  /* const ids = [20, 30, 40, 50, 60, 70];
   const materialListsRes1 = useQuery(COMPOSE_LIST, {
     variables: { ids, first: ids.length },
     skip: true
   })
 
-  console.log(materialListsRes1?.data?.materials)
+  console.log(materialListsRes1?.data?.materials) */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const data = materialListsRes?.data?.materials
     if (data?.length > 0) {
       console.log(data)
-      materialListsRes1.refetch()
       setData(() => {
         return map(data, item => {
           return {
@@ -66,7 +65,7 @@ export const SearchQuery = ({
         })
       })
     }
-  }, [materialListsRes.data?.materials])
+  }, [materialListsRes.data?.materials]) */
 
   const { materialList } = useUserInfo()
   const [{

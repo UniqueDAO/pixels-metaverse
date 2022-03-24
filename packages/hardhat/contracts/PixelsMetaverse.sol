@@ -5,9 +5,11 @@ import "./IPMT721.sol";
 
 contract PixelsMetaverse {
     IPMT721 private PMT721;
-    bytes32 emptyBytes;
     mapping(address => uint256) public avater;
     event AvaterEvent(address indexed owner, uint256 indexed avater);
+
+    mapping(bytes32 => address) public dataOwner;
+    event DataOwnerEvent(address indexed owner, bytes32 dataBytes);
 
     struct Material {
         uint256 composed; //被合并到哪个id去了
@@ -15,7 +17,6 @@ contract PixelsMetaverse {
         bool remake; //是否基于当前id再次制作了与该id同样的其他虚拟物品
     }
     mapping(uint256 => Material) public material;
-    mapping(bytes32 => address) public dataOwner;
 
     /**
         rawData 当前ID的原始数据
@@ -57,12 +58,17 @@ contract PixelsMetaverse {
 
     constructor(address pmt721) {
         PMT721 = IPMT721(pmt721);
-        emptyBytes = keccak256(abi.encodePacked(""));
     }
 
     function setAvater(uint256 id) public Owner(msg.sender, id) {
         avater[msg.sender] = id;
         emit AvaterEvent(msg.sender, id);
+    }
+
+    function setDataOwner(bytes32 dataBytes, address to) public {
+        require(dataOwner[dataBytes] == msg.sender, "Items must exist");
+        dataOwner[dataBytes] = to;
+        emit DataOwnerEvent(msg.sender, dataBytes);
     }
 
     function setConfig(
