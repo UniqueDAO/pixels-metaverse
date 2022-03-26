@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Dictionary, isArray, isEmpty, keyBy, map } from "lodash";
+import { Dictionary, isEmpty, keyBy, map } from "lodash";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
@@ -97,7 +97,7 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
 
   const getMaterialList = useQuery(MATERIAL_LIST, {
     variables: {
-      first: 20,
+      first: 5,
       orderDirection: 'desc',
       createID: 20,
     },
@@ -113,9 +113,8 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   })
 
   useEffect(() => {
-    const data = [...(getMaterialList?.data?.materials || []), ...(getComposeList?.data?.materials || [])];
-    console.log(data)
-    if (data?.length > 0 && isArray(getComposeList?.data?.materials)) {
+    const data = getMaterialList?.data?.materials
+    if (data?.length > 0) {
       const composes: string[] = []
       const list = map(data, item => {
         composes.push(...(item?.composes || []))
@@ -142,8 +141,9 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       })
       setMaterialList(list);
       setComposes(composes);
+      closeDelayLoading()
     }
-  }, [getMaterialList?.data?.materials, getComposeList?.data?.materials])
+  }, [getMaterialList.data?.materials])
 
   useEffect(() => {
     if (isEmpty(materialList)) return
@@ -167,7 +167,6 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       obj[item?.material?.id].composeData = data;
     })
     setMaterialListObj(obj)
-    closeDelayLoading()
   }, [materialList])
 
   const getUserInfo: any = () => { }

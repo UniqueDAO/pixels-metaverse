@@ -121,7 +121,7 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
         }}>
           {item?.material?.owner}
         </Text></div>
-        <div>所属ID：{Number(item?.material?.compose) > 0 ? <>{item?.material?.compose}{/* <RemoveCompose item={item} setIsModalVisible={setIsModalVisible}/> */}</> : "暂未被合成"}</div>
+        {/* <div>所属ID：{Number(item?.material?.compose) > 0 ? <>{item?.material?.compose}{/ * <RemoveCompose item={item} setIsModalVisible={setIsModalVisible}/> * /}</> : "暂未被合成"}</div> */}
         {/* <div className="flex">是否收藏：{isCollect ? "是" : `否`} {!isCollect && <div className="ml-8 flex w-90" style={{ color: !isCollect && item?.material?.owner === address ? "rgba(0,0,0,0.7)" : "white" }}><Collection item={item} /></div>}</div> */}
       </div>
     </div>
