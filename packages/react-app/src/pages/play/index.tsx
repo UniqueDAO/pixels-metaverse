@@ -16,25 +16,22 @@ export const useGetPersonData = () => {
   const { address: addresss } = useWeb3Info()
   const { search } = useLocation()
   const address = search ? search.split("=")[1] : addresss
-  const { materialList, userInfo, collectList } = useUserInfo();
+  const { materialList, userInfo } = useUserInfo();
   return useMemo(() => {
     const noCollectionList: MaterialItem[] = [], colectionList: MaterialItem[] = [], onwerList: MaterialItem[] = [];
     let avater: MaterialItem | undefined;
     map(materialList, (item: MaterialItem) => {
-      const isCollect = collectList?.includes(item?.material?.id);
       const isCurAddress = address === item?.material?.owner
       if (item?.material?.id === userInfo?.avater) {
         avater = item;
-      } else if (isCollect) {
-        colectionList.push(item);
       } else if (isCurAddress) {
         onwerList.push(item)
-      } else if(item?.baseInfo?.userId !== "0" && item?.material?.id !== "0") {
+      } else if (item?.baseInfo?.userId !== "0" && item?.material?.id !== "0") {
         noCollectionList.push(item);
       }
     })
     return { noCollectionList, avater, colectionList, onwerList }
-  }, [materialList, collectList, userInfo])
+  }, [materialList, userInfo])
 }
 
 export const PixelsMetaverse = () => {

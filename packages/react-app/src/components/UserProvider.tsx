@@ -1,13 +1,12 @@
-import * as React from "react";
-import { Dictionary, isEmpty, keyBy, map } from "lodash";
-import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import React, { useMemo } from "react";
+import { Dictionary, isArray, isEmpty, keyBy, map } from "lodash";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
-import { useReadContractRequest, useRequest, useWeb3Info } from "abi-to-request";
+import { useWeb3Info } from "abi-to-request";
 import { useLoading } from "./Loading";
-import { PixelsMetaverse_Material } from "../client/PixelsMetaverse";
-import { useQuery } from "@apollo/client";
-import { COMPOSE_LIST, MATERIAL_LIST } from "../gql";
+import { QueryResult, useQuery } from "@apollo/client";
+import { COMPOSE_LIST, MATERIAL_LIST, AVATER_LIST } from "../gql";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -29,16 +28,6 @@ export const UserInfoContext = createContext(
     getMaterialInfo: (params?: { id: string | number; } | undefined) => Promise<any>,
     materialList: MaterialItem[];
     setMaterialList: Dispatch<React.SetStateAction<MaterialItem[]>>
-    collectList: string[] | undefined;
-    getCollectList: (params?: {
-      from: string;
-    } | undefined) => Promise<{
-      successValue: string[] | undefined;
-      failError?: undefined;
-    } | {
-      failError: any;
-      successValue?: undefined;
-    } | undefined>
     getMaterialLength: (params?: unknown) => Promise<{
       successValue: string | undefined;
       failError?: undefined;
@@ -46,7 +35,11 @@ export const UserInfoContext = createContext(
       failError: any;
       successValue?: undefined;
     } | undefined>,
-    getMaterialList: () => Promise<void>,
+    getMaterialList: QueryResult<any, {
+      first: number;
+      orderDirection: string;
+      createID: number;
+    }>,
     materialId?: number;
     setMaterialId: Dispatch<React.SetStateAction<number | undefined>>;
     composeList: string[];
@@ -89,56 +82,48 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [composes, setComposes] = React.useState<string[]>([])
   const { openLoading, closeDelayLoading } = useLoading()
   const { address, chainId } = useWeb3Info()
-  //const [userInfo, getUserInfo] = useReadContractRequest(PixelsMetaverse_Material, { arg: address ? { uint256Params1: address } : undefined })
   //const [collectList, getCollectList] = useReadContractRequest(PixelsMetaverse_Material, { arg: address ? { uint256Params1: address } : undefined })
   //const [materialLength, getMaterialLength] = useReadContractRequest(PixelsMetaverse_Material)
   //const [getMaterialInfo] = useRequest(PixelsMetaverse_Material, { isGlobalTransactionHookValid: false })
 
-  /*  const getMaterialList = useCallback(async () => {
-     openLoading()
-     const arr: MaterialItem[] = []
-     for (let i = Number(materialLength); i >= 1; i--) {
-       const res = await getMaterialInfo({ id: i })
-       if (res?.successValue) arr.push(arrayToObject(res?.successValue as MaterialItem))
-       if (res?.failError) {
-         console.log(res?.failError, i, "error")
-       }
-     }
-     closeDelayLoading()
-     setMaterialList(arr)
-   }, [getMaterialInfo, materialLength])
-  */
-  /* useEffect(() => {
-    if (Number(materialLength) && chainId) getMaterialList()
-  }, [materialLength, chainId]) */
+  const getAvater = useQuery(AVATER_LIST, {
+    variables: { address: address?.toLowerCase() },
+    skip: !address
+  });
 
-  const materialListsRes = useQuery(MATERIAL_LIST, {
+  const userInfo = useMemo(() => getAvater?.data?.avaters ? getAvater?.data?.avaters[0] : {}, [getAvater?.data?.avaters])
+
+  console.log(userInfo)
+
+  const getMaterialList = useQuery(MATERIAL_LIST, {
     variables: {
       first: 20,
-      orderDirection: 'asc',
+      orderDirection: 'desc',
       createID: 20,
     },
-    //pollInterval: 10000
   })
+
+  useEffect(() => {
+    openLoading()
+  }, [])
 
   const getComposeList = useQuery(COMPOSE_LIST, {
     variables: { ids: composes },
     skip: composes?.length === 0
   })
 
-  console.log(getComposeList?.data?.materials)
-
   useEffect(() => {
-    const data = materialListsRes?.data?.materials
-    if (data?.length > 0) {
+    const data = [...(getMaterialList?.data?.materials || []), ...(getComposeList?.data?.materials || [])];
+    console.log(data)
+    if (data?.length > 0 && isArray(getComposeList?.data?.materials)) {
       const composes: string[] = []
       const list = map(data, item => {
         composes.push(...(item?.composes || []))
         return {
-          composes: [],
+          composes: item?.composes || [],
           material: {
             id: item?.id,
-            compose: "0",
+            compose: item?.composed,
             time: "time",
             position: "position",
             zIndex: "zIndex",
@@ -156,9 +141,9 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
         }
       })
       setMaterialList(list);
-      setComposes([])
+      setComposes(composes);
     }
-  }, [materialListsRes.data?.materials])
+  }, [getMaterialList?.data?.materials, getComposeList?.data?.materials])
 
   useEffect(() => {
     if (isEmpty(materialList)) return
@@ -182,12 +167,11 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       obj[item?.material?.id].composeData = data;
     })
     setMaterialListObj(obj)
+    closeDelayLoading()
   }, [materialList])
 
   const getUserInfo: any = () => { }
   const getMaterialInfo: any = () => { }
-  const getMaterialList: any = () => { }
-  const userInfo: any = {}
 
   return (
     <UserInfoContext.Provider value={{

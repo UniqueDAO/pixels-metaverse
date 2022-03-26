@@ -10,7 +10,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { abis } from "./client/abis";
 
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/id/QmWqHN2G9Yyn5vxbTFcQq9TE5cD7Vt9JosEaEuhhGkmDd5",
+  uri: "https://api.thegraph.com/subgraphs/name/qianduanxinlv/pixels", //"https://api.thegraph.com/subgraphs/id/QmWqHN2G9Yyn5vxbTFcQq9TE5cD7Vt9JosEaEuhhGkmDd5",
   cache: new InMemoryCache()
 })
 
@@ -37,22 +37,11 @@ const Main = () => {
       library={library}
       abis={abis}
       transactionHook={{
-        onSuccessBefore: (res) => {
+        onSuccessBefore: () => {
           openLoading()
-          console.log(res, "进入全局钩子 onSuccessBefore")
         },
-        onSuccess: (res) => {
-          console.log(res, "进入全局钩子 onSuccess")
-        },
-        onFinish: (res) => {
+        onSuccess: () => {
           closeDelayLoading()
-          console.log(res, "进入全局钩子 onFinish")
-        },
-        onFail: (res) => {
-          console.log(res, "进入全局钩子 onFail")
-        },
-        onTransactionSuccess: (res) => {
-          console.log(res, "进入全局钩子 onTransactionSuccess")
         }
       }}>
       <PixelsMetaverseContextProvider library={library}>

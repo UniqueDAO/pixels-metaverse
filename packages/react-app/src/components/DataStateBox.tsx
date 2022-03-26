@@ -3,7 +3,6 @@ import { Empty } from "antd";
 import { isEmpty } from "lodash";
 import { useWeb3Info } from "abi-to-request";
 
-// 数据状态容器盒子----用于数据获取前后的页面状态显示
 export const DataStateBox = ({
   data,
   children,

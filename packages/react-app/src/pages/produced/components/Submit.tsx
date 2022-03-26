@@ -8,6 +8,7 @@ import React from 'react';
 import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater, PixelsMetaverse_Subtract } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { PMT721_Burn, PMT721_TransferFrom } from '../../../client/PMT721';
+import { useLoading } from '../../../components/Loading';
 const { Option } = Select;
 
 export const Label = ({ children, noNeed }: { children: ReactNode, noNeed?: boolean }) => {
@@ -71,107 +72,69 @@ export const categoryData = [
 
 export interface IMerchandise {
   name: string;
-  category?: string,
-  amount: string;
+  num: string;
   data?: string;
-  price: string;
-  weight?: string;
-  bgColor?: string
+  decode?: string;
+  time?: string;
+  position?: string;
+  zIndex?: string;
 }
 
 export const Submit = () => {
   const { positionsArr, setPositionsArr, config, dealClick: { value, clear } } = usePixelsMetaverseHandleImg()
   const [{
     name,
-    category,
-    amount,
-    price,
-    weight,
+    num,
+    decode,
+    time,
+    position,
+    zIndex
   }, setMerchandies] = React.useState<IMerchandise>({
     name: "",
-    category: undefined,
-    amount: "",
-    price: "",
-    weight: "",
+    num: "",
+    decode: "",
+    time: "",
+    position: "",
+    zIndex: "",
   })
   const [positionData, setPostionData] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { address: addresss } = useWeb3Info()
-  const { userInfo, setMaterialList } = useUserInfo()
-
+  const { userInfo, setMaterialList, getMaterialList } = useUserInfo()
+  const { openLoading, closeDelayLoading } = useLoading()
   const address = addresss
-
-  /*   const [register] = useRequest(PixelsMetaverse_Register, {
-      onSuccess: () => {
-        address && getUserInfo({ addressParams1: address })
-      }
-    }, [address]) */
-
-  //const getMaterialIdList = useRequest(fetchGetMaterialIdList)
   const { contracts } = useContractRequest()
 
   const [make] = useRequest(PixelsMetaverse_Make, {
-    isGlobalTransactionHookValid: true,
+    onSuccessBefore: openLoading,
     onTransactionSuccess: () => {
-      message.success("物品制造成功！")
-      //getMaterialIdList({ setValue: setMaterialList, createAmount: Number(amount) })
-      setIsModalVisible(false)
-      setMerchandies({
-        name: "",
-        category: "",
-        amount: "",
-        price: "",
-        weight: "",
-      })
+      message.success("物品制造成功！");
+      closeDelayLoading();
+      setMerchandies({ name: "", num: "", })
       clear()
       setPositionsArr([])
     },
     onFail: () => {
       setIsModalVisible(false)
-    },
-    onFinish: (res) => {
-      console.log(res)
     }
   }, [
     address,
     name,
-    category,
-    amount,
-    price,
-    weight,
-    config?.bgColor,
+    num,
+    decode,
+    position,
+    time,
+    zIndex,
     setMaterialList
   ])
-
-  const [setAvater] = useRequest(PixelsMetaverse_SetAvater, {
-    isGlobalTransactionHookValid: true,
-    onTransactionSuccess: () => {
-      message.success("头像设置成功！")
-    },
-    onFinish: (res) => {
-      console.log(res, "头像设置")
-    }
-  })
 
   const min = useMemo(() => Math.min(...positionsArr), [positionsArr])
 
   const handleOk = useCallback(() => {
-    const nftData = `${positionData}${min}`
-    try {
-      make({
-        name: name || "",
-        num: amount,
-        rawData: nftData,
-        decode: "",
-        position: "",
-        zIndex: "",
-        time: ""
-      })
-    } catch (error) {
-      console.log(error)
-    }
-    setIsModalVisible(false)
-  }, [positionData, min]);
+    const rawData = `${positionData}${min}`;
+    make({ name, num, rawData, decode: "", position: "", zIndex: "", time: "" });
+    setIsModalVisible(false);
+  }, [positionData, min, name, num]);
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -202,56 +165,28 @@ export const Submit = () => {
       message.warn("请输入物品名称");
       return;
     }
-    if (!amount) {
+    if (!num) {
       message.warn("请输入物品数量");
       return;
     }
     return true;
-  }, [name, category, amount, price]);
-
-  const isUser = useMemo(() => userInfo?.id !== "0", [userInfo]);
-
-  /* const avaterRes = useQuery(happyRedPacketsGraph)
-
-  const materialData = useQuery(materialLists, {
-    pollInterval: 1000
-  })
-
-  useEffect(() => {
-    if (avaterRes?.data?.avaterLists?.length > 0 && address) {
-      avaterRes?.refetch({
-        address: address?.toLowerCase()//"0x2FB2320BbdD9f6b8AD5a3821eF49A1668f668c53"
-      }).then(res => {
-        console.log(res, "res")
-      })
-    }
-  }, [avaterRes?.data, address])
-
-  useEffect(() => {
-    console.log(materialData?.data, "materialData")
-  }, [materialData?.data]) */
-
-  const [transfer] = useRequest(PMT721_TransferFrom)
-  const [compose] = useRequest(PixelsMetaverse_Compose)
-  const [add] = useRequest(PixelsMetaverse_Addition)
-  const [subtract] = useRequest(PixelsMetaverse_Subtract)
-  const [burn] = useRequest(PMT721_Burn)
+  }, [name, num, decode, position, time, zIndex]);
 
   useEffect(() => {
     const contract = contracts["PixelsMetaverse"]
     if (contract) {
-      (contract as any)?.on("AvaterEvent", (owner: string, avatar: string) => {
-        console.log(owner, avatar, "AvaterEvent")
+      (contract as any)?.on("MaterialEvent", (owner: string, avatar: string) => {
+        getMaterialList.refetch();
       })
-    }  
-  }, [contracts])
+    }
+  }, [contracts, getMaterialList])
 
   return (
     <div className="rounded-md text-gray-300 w-72 p-4 bg-white bg-opacity-10">
       <div className="flex items-center text-2xl text-gray-300">制作虚拟物品&nbsp;
-        <Tooltip placement="right" className="cursor-pointer" title={`建议各部位分开创建，组合性更强。`} color="#29303d">
+        {/* <Tooltip placement="right" className="cursor-pointer" title={`建议各部位分开创建，组合性更强。`} color="#29303d">
           <ExclamationCircleOutlined />
-        </Tooltip>
+        </Tooltip> */}
       </div>
       <div className="overflow-y-scroll" style={{ height: 480 }}>
         <Label>名称</Label>
@@ -272,15 +207,43 @@ export const Submit = () => {
         >
           {map(categoryData, item => <Option key={item.value} value={item.value}>{item.label}</Option>)}
         </Select> */}
-        <Label>数量(最多可制作99个)</Label>
-        <Input value={amount} placeholder="物品数量" maxLength={2} onChange={(e) => setMerchandies((pre) => ({ ...pre, amount: mustNum(e) }))} />
+        <Label>数量</Label>
+        <Input value={num} placeholder="物品数量" maxLength={8} onChange={(e) => setMerchandies((pre) => ({ ...pre, num: mustNum(e) }))} />
+        {/* <Label noNeed>开始时间(毫秒)</Label>
+        <Input value={num} placeholder="开始时间" maxLength={1} onChange={(e) => setMerchandies((pre) => ({ ...pre, num: mustNum(e) }))} />
+        <div className="flex items-center mt-4 mb-1">
+          <div>层级</div>
+          <Tooltip placement="top" className="cursor-pointer" title={`当前绘制的物品显示的层级，越高越显示在外层`} color="#29303d">
+            <ExclamationCircleOutlined />
+          </Tooltip>
+        </div>
+        <Input value={num} placeholder="层级" maxLength={1} onChange={(e) => setMerchandies((pre) => ({ ...pre, num: mustNum(e) }))} />
+        <div className="flex items-center mt-4 mb-1">
+          <div>位置</div>
+          <Tooltip placement="top" className="cursor-pointer" title={`当前绘制的图片的URL地址`} color="#29303d">
+            <ExclamationCircleOutlined />
+          </Tooltip>
+        </div>
+        <Input value={position} placeholder="位置" maxLength={10} onChange={(e) => setMerchandies((pre) => ({ ...pre, weight: mustNum(e) }))} />
+        <div className="flex items-center mt-4 mb-1">
+          <div>解码方式</div>
+          <Tooltip placement="top" className="cursor-pointer" title={`当前绘制的图片的URL地址`} color="#29303d">
+            <ExclamationCircleOutlined />
+          </Tooltip>
+        </div>
+        <Input value={position} placeholder="解码方式" maxLength={10} onChange={(e) => setMerchandies((pre) => ({ ...pre, weight: mustNum(e) }))} />
+ */}
+        {/* {<div className="mt-4">你还不是宇宙创始居民，请
+          <span className="text-red-500 cursor-pointer" onClick={() => {
+            setAvater({
+              id: 2
+            })
+          }}>激活</span>自己的元宇宙身份！</div>} */}
         <Button
           type="primary"
           size="large"
           className="mt-6 w-full rounded"
-          style={{ cursor: isUser ? "pointer" : "no-drop" }}
           onClick={() => {
-            if (!isUser) return
             const is = checkData()
             if (!is) return
             const positionData = getPositionStr()
@@ -292,93 +255,6 @@ export const Submit = () => {
             setIsModalVisible(true);
           }}
         >提交</Button>
-        <Button
-          type="primary"
-          size="large"
-          className="mt-6 w-full rounded"
-          style={{ cursor: isUser ? "pointer" : "no-drop" }}
-          onClick={() => {
-            compose({
-              idList: [17,15],
-              name: "name10",
-              position: "position10",
-              zIndex: "zIndex10",
-              time: "time10",
-              decode: "decode10"
-            })
-          }}
-        >合并</Button>
-        <Button
-          type="primary"
-          size="large"
-          className="mt-6 w-full rounded"
-          style={{ cursor: isUser ? "pointer" : "no-drop" }}
-          onClick={() => {
-            transfer({
-              from: "0xf0A3FdF9dC875041DFCF90ae81D7E01Ed9Bc2033", 
-              to: "0xEcfE156671443471884EA9d81e346621fF4d6AAf", 
-              tokenId: 16
-            })
-          }}
-        >转账</Button>
-        <Button
-          type="primary"
-          size="large"
-          className="mt-6 w-full rounded"
-          style={{ cursor: isUser ? "pointer" : "no-drop" }}
-          onClick={() => {
-            burn({
-              id: 11
-            })
-          }}
-        >销毁</Button>
-        <Button
-          type="primary"
-          size="large"
-          className="mt-6 w-full rounded"
-          style={{ cursor: isUser ? "pointer" : "no-drop" }}
-          onClick={() => {
-            add({
-              idList: [11, 4],
-              ids: 21
-            })
-          }}
-        >添加</Button>
-        <Button
-          type="primary"
-          size="large"
-          className="mt-6 w-full rounded"
-          style={{ cursor: isUser ? "pointer" : "no-drop" }}
-          onClick={() => {
-            subtract({
-              idList: [2, 6],
-              ids: 18
-            })
-          }}
-        >去掉</Button>
-        {/* <Label noNeed>开始时间(毫秒)</Label>
-        <Input value={amount} placeholder="物品数量" maxLength={1} onChange={(e) => setMerchandies((pre) => ({ ...pre, amount: mustNum(e) }))} />
-        <div className="flex items-center mt-4 mb-1">
-          <div>层级</div>
-          <Tooltip placement="top" className="cursor-pointer" title={`当前绘制的物品显示的层级，越高越显示在外层`} color="#29303d">
-            <ExclamationCircleOutlined />
-          </Tooltip>
-        </div>
-        <Input value={amount} placeholder="物品数量" maxLength={1} onChange={(e) => setMerchandies((pre) => ({ ...pre, amount: mustNum(e) }))} />
-        <div className="flex items-center mt-4 mb-1">
-          <div>本体URL</div>
-          <Tooltip placement="top" className="cursor-pointer" title={`当前绘制的图片的URL地址`} color="#29303d">
-            <ExclamationCircleOutlined />
-          </Tooltip>
-        </div>
-        <Input value={weight} placeholder="本体URL地址" maxLength={10} onChange={(e) => setMerchandies((pre) => ({ ...pre, weight: mustNum(e) }))} />
-         */}
-        {<div className="mt-4">你还不是宇宙创始居民，请
-          <span className="text-red-500 cursor-pointer" onClick={() => {
-            setAvater({
-              id: 2
-            })
-          }}>激活</span>自己的元宇宙身份！</div>}
       </div>
 
       <Modal

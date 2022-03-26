@@ -26,33 +26,21 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   const [tab, setTab] = useState<string>("new")
   const [value, setValue] = React.useState<string>("-1");
   const { composeList, setComposeList, getMaterialLength, materialListObj, userInfo, getMaterialList } = useUserInfo()
-  const [{
-    name,
-    category,
-  }, setMerchandies] = React.useState<IMerchandise>({
-    name: "",
-    category: undefined,
-    amount: "",
-    price: "",
-    weight: "",
-  })
+  const [{ name }, setMerchandies] = React.useState<IMerchandise>({ name: "", num: "" })
 
   const [compose] = useRequest(PixelsMetaverse_Compose, {
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
-      getMaterialLength().then(() => {
-        message.success("合成成功！")
-        setComposeList && setComposeList([])
-        setIsModalVisible(false)
-      })
+      message.success("合成成功！")
+      setComposeList && setComposeList([])
+      setIsModalVisible(false)
     }
-  }, [composeList])
+  }, [])
 
   const [join] = useRequest(PixelsMetaverse_Addition, {
     onTransactionSuccess: () => {
       message.success(`合成至 ${value} 成功！`)
       setComposeList && setComposeList([])
-      getMaterialList()
       setIsModalVisible(false)
     }
   }, [value, composeList])
@@ -86,12 +74,8 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
       message.warn("请输入物品名称");
       return;
     }
-    if (!category) {
-      message.warn("请选择物品种类");
-      return;
-    }
     return true;
-  }, [name, category]);
+  }, [name]);
 
   const isUser = useMemo(() => userInfo?.id !== "0", [userInfo]);
 
@@ -104,12 +88,12 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
       <div className="flex flex-col justify-between h-full">
         {
           isEmpty(type?.composes)
-            ? <CreateMaterial name={name} category={category} setMerchandies={setMerchandies} />
+            ? <CreateMaterial name={name} setMerchandies={setMerchandies} />
             : <Tabs defaultActiveKey="1" centered onChange={(key) => {
               setTab(key)
             }}>
               <TabPane tab="合并为新的物品" key="new">
-                <CreateMaterial name={name} category={category} setMerchandies={setMerchandies} />
+                <CreateMaterial name={name} setMerchandies={setMerchandies} />
               </TabPane>
               <TabPane tab="合并至已存在的物品" key="exist">
                 <MergeMaterial composes={type?.composes} value={value} setValue={setValue} />
@@ -132,7 +116,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
             }
 
             if (tab === "new") {
-              //compose({ ids: composeList, name, category: category || "", data: "", decode: "" })
+              compose({ idList: composeList, name, decode: "", time: "", position: "", zIndex: "" })
             } else {
               const idList = [...composeList];
               idList.splice(idList?.indexOf(value), 1);
@@ -168,7 +152,7 @@ export const CreateMaterial = ({
       <Label>名称</Label>
       <Input value={name} placeholder="物品名称" maxLength={15} onChange={(e) => setMerchandies((pre) => ({ ...pre, name: e.target.value }))} />
       <div className="h-8"></div>
-      <Label>种类</Label>
+      {/* <Label>种类</Label>
       <Select
         className="select outline-none :focus:outline-none h-10 bg-black bg-opacity-10 rounded w-full"
         bordered={false}
@@ -183,7 +167,7 @@ export const CreateMaterial = ({
         clearIcon={ClearIcon}
       >
         {map(categoryData, item => <Option key={item.value} value={item.value}>{item.label}</Option>)}
-      </Select>
+      </Select> */}
     </div>
   )
 }

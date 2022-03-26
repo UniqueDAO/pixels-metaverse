@@ -12,6 +12,7 @@ import {
   PixelsMetaverse_SetConfig,
   PixelsMetaverse_Subtract
 } from "../client/PixelsMetaverse";
+import { useLoading } from "./Loading";
 const { Text } = Typography;
 
 export interface IMaterial {
@@ -46,7 +47,7 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
       message.success("分解成功！")
-      getMaterialList()
+      //getMaterialList()
       setIsModalVisible && setIsModalVisible(false)
     }
   }, [composeList, item])
@@ -63,7 +64,7 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
     isGlobalTransactionHookValid: true,
     onTransactionSuccess: () => {
       message.success("移除成功！")
-      getMaterialList()
+      //getMaterialList()
       setIsModalVisible && setIsModalVisible(false)
     }
   }, [item])
@@ -74,32 +75,35 @@ export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 }
 
 export const SetAvater = ({ item }: { item: MaterialItem }) => {
-  const { userInfo, getUserInfo } = useUserInfo()
+  const { openLoading, closeDelayLoading } = useLoading()
+  const { address } = useWeb3Info()
+  const { userInfo } = useUserInfo();
 
   const [setAvater] = useRequest(PixelsMetaverse_SetAvater, {
-    isGlobalTransactionHookValid: true,
+    onSuccessBefore: openLoading,
     onTransactionSuccess: () => {
-      getUserInfo().then((res) => {
-        res?.successValue && message.success("头像设置成功！")
-      })
+      message.success("头像设置成功！")
+      closeDelayLoading()
     }
   })
 
-  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvater({ id: "" }) }}>
-    设置为头像
-  </span>)
+  if (address?.toLowerCase() === item?.material?.owner?.toLowerCase() && String(userInfo?.avater) !== item?.material?.id) {
+    return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvater({ id: item?.material?.id }) }}>
+      设置为头像
+    </span>)
+  } else {
+    return null
+  }
 }
 
 export const DetailsBody = ({ item, child, setIsModalVisible }: { item: MaterialItem, child?: boolean, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const { collectList, materialListObj, userInfo } = useUserInfo()
+  const { materialListObj, userInfo } = useUserInfo()
   const { address } = useWeb3Info()
   const data = useMemo(() => {
     if (isEmpty(item) || isEmpty(materialListObj)) return []
     if (isEmpty(item?.composes)) return [({ ...item, data: item?.baseInfo?.data } as any)]
     return map(item?.composeData, it => ({ ...it, data: it?.baseInfo?.data } as any))
   }, [item, materialListObj])
-
-  const isCollect = useMemo(() => collectList?.includes(item?.material?.id), [collectList, item])
 
   return (
     <div className="flex">
@@ -108,8 +112,7 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
         size={200}
         style={{ background: "#323945", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }} />
       <div className="ml-10 flex flex-col justify-between">
-        <div>物品名称：{item?.baseInfo?.name || "这什么鬼名称"}{address?.toLowerCase() === item?.material?.owner?.toLowerCase() && String(userInfo?.avater) !== item?.material?.id && <SetAvater item={item} />}</div>
-        <div>物品类别：{(find(categoryData, ite => ite?.value === item?.baseInfo?.category) || {})?.label || "这什么鬼类别"}</div>
+        <div>物品名称：{item?.baseInfo?.name || "这什么鬼名称"}<SetAvater item={item} /></div>
         <div className="flex">组成部分：<div className="overflow-x-scroll" style={{ maxWidth: !child ? 800 : 400 }}>{item?.composes?.join(",") || "暂无"}{!isEmpty(item?.composes) && Number(item?.material?.compose) === 0 && <CancelCompose item={item} setIsModalVisible={setIsModalVisible} />}</div></div>
         <div className="relative">所属地址：<Text copyable={{
           text: item?.material?.owner,
@@ -158,7 +161,7 @@ export const MaterialTreeData = ({ item }: { item: MaterialItem }) => {
 
   return (
     <div className="flex justify-between" style={{ height: 300, minWidth: 1200 }}>
-      { treeData && treeData[0] && <Tree
+      {treeData && treeData[0] && <Tree
         className="flex-1"
         height={300}
         showLine={true}
@@ -176,12 +179,13 @@ export const MaterialTreeData = ({ item }: { item: MaterialItem }) => {
 export const Details = ({ id, setIsModalVisible }: { id: string, setIsModalVisible: Dispatch<React.SetStateAction<boolean>> }) => {
   const { materialListObj } = useUserInfo()
   const item = useMemo(() => materialListObj[id], [materialListObj, id])
+  console.log(item)
 
   return (
     <div className="text-black text-opacity-70">
       <p className="text-xl">ID:{id} 详情</p>
       <DetailsBody item={item} setIsModalVisible={setIsModalVisible} />
-      { !isEmpty(item?.composes) && <div className="pt-4 mt-8 border-t border-black border-opacity-70 border-dashed">
+      {!isEmpty(item?.composes) && <div className="pt-4 mt-8 border-t border-black border-opacity-70 border-dashed">
         <MaterialTreeData item={item} />
       </div>}
     </div>
