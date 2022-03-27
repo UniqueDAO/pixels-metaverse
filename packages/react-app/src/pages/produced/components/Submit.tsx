@@ -100,7 +100,7 @@ export const Submit = () => {
   const [positionData, setPostionData] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { address: addresss } = useWeb3Info()
-  const { userInfo, setMaterialList, getMaterialList } = useUserInfo()
+  const { userInfo } = useUserInfo()
   const { openLoading, closeDelayLoading } = useLoading()
   const address = addresss
   const { contracts } = useContractRequest()
@@ -124,8 +124,7 @@ export const Submit = () => {
     decode,
     position,
     time,
-    zIndex,
-    setMaterialList
+    zIndex
   ])
 
   const min = useMemo(() => Math.min(...positionsArr), [positionsArr])
@@ -176,10 +175,10 @@ export const Submit = () => {
     const contract = contracts["PixelsMetaverse"]
     if (contract) {
       (contract as any)?.on("MaterialEvent", (owner: string, avatar: string) => {
-        getMaterialList.refetch();
+        //getMaterialList.refetch();
       })
     }
-  }, [contracts, getMaterialList])
+  }, [contracts])
 
   return (
     <div className="rounded-md text-gray-300 w-72 p-4 bg-white bg-opacity-10">

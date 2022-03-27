@@ -11,6 +11,7 @@ import { Modal } from "antd";
 export const MaterialCard = ({ item }: { item: MaterialItem }) => {
   const { userInfo, materialListObj } = useUserInfo()
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isBigImg, setIsBigImg] = useState<boolean>(false);
   const history = useHistory()
   const data = useMemo(() => {
     if (isEmpty(item) || isEmpty(materialListObj)) return []
@@ -31,7 +32,7 @@ export const MaterialCard = ({ item }: { item: MaterialItem }) => {
         data={{ ...item, positions: item?.baseInfo?.data, materialData: data }}
         size={200}
         style={{ background: userInfo?.user?.bgColor || "#e1e1e11a", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }}
-        onClick={() => { setIsModalVisible(true) }}
+        onClick={() => { setIsBigImg(true) }}
       />
       {/* <PixelsMetaverseImgByPositionData2 data={item} size={["50%", "50%"]} style={{ borderRadius: 4, background: item?.bgColor || userInfo?.user?.bgColor || "#e1e1e11a", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }} /> */}
       <div className="flex flex-col justify-between flex-1 mt-4" style={{ fontSize: 12, width: 200 }}>
@@ -61,6 +62,20 @@ export const MaterialCard = ({ item }: { item: MaterialItem }) => {
         onCancel={() => { setIsModalVisible(false) }}
       >
         <Details id={item?.material?.id} setIsModalVisible={setIsModalVisible} />
+      </Modal>}
+      {isBigImg && item?.material?.id && <Modal
+        title=""
+        width={600}
+        visible={isBigImg}
+        footer={null}
+        bodyStyle={{ padding: 0 }}
+        closable={false}
+        onCancel={() => { setIsBigImg(false) }}
+      >
+        <PixelsMetaverseImgByPositionData
+          data={{ ...item, positions: item?.baseInfo?.data, materialData: data }}
+          size={600}
+          style={{ background: "#323945", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)", margin: "auto" }} />
       </Modal>}
     </div>
   )

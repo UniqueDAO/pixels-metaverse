@@ -250,3 +250,11 @@ input{
   background-color: transparent !important;
   caret-color: rgba(225,225,225);
 }
+
+.ant-pagination input{
+  color: #EF4444 !important;
+}
+
+.ant-pagination,.anticon-right,.anticon-left{
+  color: rgba(225,225,225) !important;
+}

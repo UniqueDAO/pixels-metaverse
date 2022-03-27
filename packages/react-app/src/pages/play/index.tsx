@@ -22,7 +22,7 @@ export const useGetPersonData = () => {
     let avater: MaterialItem | undefined;
     map(materialList, (item: MaterialItem) => {
       const isCurAddress = address === item?.material?.owner
-      if (item?.material?.id === userInfo?.avater) {
+      if (item?.material?.id === userInfo?.id) {
         avater = item;
       } else if (isCurAddress) {
         onwerList.push(item)

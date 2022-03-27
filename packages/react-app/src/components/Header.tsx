@@ -9,10 +9,10 @@ import i18n from "i18next";
 import { useWeb3Info } from "abi-to-request"
 
 const nav = [
-  { label: "首页", path: "/app" },
-  { label: "作坊", path: "/produced" },
-  { label: "储物室", path: "/lockers" },
-  { label: "个人中心", path: "/person-center" },
+  { label: "加工", path: "/action" },
+  { label: "生产", path: "/produced" },
+  { label: "仓库", path: "/lockers" },
+  // { label: "个人中心", path: "/person-center" },
 ]
 
 const menu = () => {
@@ -55,9 +55,9 @@ export const Header = memo(() => {
 
   return (
     <div className="flex px-4 items-center justify-between text-l fixed w-full h-16 bg-white bg-opacity-10 text-white text-opacity-70 z-50">
-      <div className="text-2xl cursor-pointer mr-60" onClick={() => history.push("/")}>像素元宇宙</div>
+      <div className="text-2xl cursor-pointer mr-20" onClick={() => history.push("/")}>像素元宇宙</div>
       <div className="flex items-center justify-between flex-1">
-        <div className="flex justify-around items-center w-80">
+        <div className="flex justify-around items-center w-60">
           {nav.map(item => {
             return (<div
               key={item?.label}
@@ -76,7 +76,7 @@ export const Header = memo(() => {
               onChange={(e) => setInputStr(e.target.value)}
             />
             <Button type="primary" size="large" className="w-24"
-              style={{ borderRadius: 0, borderTopRightRadius: 20, borderBottomRightRadius: 20 }}
+              style={{ borderRadius: 0, borderTopRightRadius: 20, borderBottomRightRadius: 20, height: "100%" }}
               onClick={() => {
                 if (inputStr && (inputStr?.length !== 42 || inputStr?.indexOf("0x") !== 0)) {
                   message.warning("Please enter a well-formed address");

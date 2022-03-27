@@ -1,6 +1,8 @@
 import * as ethUtil from "ethereumjs-util";
 import { message } from "antd";
-import { throttle } from "lodash";
+import { Dictionary, keys, throttle } from "lodash";
+import { useHistory, useLocation } from "react-router-dom";
+import { useCallback, useMemo } from "react";
 
 export function capitalize(string: string): string {
   return string
@@ -148,4 +150,30 @@ export function getNums(number: number) {
     }
   }
   return nums;
+}
+
+export const useQueryString = () => {
+  const { search } = useLocation();
+  const history = useHistory()
+  const setSearchString = useCallback((obj) => {
+    let str = "/lockers?"
+    for (let i in obj) {
+      if (!obj[i]) continue
+      str += `${i}=${obj[i]}&`
+    }
+    history.push(str?.slice(0, -1))
+  }, []);
+
+  const searchString = useMemo(() => {
+    let queryArray = search.slice(1).split('&');
+    const obj: Dictionary<string> = {};
+    queryArray.map((query) => {
+      let temp = query.split('=');
+      if (temp.length > 1) {
+        obj[temp[0]] = temp[1];
+      }
+    })
+    return obj
+  }, [search]);
+  return { searchString, setSearchString }
 }

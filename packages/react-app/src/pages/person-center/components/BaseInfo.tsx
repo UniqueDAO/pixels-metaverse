@@ -13,7 +13,7 @@ const InfoLabel = ({ children, label }: { children: ReactNode, label: string }) 
   return (
     <div className="flex justify-between items-center mt-3">
       <div>{label}</div>
-      { children}
+      {children}
     </div>
   )
 }
@@ -46,12 +46,12 @@ export const BaseInfo = () => {
   const { address: addresss } = useWeb3Info()
   const { search } = useLocation()
   const address = search ? search.split("=")[1] : addresss
-  const { userInfo, getUserInfo } = useUserInfo()
+  const { userInfo } = useUserInfo()
 
   const [goSetConfig] = useRequest(PixelsMetaverse_SetConfig, {
     onTransactionSuccess: () => {
       message.success("更新信息成功！")
-      getUserInfo()
+      //getUserInfo()
     }
   }, [config, address])
 
@@ -80,7 +80,7 @@ export const BaseInfo = () => {
             {ellipseAddress(address, 10) || "0x000000000000000000000000000000000000000000000000000"}
           </div>
         </InfoLabel>
-       {/*  <InfoLabel label="类型">
+        {/*  <InfoLabel label="类型">
           <div className="flex">
             {userInfo?.id === "0"
               ? <>访客<div className="cursor-pointer text-red-500 ml-2" onClick={register}>激活</div></>

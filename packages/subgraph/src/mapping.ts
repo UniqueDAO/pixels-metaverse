@@ -12,7 +12,7 @@ export function handleAvaterEvent(event: AvaterEvent): void {
   if (avater == null) {
     avater = new Avater(event.params.owner.toHex());
   }
-  avater.avater = event.params.avater;
+  avater.avater = event.params.avater.toString();
 
   avater.save();
 }
@@ -58,6 +58,7 @@ export function handleComposeEvent(event: ComposeEvent): void {
       compose = new Material(id.toString());
     }
     compose.composed = event.params.toID;
+    after.composes = after.composes.concat(compose.composes);
     compose.save()
   }
 

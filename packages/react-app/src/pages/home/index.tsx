@@ -56,7 +56,7 @@ export const Website = () => {
           <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start lg:mt-12 text-2xl">
             <div className="rounded-md shadow transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105">
               <div className="cursorP w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white hover:text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
-                onClick={() => history.push("app")}>
+                onClick={() => history.push("action")}>
                 Get started
               </div>
             </div>

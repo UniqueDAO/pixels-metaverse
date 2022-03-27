@@ -25,7 +25,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   const [type, setType] = useState<ICompose>()
   const [tab, setTab] = useState<string>("new")
   const [value, setValue] = React.useState<string>("-1");
-  const { composeList, setComposeList, getMaterialLength, materialListObj, userInfo, getMaterialList } = useUserInfo()
+  const { composeList, setComposeList, materialListObj, userInfo } = useUserInfo()
   const [{ name }, setMerchandies] = React.useState<IMerchandise>({ name: "", num: "" })
 
   const [compose] = useRequest(PixelsMetaverse_Compose, {

@@ -41,7 +41,7 @@ export interface MaterialItem {
 }
 
 export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const { composeList, getMaterialList } = useUserInfo()
+  const { composeList } = useUserInfo()
 
   const [cancelCompose] = useRequest(PixelsMetaverse_Subtract, {
     isGlobalTransactionHookValid: true,
@@ -58,7 +58,7 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 }
 
 export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const { getMaterialList, materialListObj } = useUserInfo()
+  const { materialListObj } = useUserInfo()
 
   const [substract] = useRequest(PixelsMetaverse_Subtract, {
     isGlobalTransactionHookValid: true,
@@ -139,7 +139,7 @@ export const MaterialTreeData = ({ item }: { item: MaterialItem }) => {
     const fun = (item: MaterialItem, node: DataNode[]) => {
       if (item?.composes?.length === 0) return
       map(item?.composes, (ite: string) => {
-        if (materialListObj[ite]) {
+        if (materialListObj[ite] && materialListObj[ite]?.material?.compose === item?.material?.id) {
           node?.push({
             key: ite,
             title: ite,
@@ -179,7 +179,6 @@ export const MaterialTreeData = ({ item }: { item: MaterialItem }) => {
 export const Details = ({ id, setIsModalVisible }: { id: string, setIsModalVisible: Dispatch<React.SetStateAction<boolean>> }) => {
   const { materialListObj } = useUserInfo()
   const item = useMemo(() => materialListObj[id], [materialListObj, id])
-  console.log(item)
 
   return (
     <div className="text-black text-opacity-70">

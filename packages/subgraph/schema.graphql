@@ -1,6 +1,6 @@
 type Avater @entity {
   id: ID!
-  avater: BigInt!
+  avater: Material!
 }
 
 type Material @entity {

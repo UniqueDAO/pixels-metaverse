@@ -3,152 +3,70 @@ import { Dictionary, isEmpty, keyBy, map } from "lodash";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
-import { useWeb3Info } from "abi-to-request";
+import { useReadContractRequest, useWeb3Info } from "abi-to-request";
 import { useLoading } from "./Loading";
 import { QueryResult, useQuery } from "@apollo/client";
-import { COMPOSE_LIST, MATERIAL_LIST, AVATER_LIST } from "../gql";
+import {
+  COMPOSE_LIST,
+  MATERIAL_ALL_LIST,
+  AVATER_LIST,
+  MATERIAL_ADDRESS_LIST,
+  MATERIAL_ADDRESS_ID_LIST,
+  MATERIAL_ID_LIST
+} from "../gql";
+import { useLocation, useParams } from "react-router-dom";
+import { PMT721_CurrentID } from "../client/PMT721";
+import { useQueryString } from "../helpers/utilities";
 
 export const UserInfoContext = createContext(
   {} as {
     userInfo: any;
-    getUserInfo: (params?: {
-      addressParams1: string;
-    } | undefined) => Promise<{
-      successValue: {
-        id: string;
-        avater: string;
-        role: string;
-        other: string;
-      } | undefined;
-      failError?: undefined;
-    } | {
-      failError: any;
-      successValue?: undefined;
-    } | undefined>
-    getMaterialInfo: (params?: { id: string | number; } | undefined) => Promise<any>,
     materialList: MaterialItem[];
-    setMaterialList: Dispatch<React.SetStateAction<MaterialItem[]>>
-    getMaterialLength: (params?: unknown) => Promise<{
-      successValue: string | undefined;
-      failError?: undefined;
-    } | {
-      failError: any;
-      successValue?: undefined;
-    } | undefined>,
-    getMaterialList: QueryResult<any, {
+    materialId?: number;
+    getMaterials: QueryResult<any, {
       first: number;
       orderDirection: string;
       createID: number;
-    }>,
-    materialId?: number;
+    }>;
     setMaterialId: Dispatch<React.SetStateAction<number | undefined>>;
     composeList: string[];
     setComposeList: Dispatch<React.SetStateAction<string[]>>;
     materialListObj: Dictionary<MaterialItem>;
-    setMaterialListObj: React.Dispatch<React.SetStateAction<Dictionary<MaterialItem>>>
+    setQuery: React.Dispatch<React.SetStateAction<TQuery>>;
+    query: TQuery;
+    tokenID?: string
   },
 );
 
 export const useUserInfo = () => useContext(UserInfoContext);
 
-const arrayToObject = (item: MaterialItem) => {
+const convertedData = (item: any) => {
   return {
-    baseInfo: {
-      category: item?.baseInfo?.category,
-      data: item?.baseInfo?.data,
-      decode: item?.baseInfo?.decode,
-      name: item?.baseInfo?.name,
-      userId: item?.baseInfo?.userId,
-    },
-    composes: item?.composes,
+    composes: item?.composes || [],
     material: {
-      compose: item?.material?.compose,
-      data: item?.material?.data,
-      id: item?.material?.id,
-      owner: item?.material?.owner,
-      position: item?.material?.position,
-      time: item?.material?.time,
-      zIndex: item?.material?.zIndex,
+      id: item?.id,
+      compose: item?.composed,
+      time: "time",
+      position: "position",
+      zIndex: "zIndex",
+      owner: item?.owner,
+      data: item?.dataBytes
+    },
+    baseInfo: {
+      data: item?.rawData,
+      category: "category",
+      decode: "decode",
+      name: "name",
+      userId: "userId"
     },
     composeData: []
-  }
+  } as MaterialItem
 }
 
-export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
-  const [materialList, setMaterialList] = useState<MaterialItem[]>([]);
-  const [materialListObj, setMaterialListObj] = useState<Dictionary<MaterialItem>>({});
-  const [materialId, setMaterialId] = useState<number | undefined>();
-  const [composeList, setComposeList] = React.useState<string[]>([])
-  const [composes, setComposes] = React.useState<string[]>([])
-  const { openLoading, closeDelayLoading } = useLoading()
-  const { address, chainId } = useWeb3Info()
-  //const [collectList, getCollectList] = useReadContractRequest(PixelsMetaverse_Material, { arg: address ? { uint256Params1: address } : undefined })
-  //const [materialLength, getMaterialLength] = useReadContractRequest(PixelsMetaverse_Material)
-  //const [getMaterialInfo] = useRequest(PixelsMetaverse_Material, { isGlobalTransactionHookValid: false })
-
-  const getAvater = useQuery(AVATER_LIST, {
-    variables: { address: address?.toLowerCase() },
-    skip: !address
-  });
-
-  const userInfo = useMemo(() => getAvater?.data?.avaters ? getAvater?.data?.avaters[0] : {}, [getAvater?.data?.avaters])
-
-  console.log(userInfo)
-
-  const getMaterialList = useQuery(MATERIAL_LIST, {
-    variables: {
-      first: 5,
-      orderDirection: 'desc',
-      createID: 20,
-    },
-  })
-
-  useEffect(() => {
-    openLoading()
-  }, [])
-
-  const getComposeList = useQuery(COMPOSE_LIST, {
-    variables: { ids: composes },
-    skip: composes?.length === 0
-  })
-
-  useEffect(() => {
-    const data = getMaterialList?.data?.materials
-    if (data?.length > 0) {
-      const composes: string[] = []
-      const list = map(data, item => {
-        composes.push(...(item?.composes || []))
-        return {
-          composes: item?.composes || [],
-          material: {
-            id: item?.id,
-            compose: item?.composed,
-            time: "time",
-            position: "position",
-            zIndex: "zIndex",
-            owner: item?.owner,
-            data: item?.dataBytes
-          },
-          baseInfo: {
-            data: item?.rawData,
-            category: "category",
-            decode: "decode",
-            name: "name",
-            userId: "userId"
-          },
-          composeData: []
-        }
-      })
-      setMaterialList(list);
-      setComposes(composes);
-      closeDelayLoading()
-    }
-  }, [getMaterialList.data?.materials])
-
-  useEffect(() => {
-    if (isEmpty(materialList)) return
-    //if (materialList?.length !== Number(materialLength)) return
-    const obj: Dictionary<MaterialItem> = keyBy(materialList, (item: MaterialItem) => item?.material?.id);
+const useMaterialObj = (list: MaterialItem[]) => {
+  return useMemo(() => {
+    if (isEmpty(list)) return {} as Dictionary<MaterialItem>
+    const obj: Dictionary<MaterialItem> = keyBy(list, (item: MaterialItem) => item?.material?.id);
     const getData = (items: MaterialItem) => {
       const data: MaterialItem[] = []
       const fun = (item: MaterialItem) => {
@@ -161,26 +79,164 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       fun(items)
       return data
     }
-    map(materialList, (item: MaterialItem) => {
+    map(list, (item: MaterialItem) => {
       const data = getData(item)
       if (isEmpty(data)) obj[item?.material?.id].composeData = [item]
       obj[item?.material?.id].composeData = data;
     })
-    setMaterialListObj(obj)
-  }, [materialList])
+    return obj as Dictionary<MaterialItem>
+  }, [list])
+}
 
-  const getUserInfo: any = () => { }
-  const getMaterialInfo: any = () => { }
+const useMaterialAndCompose = (data: any[]) => {
+  return useMemo(() => {
+    if (!data?.length) return {
+      list: [],
+      composes: []
+    } as { list: MaterialItem[], composes: string[] }
+
+    const composes: string[] = []
+    const list = map(data, item => {
+      composes.push(...(item?.composes || []))
+      return convertedData(item)
+    })
+    return {
+      list,
+      composes
+    } as { list: MaterialItem[], composes: string[] }
+  }, [data])
+}
+
+const useComposeList = (composes: string[]) => {
+  return useQuery(COMPOSE_LIST, {
+    variables: { ids: composes },
+    skip: composes?.length === 0
+  })
+}
+
+const useGetData = (materials: any[]) => {
+  const { list, composes } = useMaterialAndCompose(materials);
+  const getComposes = useComposeList(composes);
+
+  const mergeList = useMemo(() => {
+    if (!list) return []
+    return [...list, ...map(getComposes?.data?.materials, item => convertedData(item))]
+  }, [getComposes?.data?.materials, list]);
+
+  const materialObj = useMaterialObj(mergeList);
+
+  return [list, materialObj] as const
+}
+
+type TQuery = {
+  owner?: string[],
+  id?: string[],
+  createID: string
+}
+
+const useQueryMaterials = (variables: TQuery) => {
+  const [type, setType] = useState<string>("all")
+  useEffect(() => {
+    console.log(variables)
+    if (variables?.owner && !variables?.id) setType("address");
+    else if (variables?.id && !variables?.owner) setType("id");
+    else if (variables?.id && variables?.owner) setType("address-id");
+    else setType("all");
+  }, [variables?.owner, variables?.id])
+
+  const getAllMaterials = useQuery(MATERIAL_ALL_LIST, {
+    variables: {
+      first: 10,
+      orderDirection: 'desc',
+      createID: variables?.createID
+    },
+    skip: type !== "all" || !variables?.createID
+  })
+
+  const getAddressMaterials = useQuery(MATERIAL_ADDRESS_LIST, {
+    variables: {
+      first: 10,
+      orderDirection: 'desc',
+      createID: variables?.createID,
+      owner: variables?.owner
+    },
+    skip: type !== "address" || !variables?.createID
+  })
+
+  const getIdMaterials = useQuery(MATERIAL_ID_LIST, {
+    variables: {
+      first: 10,
+      orderDirection: 'desc',
+      createID: variables?.createID,
+      id: variables?.id
+    },
+    skip: type !== "id" || !variables?.createID
+  })
+
+  const getAddressAndIdMaterials = useQuery(MATERIAL_ADDRESS_ID_LIST, {
+    variables: {
+      first: 10,
+      orderDirection: 'desc',
+      createID: variables?.createID,
+      owner: variables?.owner,
+      id: variables?.id
+    },
+    skip: type !== "address-id" || !variables?.createID
+  })
+
+  const getMaterials = useMemo(() => {
+    if (variables?.owner && !variables?.id) return getAddressMaterials;
+    if (variables?.id && !variables?.owner) return getIdMaterials;
+    if (variables?.id && variables?.owner) return getAddressAndIdMaterials;
+    else return getAllMaterials;
+  }, [variables, getAllMaterials, getAddressMaterials, getIdMaterials, getAddressAndIdMaterials])
+  return getMaterials
+}
+
+export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
+  const [materialId, setMaterialId] = useState<number | undefined>();
+  const [composeList, setComposeList] = React.useState<string[]>([])
+  const { openLoading, closeDelayLoading } = useLoading();
+  const { address, chainId } = useWeb3Info();
+  const [tokenID] = useReadContractRequest(PMT721_CurrentID);
+  const { searchString } = useQueryString();
+  const [query, setQuery] = useState<TQuery>({
+    owner: searchString?.owner ? searchString?.owner?.split(",") : undefined,
+    id: searchString?.id ? searchString?.id?.split(",") : undefined,
+    createID: searchString?.createID || "",
+  })
+
+  const addresss = searchString?.address || address
+  const getAvater = useQuery(AVATER_LIST, { variables: { address: addresss?.toLowerCase() }, skip: !addresss });
+  const userInfo = useMemo(() => getAvater?.data?.avaters ? getAvater?.data?.avaters[0]?.avater : {}, [getAvater?.data?.avaters])
+  const createID = useMemo(() => query?.createID ? Number(query?.createID) + 1 : (tokenID ? Number(tokenID) + 1 : tokenID), [tokenID, query?.createID])
+
+  const getMaterials = useQueryMaterials({
+    createID: createID ? String(createID) : "",
+    owner: query?.owner,
+    id: query?.id
+  })
+
+  useEffect(() => {
+    if (getMaterials?.loading) openLoading()
+    else closeDelayLoading()
+  }, [getMaterials?.loading])
+
+  const [materialList, materialListObj] = useGetData(getMaterials?.data?.materials);
 
   return (
     <UserInfoContext.Provider value={{
-      getMaterialInfo,
-      getMaterialList,
-      userInfo, getUserInfo,
-      materialList, setMaterialList,
-      materialId, setMaterialId,
-      composeList, setComposeList,
-      materialListObj, setMaterialListObj
+      getMaterials,
+      userInfo,
+      materialList,
+      materialId,
+      setMaterialId,
+      composeList,
+      setComposeList,
+      materialListObj,
+      query,
+      setQuery,
+      tokenID
     } as any}>
       {children}
     </UserInfoContext.Provider>
