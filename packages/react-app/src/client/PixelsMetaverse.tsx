@@ -214,6 +214,25 @@ export const PixelsMetaverse_SetConfig = async (
 }
 
 //nonpayable
+export const PixelsMetaverse_SetDataOwner = async (
+	contract: TContract,
+	arg?: {
+		dataBytes: string; //bytes32
+		to: string; //address
+	}
+) => {
+	if (!arg) return
+	const { dataBytes, to } = arg;
+	if ((contract as any)?.address && !(contract as any)?.methods) {
+		let res = await (contract as ethers.Contract).setDataOwner(dataBytes, to)
+		return res as TransactionResponse
+	} else {
+		let res = await (contract as Contract).methods.setDataOwner(dataBytes, to).send({ from: contract.sendAccount })
+		return res as TransactionReceipt
+	}
+}
+
+//nonpayable
 export const PixelsMetaverse_Subtract = async (
 	contract: TContract,
 	arg?: {

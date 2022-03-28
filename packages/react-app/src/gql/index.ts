@@ -50,8 +50,18 @@ export const COMPOSE_LIST = gql`
     }
 }`
 
+export const MATERIAL_LEN_LIST = gql`
+query GetMaterialsLen {
+  materials(
+      first: 1,
+      orderDirection: "desc",
+    ) {
+        id
+    }
+}`
+
 export const MATERIAL_ALL_LIST = gql`
-  query($first: Int, $orderBy: String, $orderDirection: String, $createID: BigInt, $owner: Bytes) {
+  query($first: Int, $orderBy: String, $orderDirection: String, $createID: String, $owner: Bytes) {
     materials(
       first: $first,
       orderBy: "createID", 
@@ -80,7 +90,7 @@ export const MATERIAL_ALL_LIST = gql`
 }`
 
 export const MATERIAL_ID_LIST = gql`
-  query($first: Int, $orderBy: String, $orderDirection: String, $createID: BigInt, $id: [BigInt]) {
+  query($first: Int, $orderBy: String, $orderDirection: String, $createID: String, $id: [BigInt]) {
     materials(
       orderBy: "createID", 
       orderDirection: $orderDirection,
@@ -107,14 +117,14 @@ export const MATERIAL_ID_LIST = gql`
 }`
 
 export const MATERIAL_ADDRESS_LIST = gql`
-  query($first: Int, $orderBy: String, $orderDirection: String, $createID: BigInt, $owner: [Bytes]) {
+  query($first: Int, $orderBy: String, $orderDirection: String, $createID: String, $owner: Bytes) {
     materials(
       first: $first,
       orderBy: "createID", 
       orderDirection: $orderDirection,
       where: {
         createID_lt: $createID,
-        owner_in: $owner
+        owner: $owner
       }) {
         id
         owner
@@ -135,7 +145,7 @@ export const MATERIAL_ADDRESS_LIST = gql`
 }`
 
 export const MATERIAL_ADDRESS_ID_LIST = gql`
-  query($first: Int, $orderBy: String, $orderDirection: String, $createID: BigInt, $owner: [Bytes], $id: [BigInt]) {
+  query($first: Int, $orderBy: String, $orderDirection: String, $createID: String, $owner: [Bytes], $id: BigInt) {
     materials(
       first: $first,
       orderBy: "createID", 
@@ -143,7 +153,7 @@ export const MATERIAL_ADDRESS_ID_LIST = gql`
       where: {
         createID_gt: $createID,
         id_in: $id,
-        owner_in: $owner
+        owner: $owner
       }) {
         id
         owner

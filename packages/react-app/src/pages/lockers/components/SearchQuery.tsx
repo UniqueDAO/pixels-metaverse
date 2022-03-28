@@ -10,7 +10,7 @@ export const ClearIcon = () => <div className="relative bg-white bg-opacity-10">
 
 export const SearchQuery = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { composeList, query, setQuery } = useUserInfo();
+  const { composeList } = useUserInfo();
   const { searchString, setSearchString } = useQueryString();
   const [{
     id,
@@ -44,7 +44,7 @@ export const SearchQuery = () => {
         placeholder="所有者地址"
         value={owner}
         onChange={(val) => {
-          setFilter((pre) => ({ ...pre, owner: val?.target?.value }))
+          setFilter((pre) => ({ ...pre, owner: val?.target?.value?.trim() }))
         }}
       >
       </Input>
@@ -54,18 +54,26 @@ export const SearchQuery = () => {
         placeholder="物品ID，查询多个ID请用英文逗号隔开"
         value={id}
         onChange={(val) => {
-          const lastStr = val?.target?.value?.slice(-1);
-          const last2Str = val?.target?.value?.slice(-2);
+          const value = val?.target?.value
+          if (value === "") setFilter((pre) => ({ ...pre, id: "" }))
+          const lastStr = value?.slice(-1), last2Str = value?.slice(-2);
           if (lastStr?.trim() === "" || last2Str === ",,") return
           if (isNaN(Number(lastStr)) && lastStr !== ",") return
-          setFilter((pre) => ({ ...pre, id: val?.target?.value }))
+          setFilter((pre) => ({ ...pre, id: value }))
         }}
       >
       </Input>
       <Button
         type="primary"
         onClick={() => {
-          setQuery((pre) => {
+          const data = {
+            ...searchString,
+            id: id.trim() ? id?.split(",") : undefined,
+            owner: owner.trim() || undefined,
+            createID: ""
+          }
+          setSearchString(data)
+          /* setQuery((pre) => {
             const data = {
               ...pre,
               id: id.trim() ? id?.split(",") : undefined,
@@ -74,7 +82,7 @@ export const SearchQuery = () => {
             }
             setSearchString(data)
             return data
-          })
+          }) */
         }}
       >查询</Button>
       {/* <Select

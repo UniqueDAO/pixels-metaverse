@@ -34,7 +34,17 @@
 ## 项目启动
 ```sh
 1. yarn
-2. yarn start
+2. yarn compile
+3. yarn test
+4. yarn deploy1 --network kovan
+5. yarn abi:api
+6. modify source:
+      address: "new address"
+      abi: PixelsMetaverse
+      startBlock: new block
+7. yarn graph-codegen
+8. yarn graph-build
+9. 发布至graph
 ```
 
 > 当前项目基于truffle框架开发，如果仅仅只是查看项目可无需安装，若需重新部署合约，则需要安装truffle，具体可参考该[truffle框架文档](https://learnblockchain.cn/docs/truffle/index.html)

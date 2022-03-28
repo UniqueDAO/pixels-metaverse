@@ -6,9 +6,9 @@ dataSources:
     name: PixelsMetaverse
     network: kovan
     source:
-      address: "0x0808D501A94B3024b73dB36ADc968F0377E7C0FD"
+      address: "0xe9b1Fb1B42C59aC6e660dAeCDe374505a1F0E75A"
       abi: PixelsMetaverse
-      startBlock: 30299265
+      startBlock: 30684149
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -26,7 +26,7 @@ dataSources:
           handler: handleAvaterEvent
         - event: MaterialEvent(address,uint256,uint256,uint256,string,bool)
           handler: handleMaterialEvent
-        - event: ComposeEvent(uint256,uint256,uint256[])
+        - event: ComposeEvent(uint256,uint256,uint256[],bool)
           handler: handleComposeEvent
         - event: ConfigEvent(uint256,string,string,string,string,string,uint256)
           handler: handleConfigEvent

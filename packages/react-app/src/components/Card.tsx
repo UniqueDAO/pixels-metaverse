@@ -87,7 +87,7 @@ export const SetAvater = ({ item }: { item: MaterialItem }) => {
     }
   })
 
-  if (address?.toLowerCase() === item?.material?.owner?.toLowerCase() && String(userInfo?.avater) !== item?.material?.id) {
+  if (address?.toLowerCase() === item?.material?.owner?.toLowerCase() && String(userInfo?.id) !== item?.material?.id) {
     return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvater({ id: item?.material?.id }) }}>
       设置为头像
     </span>)

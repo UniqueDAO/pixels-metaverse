@@ -83,7 +83,9 @@ describe("Test My Dapp", function () {
     });
 
     it("再合成5和6为第8个物品", async function () {
-      await PixelsMetaverseContract.compose([5, 6], "name8", "time8", "position8", "zIndex8", "decode8");
+      expect(await await PixelsMetaverseContract.compose([5, 6], "name8", "time8", "position8", "zIndex8", "decode8")).to.
+        emit(PixelsMetaverseContract, "ComposeEvent").
+        withArgs(0, 8, [5,6], true);
     });
 
     it("再次制作3个不同的虚拟物品9、10、11", async function () {
@@ -97,7 +99,7 @@ describe("Test My Dapp", function () {
       expect(m6.composed).to.equal(8);
       expect(await PixelsMetaverseContract.addition(6, [9])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(0, 6, [9]);
+        withArgs(0, 6, [9], false);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m9 = await PixelsMetaverseContract.material(9)
@@ -107,7 +109,7 @@ describe("Test My Dapp", function () {
     it("合并10和7到8里面去", async function () {
       expect(await PixelsMetaverseContract.addition(8, [10, 7])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(0, 8, [10, 7]);
+        withArgs(0, 8, [10, 7], false);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m7 = await PixelsMetaverseContract.material(7)
@@ -119,7 +121,7 @@ describe("Test My Dapp", function () {
       expect(m10.composed).to.equal(8);
       expect(await PixelsMetaverseContract.subtract(8, [10])).to.
         emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(8, 0, [10]);
+        withArgs(8, 0, [10], false);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m1010 = await PixelsMetaverseContract.material(10)

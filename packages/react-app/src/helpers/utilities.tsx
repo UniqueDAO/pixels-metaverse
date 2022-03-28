@@ -164,8 +164,8 @@ export const useQueryString = () => {
     history.push(str?.slice(0, -1))
   }, []);
 
-  const searchString = useMemo(() => {
-    let queryArray = search.slice(1).split('&');
+  const getSearchObj = useCallback((str: string) => {
+    let queryArray = str.split('&');
     const obj: Dictionary<string> = {};
     queryArray.map((query) => {
       let temp = query.split('=');
@@ -174,6 +174,12 @@ export const useQueryString = () => {
       }
     })
     return obj
+  }, [])
+
+  const searchString = useMemo(() => {
+    const str = search.slice(1);
+    return getSearchObj(str)
   }, [search]);
-  return { searchString, setSearchString }
+
+  return { searchString, setSearchString, getSearchObj }
 }

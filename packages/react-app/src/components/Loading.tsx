@@ -68,3 +68,24 @@ export const Loading = () => {
     </div>
   );
 };
+
+export const useSmallLoading = () => {
+  const [smallLoading, setSmallLoading] = React.useState(false);
+
+  const SmallLoading = (props: { size: number, color?: string }) => {
+    const { size, color = "#165DFF" } = props;
+    return (
+      smallLoading && <div className="small-loading" style={{
+        width: size,
+        height: size,
+        background: `conic-gradient(from 114.04deg at 50% 50%, ${color} -3.75deg, rgba(22, 93, 255, 0) 331.83deg, ${color} 339.88deg, ${color} 356.25deg, rgba(22, 93, 255, 0) 691.83deg)`
+      }}></div>
+    )
+  }
+
+  return {
+    SmallLoading,
+    setSmallLoading,
+    smallLoading
+  }
+}

@@ -48,7 +48,7 @@ export const MaterialCard = ({ item }: { item: MaterialItem }) => {
           {item?.material?.owner && <div className="p rounded-sm overflow-x-scroll hover:text-red-500 cursor-pointer"
             style={{ height: 20, width: 120, textOverflow: "ellipsis", overflow: "hidden" }}
             onClick={() => {
-              history.push(`/person-center?address=${item?.material?.owner}`)
+              //history.push(`/person-center?address=${item?.material?.owner}`)
             }}
           >{ellipseAddress(item?.material?.owner, 8)}</div>}
           {/* <Collection item={item} /> */}

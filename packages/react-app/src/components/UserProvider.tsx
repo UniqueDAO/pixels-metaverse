@@ -1,10 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Dictionary, isEmpty, keyBy, map } from "lodash";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { createContext, Dispatch } from "react";
 import { MaterialItem } from "./Card";
-import { useReadContractRequest, useWeb3Info } from "abi-to-request";
-import { useLoading } from "./Loading";
+import { useContractRequest, useReadContractRequest, useWeb3Info } from "abi-to-request";
+import { useLoading, useSmallLoading } from "./Loading";
 import { QueryResult, useQuery } from "@apollo/client";
 import {
   COMPOSE_LIST,
@@ -12,11 +12,12 @@ import {
   AVATER_LIST,
   MATERIAL_ADDRESS_LIST,
   MATERIAL_ADDRESS_ID_LIST,
-  MATERIAL_ID_LIST
+  MATERIAL_ID_LIST,
+  MATERIAL_LEN_LIST
 } from "../gql";
-import { useLocation, useParams } from "react-router-dom";
 import { PMT721_CurrentID } from "../client/PMT721";
 import { useQueryString } from "../helpers/utilities";
+import { BigNumber } from "ethers";
 
 export const UserInfoContext = createContext(
   {} as {
@@ -26,15 +27,17 @@ export const UserInfoContext = createContext(
     getMaterials: QueryResult<any, {
       first: number;
       orderDirection: string;
-      createID: number;
+      createID: string;
     }>;
     setMaterialId: Dispatch<React.SetStateAction<number | undefined>>;
     composeList: string[];
     setComposeList: Dispatch<React.SetStateAction<string[]>>;
     materialListObj: Dictionary<MaterialItem>;
-    setQuery: React.Dispatch<React.SetStateAction<TQuery>>;
-    query: TQuery;
-    tokenID?: string
+    setSmallLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    SmallLoading: (props: {
+      size: number;
+      color?: string | undefined;
+    }) => JSX.Element
   },
 );
 
@@ -56,7 +59,7 @@ const convertedData = (item: any) => {
       data: item?.rawData,
       category: "category",
       decode: "decode",
-      name: "name",
+      name: item?.config?.name,
       userId: "userId"
     },
     composeData: []
@@ -128,16 +131,17 @@ const useGetData = (materials: any[]) => {
   return [list, materialObj] as const
 }
 
-type TQuery = {
-  owner?: string[],
+export type TQuery = {
+  owner?: string,
   id?: string[],
-  createID: string
+  createID: string,
+  pollInterval?: number
 }
 
+//没找到条件合并查询的例子和文档，如果后续找到了，则直接更换回来。
 const useQueryMaterials = (variables: TQuery) => {
   const [type, setType] = useState<string>("all")
   useEffect(() => {
-    console.log(variables)
     if (variables?.owner && !variables?.id) setType("address");
     else if (variables?.id && !variables?.owner) setType("id");
     else if (variables?.id && variables?.owner) setType("address-id");
@@ -150,7 +154,8 @@ const useQueryMaterials = (variables: TQuery) => {
       orderDirection: 'desc',
       createID: variables?.createID
     },
-    skip: type !== "all" || !variables?.createID
+    skip: type !== "all" || !variables?.createID,
+    pollInterval: variables?.pollInterval || 0
   })
 
   const getAddressMaterials = useQuery(MATERIAL_ADDRESS_LIST, {
@@ -160,7 +165,8 @@ const useQueryMaterials = (variables: TQuery) => {
       createID: variables?.createID,
       owner: variables?.owner
     },
-    skip: type !== "address" || !variables?.createID
+    skip: type !== "address" || !variables?.createID,
+    pollInterval: variables?.pollInterval || 0
   })
 
   const getIdMaterials = useQuery(MATERIAL_ID_LIST, {
@@ -170,7 +176,8 @@ const useQueryMaterials = (variables: TQuery) => {
       createID: variables?.createID,
       id: variables?.id
     },
-    skip: type !== "id" || !variables?.createID
+    skip: type !== "id" || !variables?.createID,
+    pollInterval: variables?.pollInterval || 0
   })
 
   const getAddressAndIdMaterials = useQuery(MATERIAL_ADDRESS_ID_LIST, {
@@ -181,7 +188,8 @@ const useQueryMaterials = (variables: TQuery) => {
       owner: variables?.owner,
       id: variables?.id
     },
-    skip: type !== "address-id" || !variables?.createID
+    skip: type !== "address-id" || !variables?.createID,
+    pollInterval: variables?.pollInterval || 0
   })
 
   const getMaterials = useMemo(() => {
@@ -190,7 +198,18 @@ const useQueryMaterials = (variables: TQuery) => {
     if (variables?.id && variables?.owner) return getAddressAndIdMaterials;
     else return getAllMaterials;
   }, [variables, getAllMaterials, getAddressMaterials, getIdMaterials, getAddressAndIdMaterials])
+
   return getMaterials
+}
+
+export const useCreateID = () => {
+  const [tokenID] = useReadContractRequest(PMT721_CurrentID);
+  const { searchString } = useQueryString();
+
+  return useMemo(() => {
+    const createID = searchString?.createID ? Number(searchString?.createID) + 1 : (tokenID ? Number(tokenID) + 1 : tokenID)
+    return createID ? String(createID) : ""
+  }, [searchString, tokenID])
 }
 
 export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
@@ -198,23 +217,25 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const [composeList, setComposeList] = React.useState<string[]>([])
   const { openLoading, closeDelayLoading } = useLoading();
   const { address, chainId } = useWeb3Info();
-  const [tokenID] = useReadContractRequest(PMT721_CurrentID);
   const { searchString } = useQueryString();
-  const [query, setQuery] = useState<TQuery>({
-    owner: searchString?.owner ? searchString?.owner?.split(",") : undefined,
-    id: searchString?.id ? searchString?.id?.split(",") : undefined,
-    createID: searchString?.createID || "",
-  })
+  const { contracts } = useContractRequest()
+  const { setSmallLoading, SmallLoading } = useSmallLoading()
+
+  //const str = window?.location?.hash?.split("?")
+  //const searchInit = useMemo(() => str[1] ? getSearchObj(window?.location?.hash?.split("?")[1]) : {}, [])
+  //console.log(searchInit)
 
   const addresss = searchString?.address || address
   const getAvater = useQuery(AVATER_LIST, { variables: { address: addresss?.toLowerCase() }, skip: !addresss });
+  //const getMaterialLens = useQuery(MATERIAL_LEN_LIST);
+  //const tokenID = useMemo(() => getMaterialLens?.data?.materials ? getMaterialLens?.data?.materials[0]?.id : {}, [getMaterialLens?.data?.materials])
   const userInfo = useMemo(() => getAvater?.data?.avaters ? getAvater?.data?.avaters[0]?.avater : {}, [getAvater?.data?.avaters])
-  const createID = useMemo(() => query?.createID ? Number(query?.createID) + 1 : (tokenID ? Number(tokenID) + 1 : tokenID), [tokenID, query?.createID])
+  const createID = useCreateID();
 
   const getMaterials = useQueryMaterials({
-    createID: createID ? String(createID) : "",
-    owner: query?.owner,
-    id: query?.id
+    createID,
+    owner: searchString?.owner || "",
+    id: searchString?.id ? searchString?.id?.split(",") : undefined
   })
 
   useEffect(() => {
@@ -223,6 +244,68 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   }, [getMaterials?.loading])
 
   const [materialList, materialListObj] = useGetData(getMaterials?.data?.materials);
+
+  useEffect(() => {
+    getMaterials?.stopPolling()
+    setSmallLoading(false)
+  }, [materialList])
+
+  useEffect(() => {
+    const contract = contracts["PixelsMetaverse"];
+    (contract as any)?.on("AvaterEvent", (owner: string) => {
+      if (owner?.toLowerCase() === address?.toLowerCase()) {
+        getAvater.startPolling(1000);
+        setSmallLoading(true)
+      }
+    })
+  }, [contracts, address])
+
+  useEffect(() => {
+    const contract = contracts["PixelsMetaverse"]
+    let timer: any = null;
+    (contract as any)?.on("MaterialEvent", (_: string, id: BigNumber) => {
+      getMaterials.refetch({
+        ...getMaterials.variables,
+        createID: id?.add(1)?.toString()
+      })
+      if (timer) {
+        clearTimeout(timer)
+        getMaterials.stopPolling();
+      }
+      timer = setTimeout(() => {
+        getMaterials.startPolling(1000);
+        setSmallLoading(true)
+      }, 1000)
+    })
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [contracts])
+
+  useEffect(() => {
+    const contract = contracts["PixelsMetaverse"];
+    let timer: any = null;
+    (contract as any)?.on("ComposeEvent", (_: string, id: string, ids: string, isAdd: boolean) => {
+      if (!getMaterials.variables?.createID || isAdd) return
+      console.log(getMaterials.variables?.createID, isAdd)
+      getMaterials.refetch()
+      if (timer) {
+        clearTimeout(timer)
+        getMaterials.stopPolling();
+      }
+      timer = setTimeout(() => {
+        getMaterials.startPolling(1000);
+      }, 1000)
+    })
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [contracts, getMaterials.variables])
+
+  useEffect(() => {
+    getAvater?.stopPolling()
+    setSmallLoading(false)
+  }, [getAvater?.data?.avaters])
 
   return (
     <UserInfoContext.Provider value={{
@@ -234,9 +317,8 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
       composeList,
       setComposeList,
       materialListObj,
-      query,
-      setQuery,
-      tokenID
+      setSmallLoading,
+      SmallLoading
     } as any}>
       {children}
     </UserInfoContext.Provider>

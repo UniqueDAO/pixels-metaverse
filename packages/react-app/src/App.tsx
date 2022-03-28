@@ -10,7 +10,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
 import { abis } from "./client/abis";
 
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/id/QmXtm69j38qGbfEYMkQPqLXczKosHEcwWu4ytUwx6yEQkS",
+  uri: "https://api.thegraph.com/subgraphs/id/QmbuqjhEAzeU1hG9fn2tCEJwmj8FiQvax5rsb9CzZmj4mS",
   //uri: "https://api.thegraph.com/subgraphs/name/qianduanxinlv/pixels",
   cache: new InMemoryCache()
 })
@@ -42,6 +42,9 @@ const Main = () => {
           openLoading()
         },
         onSuccess: () => {
+          closeDelayLoading()
+        },
+        onFail: ()=>{
           closeDelayLoading()
         }
       }}>

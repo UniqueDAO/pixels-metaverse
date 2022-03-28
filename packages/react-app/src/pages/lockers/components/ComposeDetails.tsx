@@ -25,21 +25,29 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   const [type, setType] = useState<ICompose>()
   const [tab, setTab] = useState<string>("new")
   const [value, setValue] = React.useState<string>("-1");
-  const { composeList, setComposeList, materialListObj, userInfo } = useUserInfo()
+  const { composeList, setComposeList, materialListObj, userInfo, setSmallLoading } = useUserInfo()
   const [{ name }, setMerchandies] = React.useState<IMerchandise>({ name: "", num: "" })
 
   const [compose] = useRequest(PixelsMetaverse_Compose, {
     isGlobalTransactionHookValid: true,
-    onTransactionSuccess: () => {
-      message.success("合成成功！")
-      setComposeList && setComposeList([])
+    onSuccess: () => {
       setIsModalVisible(false)
+      setSmallLoading(true);
+    },
+    onTransactionSuccess: () => {
+      message.success("合成成功！正在获取链上新数据...")
+      setComposeList && setComposeList([])
     }
   }, [])
 
   const [join] = useRequest(PixelsMetaverse_Addition, {
+    isGlobalTransactionHookValid: true,
+    onSuccess: () => {
+      setIsModalVisible(false)
+      setSmallLoading(true);
+    },
     onTransactionSuccess: () => {
-      message.success(`合成至 ${value} 成功！`)
+      message.success(`合成至 ${value} 成功！正在获取链上新数据...`)
       setComposeList && setComposeList([])
       setIsModalVisible(false)
     }

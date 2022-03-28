@@ -438,7 +438,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "42",
-    "address": "0x4338f967a7fB9Aa413c590A1807d0c767e35786E",
+    "address": "0x96688f74507649170110d1F29884179ab4aD1b7B",
     "frame": "hardhat",
     "netName": "kovan"
   },
@@ -495,6 +495,12 @@ export const abis: TAbiItem[] = [
             "internalType": "uint256[]",
             "name": "id",
             "type": "uint256[]"
+          },
+          {
+            "indexed": false,
+            "internalType": "bool",
+            "name": "isAdd",
+            "type": "bool"
           }
         ],
         "name": "ComposeEvent",
@@ -547,6 +553,25 @@ export const abis: TAbiItem[] = [
           }
         ],
         "name": "ConfigEvent",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "bytes32",
+            "name": "dataBytes",
+            "type": "bytes32"
+          }
+        ],
+        "name": "DataOwnerEvent",
         "type": "event"
       },
       {
@@ -858,6 +883,24 @@ export const abis: TAbiItem[] = [
       {
         "inputs": [
           {
+            "internalType": "bytes32",
+            "name": "dataBytes",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          }
+        ],
+        "name": "setDataOwner",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
             "internalType": "uint256",
             "name": "ids",
             "type": "uint256"
@@ -875,7 +918,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "42",
-    "address": "0x0808D501A94B3024b73dB36ADc968F0377E7C0FD",
+    "address": "0xe9b1Fb1B42C59aC6e660dAeCDe374505a1F0E75A",
     "frame": "hardhat",
     "netName": "kovan"
   },
@@ -1316,7 +1359,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "31337",
-    "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+    "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
     "frame": "hardhat",
     "netName": "localhost"
   },
@@ -1357,22 +1400,22 @@ export const abis: TAbiItem[] = [
         "anonymous": false,
         "inputs": [
           {
-            "indexed": false,
+            "indexed": true,
             "internalType": "uint256",
-            "name": "fromID",
-            "type": "uint256"
-          },
-          {
-            "indexed": false,
-            "internalType": "uint256",
-            "name": "toID",
-            "type": "uint256"
-          },
-          {
-            "indexed": false,
-            "internalType": "uint256[]",
             "name": "id",
-            "type": "uint256[]"
+            "type": "uint256"
+          },
+          {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "beforeFatherID",
+            "type": "uint256"
+          },
+          {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "afterFatherID",
+            "type": "uint256"
           }
         ],
         "name": "ComposeEvent",
@@ -1444,6 +1487,18 @@ export const abis: TAbiItem[] = [
           },
           {
             "indexed": true,
+            "internalType": "bytes32",
+            "name": "dataBytes",
+            "type": "bytes32"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "rawData",
+            "type": "string"
+          },
+          {
+            "indexed": false,
             "internalType": "uint256",
             "name": "dataID",
             "type": "uint256"
@@ -1453,12 +1508,6 @@ export const abis: TAbiItem[] = [
             "internalType": "uint256",
             "name": "configID",
             "type": "uint256"
-          },
-          {
-            "indexed": false,
-            "internalType": "string",
-            "name": "rawData",
-            "type": "string"
           },
           {
             "indexed": false,
@@ -1510,6 +1559,30 @@ export const abis: TAbiItem[] = [
       {
         "inputs": [
           {
+            "internalType": "bytes32",
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "baseInfo",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "rawData",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
             "internalType": "uint256[]",
             "name": "idList",
             "type": "uint256[]"
@@ -1543,25 +1616,6 @@ export const abis: TAbiItem[] = [
         "name": "compose",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "",
-            "type": "bytes32"
-          }
-        ],
-        "name": "dataOwner",
-        "outputs": [
-          {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
-        ],
-        "stateMutability": "view",
         "type": "function"
       },
       {
@@ -1753,7 +1807,7 @@ export const abis: TAbiItem[] = [
       }
     ],
     "chainId": "31337",
-    "address": "0x9A676e781A523b5d0C0e43731313A708CB607508",
+    "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
     "frame": "hardhat",
     "netName": "localhost"
   }

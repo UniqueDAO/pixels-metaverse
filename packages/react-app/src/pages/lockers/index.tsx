@@ -1,23 +1,18 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SearchQuery } from "./components/SearchQuery";
 import { MaterialCard } from "./components/MaterialCard";
 import { DataStateBox } from "../../components/DataStateBox";
-import { first, last, map } from "lodash";
-import { MaterialItem } from "../../components/Card";
+import { isEmpty, last, map } from "lodash";
 import { useUserInfo } from "../../components/UserProvider";
-import Pagination from "antd/lib/pagination/Pagination";
 import { useQueryString } from "../../helpers/utilities";
-import LeftOutlined from "@ant-design/icons/lib/icons/LeftOutlined";
 import RightOutlined from "@ant-design/icons/lib/icons/RightOutlined";
 import { Input } from "antd";
 
 export const Lockers = () => {
-  const { materialList, tokenID, setQuery, query } = useUserInfo()
+  const { materialList } = useUserInfo()
   const { searchString, setSearchString } = useQueryString();
   const [createID, setCreateID] = useState("")
-  useEffect(() => { setCreateID(query?.createID) }, [query?.createID])
-
-  const defaultPage = useMemo(() => (Number(tokenID) - Number(searchString?.createID || tokenID)) / 10 + 1, [searchString, tokenID])
+  useEffect(() => { setCreateID(searchString?.createID) }, [searchString?.createID])
 
   return (
     <main className="pt-20">
@@ -42,7 +37,7 @@ export const Lockers = () => {
             </div>
           </div>
         </DataStateBox>
-        {!searchString?.id && <div className="flex justify-center mt-2">
+        {!searchString?.id && !isEmpty(materialList) && <div className="flex justify-center mt-2">
           <div className="flex justify-between items-center">
             <Input
               style={{ width: 100, marginLeft: 10, marginRight: 10 }}
@@ -51,28 +46,19 @@ export const Lockers = () => {
               placeholder="跳转至ID"
               value={createID}
               onPressEnter={() => {
-                setQuery((pre) => {
-                  const data = {
-                    ...pre,
-                    createID: createID
-                  }
-                  setSearchString(data)
-                  return data
-                })
+                setSearchString({ ...searchString, createID });
               }}
               onChange={(val) => {
                 setCreateID(val?.target?.value)
               }}
             ></Input>
             <RightOutlined className="cursor-pointer mx-4" onClick={() => {
-              setQuery((pre) => {
-                const data = {
-                  ...pre,
-                  createID: last(materialList)?.material?.id ? String(Number(last(materialList)?.material?.id) - 1) : ""
-                }
-                setSearchString(data)
-                return data
-              })
+              const data = {
+                ...searchString,
+                createID: last(materialList)?.material?.id ? String(Number(last(materialList)?.material?.id) - 1) : ""
+              }
+              setSearchString(data);
+              //getMaterials?.refetch(data as TQuery)
             }} />
           </div>
         </div>}

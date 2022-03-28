@@ -9,6 +9,7 @@ import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compo
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
 import { PMT721_Burn, PMT721_TransferFrom } from '../../../client/PMT721';
 import { useLoading } from '../../../components/Loading';
+import { BigNumber } from 'ethers';
 const { Option } = Select;
 
 export const Label = ({ children, noNeed }: { children: ReactNode, noNeed?: boolean }) => {
@@ -100,16 +101,19 @@ export const Submit = () => {
   const [positionData, setPostionData] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { address: addresss } = useWeb3Info()
-  const { userInfo } = useUserInfo()
+  const { setSmallLoading } = useUserInfo()
   const { openLoading, closeDelayLoading } = useLoading()
   const address = addresss
   const { contracts } = useContractRequest()
 
   const [make] = useRequest(PixelsMetaverse_Make, {
     onSuccessBefore: openLoading,
-    onTransactionSuccess: () => {
-      message.success("物品制造成功！");
+    onSuccess: ()=>{ 
+      setSmallLoading(true)
       closeDelayLoading();
+    },
+    onTransactionSuccess: () => {
+      message.success("物品制造成功！正在获取链上新数据...");
       setMerchandies({ name: "", num: "", })
       clear()
       setPositionsArr([])
@@ -170,15 +174,6 @@ export const Submit = () => {
     }
     return true;
   }, [name, num, decode, position, time, zIndex]);
-
-  useEffect(() => {
-    const contract = contracts["PixelsMetaverse"]
-    if (contract) {
-      (contract as any)?.on("MaterialEvent", (owner: string, avatar: string) => {
-        //getMaterialList.refetch();
-      })
-    }
-  }, [contracts])
 
   return (
     <div className="rounded-md text-gray-300 w-72 p-4 bg-white bg-opacity-10">

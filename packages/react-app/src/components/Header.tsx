@@ -7,9 +7,10 @@ import { Button, Menu, message } from "antd";
 import { isEmpty } from "lodash";
 import i18n from "i18next";
 import { useWeb3Info } from "abi-to-request"
+import { useUserInfo } from "./UserProvider";
 
 const nav = [
-  { label: "加工", path: "/action" },
+  // { label: "加工", path: "/action" },
   { label: "生产", path: "/produced" },
   { label: "仓库", path: "/lockers" },
   // { label: "个人中心", path: "/person-center" },
@@ -43,6 +44,7 @@ export const Header = memo(() => {
   const { pathname } = useLocation()
   const params = useQueryParams()
   const [inputStr, setInputStr] = useState<string | null>()
+  const { SmallLoading } = useUserInfo()
   /*   const [data] = useGetDataRequest(fetchGetMaterialLength, undefined)
   
     console.log(data?.toString()) */
@@ -57,7 +59,7 @@ export const Header = memo(() => {
     <div className="flex px-4 items-center justify-between text-l fixed w-full h-16 bg-white bg-opacity-10 text-white text-opacity-70 z-50">
       <div className="text-2xl cursor-pointer mr-20" onClick={() => history.push("/")}>像素元宇宙</div>
       <div className="flex items-center justify-between flex-1">
-        <div className="flex justify-around items-center w-60">
+        <div className="flex justify-around items-center w-40">
           {nav.map(item => {
             return (<div
               key={item?.label}
@@ -68,7 +70,7 @@ export const Header = memo(() => {
           })}
         </div>
         <div className="flex justify-end relative">
-          <div className="mr-4 flex items-center bg-white bg-opacity-10" style={{ borderRadius: 20 }}>
+          {/* <div className="mr-4 flex items-center bg-white bg-opacity-10" style={{ borderRadius: 20 }}>
             <input
               className="px-4 bg-transparent outline-none focus:outline-none w-60"
               placeholder="请输入用户钱包地址"
@@ -82,10 +84,14 @@ export const Header = memo(() => {
                   message.warning("Please enter a well-formed address");
                   return;
                 }
-                history.push(`/app${inputStr ? "?address=" + inputStr : ""}`)
+                history.push(`/action${inputStr ? "?address=" + inputStr : ""}`)
               }}
             >查询</Button>
+          </div> */}
+          <div className="mr-4 flex items-center">
+            <SmallLoading size={20} color={"#EF4444"} />
           </div>
+
 
           {address && !isEmpty(chainData) && connected ? (
             <div className="px-2 rounded bg-white bg-opacity-10 relative w-52 h-11">
