@@ -49,11 +49,15 @@ export const SearchQuery = () => {
       >
       </Input>
       <Input
-        style={{ width: 300, marginLeft: 10, marginRight: 10 }}
+        style={{ width: 350, marginLeft: 10, marginRight: 10 }}
         allowClear
-        placeholder="物品ID"
+        placeholder="物品ID，查询多个ID请用英文逗号隔开"
         value={id}
         onChange={(val) => {
+          const lastStr = val?.target?.value?.slice(-1);
+          const last2Str = val?.target?.value?.slice(-2);
+          if (lastStr?.trim() === "" || last2Str === ",,") return
+          if (isNaN(Number(lastStr)) && lastStr !== ",") return
           setFilter((pre) => ({ ...pre, id: val?.target?.value }))
         }}
       >
