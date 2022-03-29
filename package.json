@@ -67,6 +67,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/helper-environment-visitor": "^7.16.7",
     "autoprefixer": "^9",
     "babel-plugin-import": "^1.13.3",
     "contract-json-converted-html": "^0.0.13",
