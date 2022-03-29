@@ -65,7 +65,7 @@ const App = () => {
       <div className="relative w-full h-full min-h-screen mx-auto bg-no-repeat md:bg-contain bg-cover bg-gray-900"
         style={{ backgroundImage: `url(${bgSvg})` }}>
         <ApolloProvider client={client}>
-          <Web3InfoProvider defaultNetwork="mainnet">
+          <Web3InfoProvider defaultNetwork="kovan">
             <LoadingProvider>
               <Main />
             </LoadingProvider>

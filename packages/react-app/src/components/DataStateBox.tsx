@@ -25,7 +25,7 @@ export const DataStateBox = ({
     >
       {isEmpty(data)
         ? <div className="w-full h-full flex justify-center items-center opacity-70">
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={connected && networkId ? [3, 5777, 31337, 1337].includes(networkId) ? "暂无数据" : "请链接 Kovan 网络" : emptyDesc} style={{ color: "#fff" }} />
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={connected && networkId ? [42].includes(networkId) ? "暂无数据" : "请链接 Kovan 网络" : emptyDesc} style={{ color: "#fff" }} />
         </div>
         : children}
     </div>

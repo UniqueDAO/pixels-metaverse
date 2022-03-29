@@ -52,14 +52,14 @@ export const Lockers = () => {
                 setCreateID(val?.target?.value)
               }}
             ></Input>
-            <RightOutlined className="cursor-pointer mx-4" onClick={() => {
+            {materialList?.length >= 10 && <RightOutlined className="cursor-pointer mx-4" onClick={() => {
               const data = {
                 ...searchString,
                 createID: last(materialList)?.material?.id ? String(Number(last(materialList)?.material?.id) - 1) : ""
               }
               setSearchString(data);
               //getMaterials?.refetch(data as TQuery)
-            }} />
+            }} />}
           </div>
         </div>}
       </div>

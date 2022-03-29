@@ -6,18 +6,34 @@ import { PixelsMetaverseImgByPositionData } from "../../../pixels-metaverse";
 import { useMemo, useState } from "react";
 import { ellipseAddress } from "../../../helpers/utilities";
 import { Composes, Details, MaterialItem, MaterialLabel } from "../../../components/Card";
-import { Modal } from "antd";
+import { message, Modal, Typography } from "antd";
+import { useWeb3Info } from "abi-to-request";
+const { Paragraph } = Typography;
 
 export const MaterialCard = ({ item }: { item: MaterialItem }) => {
   const { userInfo, materialListObj } = useUserInfo()
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isBigImg, setIsBigImg] = useState<boolean>(false);
-  const history = useHistory()
+  const { address } = useWeb3Info()
   const data = useMemo(() => {
     if (isEmpty(item) || isEmpty(materialListObj)) return []
     if (isEmpty(item?.composes)) return [({ ...item, data: item?.baseInfo?.data } as any)]
     return map(item?.composeData, it => ({ ...it, data: it?.baseInfo?.data } as any))
   }, [item, materialListObj])
+
+  const copyToClipboard = (content: string) => {
+    const el = document.createElement("textarea");
+    el.value = content;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    el.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    document.body.removeChild(el);
+    message.success("复制成功！");
+  };
 
   return (
     <div
@@ -40,18 +56,18 @@ export const MaterialCard = ({ item }: { item: MaterialItem }) => {
         <div className="flex justify-between items-center mt-2">
           <div className="flex justify-between items-center">
             <MaterialLabel toDetails>{item?.material?.id}</MaterialLabel>
-            <MaterialLabel>{(find(categoryData, ite => ite?.value === item?.baseInfo?.category) || {})?.label}</MaterialLabel>
+            {/* <MaterialLabel>{(find(categoryData, ite => ite?.value === item?.baseInfo?.category) || {})?.label}</MaterialLabel> */}
           </div>
           <Composes item={item} />
         </div>
         <div className="flex justify-between items-center mt-2">
-          {item?.material?.owner && <div className="p rounded-sm overflow-x-scroll hover:text-red-500 cursor-pointer"
-            style={{ height: 20, width: 120, textOverflow: "ellipsis", overflow: "hidden" }}
-            onClick={() => {
-              //history.push(`/person-center?address=${item?.material?.owner}`)
+          {item?.material?.owner && <div
+            className="p rounded-sm overflow-x-scroll hover:text-red-500 cursor-pointer"
+            style={{ height: 20, textOverflow: "ellipsis", overflow: "hidden" }}
+            onClick={()=>{
+              copyToClipboard(item?.material?.owner)
             }}
-          >{ellipseAddress(item?.material?.owner, 8)}</div>}
-          {/* <Collection item={item} /> */}
+          >{ellipseAddress(item?.material?.owner, 15)}</div>}
         </div>
       </div>
       {isModalVisible && item?.material?.id && <Modal

@@ -41,14 +41,16 @@ export interface MaterialItem {
 }
 
 export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const { composeList } = useUserInfo()
+  const { composeList, setSmallLoading } = useUserInfo()
 
   const [cancelCompose] = useRequest(PixelsMetaverse_Subtract, {
     isGlobalTransactionHookValid: true,
-    onTransactionSuccess: () => {
-      message.success("分解成功！")
-      //getMaterialList()
+    onSuccess: () => {
+      setSmallLoading(true);
       setIsModalVisible && setIsModalVisible(false)
+    },
+    onTransactionSuccess: () => {
+      message.success("分解成功！正在获取链上新数据...")
     }
   }, [composeList, item])
 
@@ -58,32 +60,38 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 }
 
 export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
-  const { materialListObj } = useUserInfo()
+  const { materialListObj, setSmallLoading } = useUserInfo()
 
   const [substract] = useRequest(PixelsMetaverse_Subtract, {
     isGlobalTransactionHookValid: true,
-    onTransactionSuccess: () => {
-      message.success("移除成功！")
-      //getMaterialList()
+    onSuccess: () => {
       setIsModalVisible && setIsModalVisible(false)
+      setSmallLoading(true);
+    },
+    onTransactionSuccess: () => {
+      message.success("移除成功！正在获取链上新数据...")
     }
   }, [item])
+  const from = useMemo(() => materialListObj[item?.material?.compose], [materialListObj, item])
+  const isShow = useMemo(() => from?.material?.compose === "0", [from, item])
 
-  return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { substract({ ids: item?.material?.compose, idList: [] }) }}>
-    移除所属ID
-  </span>)
+  return (isShow ? <span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { substract({ ids: from?.material?.id, idList: [item?.material?.id] }) }}>
+    移除该物品
+  </span> : null)
 }
 
 export const SetAvater = ({ item }: { item: MaterialItem }) => {
   const { openLoading, closeDelayLoading } = useLoading()
   const { address } = useWeb3Info()
-  const { userInfo } = useUserInfo();
+  const { composeList, setComposeList, materialListObj, userInfo, setSmallLoading } = useUserInfo()
 
   const [setAvater] = useRequest(PixelsMetaverse_SetAvater, {
-    onSuccessBefore: openLoading,
+    isGlobalTransactionHookValid: true,
+    onSuccess: () => {
+      setSmallLoading(true);
+    },
     onTransactionSuccess: () => {
-      message.success("头像设置成功！")
-      closeDelayLoading()
+      message.success("头像设置成功！正在获取链上新数据...")
     }
   })
 
@@ -113,7 +121,7 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
         style={{ background: "#323945", cursor: "pointer", boxShadow: "0px 0px 5px rgba(225,225,225,0.3)" }} />
       <div className="ml-10 flex flex-col justify-between">
         <div>物品名称：{item?.baseInfo?.name || "这什么鬼名称"}<SetAvater item={item} /></div>
-        <div className="flex">组成部分：<div className="overflow-x-scroll" style={{ maxWidth: !child ? 800 : 400 }}>{item?.composes?.join(",") || "暂无"}{!isEmpty(item?.composes) && Number(item?.material?.compose) === 0 && <CancelCompose item={item} setIsModalVisible={setIsModalVisible} />}</div></div>
+        <div className="flex">组成部分：<div className="overflow-x-scroll" style={{ maxWidth: !child ? 800 : 400 }}>{item?.composes?.join(",") || "暂无"}{/* {!isEmpty(item?.composes) && Number(item?.material?.compose) === 0 && <CancelCompose item={item} setIsModalVisible={setIsModalVisible} />} */}</div></div>
         <div className="relative">所属地址：<Text copyable={{
           text: item?.material?.owner,
           icon: [<CopyOutlined className="absolute top-1" />, <SmileOutlined className="absolute top-1" />],
@@ -121,7 +129,7 @@ export const DetailsBody = ({ item, child, setIsModalVisible }: { item: Material
         }}>
           {item?.material?.owner}
         </Text></div>
-        {/* <div>所属ID：{Number(item?.material?.compose) > 0 ? <>{item?.material?.compose}{/ * <RemoveCompose item={item} setIsModalVisible={setIsModalVisible}/> * /}</> : "暂未被合成"}</div> */}
+        <div>所属ID：{Number(item?.material?.compose) > 0 ? <>{item?.material?.compose}<RemoveCompose item={item} setIsModalVisible={setIsModalVisible} /></> : "暂未被合成"}</div>
         {/* <div className="flex">是否收藏：{isCollect ? "是" : `否`} {!isCollect && <div className="ml-8 flex w-90" style={{ color: !isCollect && item?.material?.owner === address ? "rgba(0,0,0,0.7)" : "white" }}><Collection item={item} /></div>}</div> */}
       </div>
     </div>

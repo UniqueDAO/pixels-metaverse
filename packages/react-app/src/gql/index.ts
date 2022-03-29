@@ -54,8 +54,11 @@ export const MATERIAL_LEN_LIST = gql`
 query GetMaterialsLen {
   materials(
       first: 1,
+      orderBy: "createID", 
       orderDirection: "desc",
-    ) {
+      where: {
+        createID_not: "0"
+      }) {
         id
     }
 }`

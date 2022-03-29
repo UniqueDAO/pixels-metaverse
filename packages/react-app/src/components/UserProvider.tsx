@@ -203,7 +203,8 @@ const useQueryMaterials = (variables: TQuery) => {
 }
 
 export const useCreateID = () => {
-  const [tokenID] = useReadContractRequest(PMT721_CurrentID);
+  const getMaterialLens = useQuery(MATERIAL_LEN_LIST);
+  const tokenID = useMemo(() => getMaterialLens?.data?.materials ? getMaterialLens?.data?.materials[0]?.id : {}, [getMaterialLens?.data?.materials])
   const { searchString } = useQueryString();
 
   return useMemo(() => {
@@ -227,8 +228,6 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
 
   const addresss = searchString?.address || address
   const getAvater = useQuery(AVATER_LIST, { variables: { address: addresss?.toLowerCase() }, skip: !addresss });
-  //const getMaterialLens = useQuery(MATERIAL_LEN_LIST);
-  //const tokenID = useMemo(() => getMaterialLens?.data?.materials ? getMaterialLens?.data?.materials[0]?.id : {}, [getMaterialLens?.data?.materials])
   const userInfo = useMemo(() => getAvater?.data?.avaters ? getAvater?.data?.avaters[0]?.avater : {}, [getAvater?.data?.avaters])
   const createID = useCreateID();
 
@@ -287,7 +286,6 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
     let timer: any = null;
     (contract as any)?.on("ComposeEvent", (_: string, id: string, ids: string, isAdd: boolean) => {
       if (!getMaterials.variables?.createID || isAdd) return
-      console.log(getMaterials.variables?.createID, isAdd)
       getMaterials.refetch()
       if (timer) {
         clearTimeout(timer)

@@ -20,6 +20,16 @@ export const SearchQuery = () => {
     id: searchString?.id || "",
   })
 
+  const query = ()=>{
+    const data = {
+      ...searchString,
+      id: id.trim() ? id?.split(",") : undefined,
+      owner: owner.trim() || undefined,
+      createID: ""
+    }
+    setSearchString(data)
+  }
+
   return (
     <div className="flex justify-between items-center">
       <Button
@@ -43,6 +53,7 @@ export const SearchQuery = () => {
         allowClear
         placeholder="所有者地址"
         value={owner}
+        onPressEnter={query}
         onChange={(val) => {
           setFilter((pre) => ({ ...pre, owner: val?.target?.value?.trim() }))
         }}
@@ -53,6 +64,7 @@ export const SearchQuery = () => {
         allowClear
         placeholder="物品ID，查询多个ID请用英文逗号隔开"
         value={id}
+        onPressEnter={query}
         onChange={(val) => {
           const value = val?.target?.value
           if (value === "") setFilter((pre) => ({ ...pre, id: "" }))
@@ -65,26 +77,7 @@ export const SearchQuery = () => {
       </Input>
       <Button
         type="primary"
-        onClick={() => {
-          const data = {
-            ...searchString,
-            id: id.trim() ? id?.split(",") : undefined,
-            owner: owner.trim() || undefined,
-            createID: ""
-          }
-          setSearchString(data)
-          /* setQuery((pre) => {
-            const data = {
-              ...pre,
-              id: id.trim() ? id?.split(",") : undefined,
-              owner: owner.trim() ? map(owner?.split(","), item => item?.toLowerCase()) : undefined,
-              createID: ""
-            }
-            setSearchString(data)
-            return data
-          }) */
-        }}
-      >查询</Button>
+        onClick={query}>查询</Button>
       {/* <Select
         showSearch
         style={{ width: 330, marginLeft: 10 }}
