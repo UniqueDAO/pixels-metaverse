@@ -1,5 +1,7 @@
 [中文](https://github.com/UniqueDAO/pixels-metaverse/blob/main/README-ZH.md) / English
 
+The project is developed based on  [scaffold-eth](https://github.com/scaffold-eth/scaffold-eth)  framework
+
 # Pixels Metaverse 
 
 ## Pixels Metaverse Introduction：

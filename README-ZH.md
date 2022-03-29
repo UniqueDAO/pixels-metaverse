@@ -1,4 +1,7 @@
-中文 / [English](https://github.com/UniqueDAO/pixels-metaverse/blob/main/README.md)
+中文 / [English](https://github.com/UniqueDAO/pixels-metaverse/blob/main/README.md) 
+
+该项目基于 [scaffold-eth](https://github.com/scaffold-eth/scaffold-eth) 框架开发
+
 
 # 像素元宇宙
 
@@ -31,7 +34,17 @@
 ## 项目启动
 ```sh
 1. yarn
-2. yarn start
+2. yarn compile
+3. yarn test
+4. yarn deploy1 --network kovan
+5. yarn abi:api
+6. modify source:
+      address: "new address"
+      abi: PixelsMetaverse
+      startBlock: new block
+7. yarn graph-codegen
+8. yarn graph-build
+9. 发布至graph
 ```
 
 > 当前项目基于truffle框架开发，如果仅仅只是查看项目可无需安装，若需重新部署合约，则需要安装truffle，具体可参考该[truffle框架文档](https://learnblockchain.cn/docs/truffle/index.html)
@@ -39,6 +52,10 @@
 > 合约部署后需要设置721合约token的发行者，可自行编写代码调用接口，或者是安装 [contract-json-converted-html](https://github.com/xiangzhengfeng/truffle-contract-json-converted-html) npm包，将truffle生成的智能合约json文件直接转换成html文件，可以自动生成可视化的页面进行调用和查看数据。
 
 > 新版本暂未在其他网络部署合约，仅在自己本地部署了。故其他开发者 <strong>yarn start</strong> 后的合约地址是无效的，此时可以通过truffle部署在本地或者其他网络便可，部署成功后，将部署后的新合约地址新增到 <strong>converted.config.js</strong> 中即可。
+
+## 当前任务
+1. 将该truffle框架升级为hardhat
+2. 将webjs和自己编写的交互逻辑改为开源的web3-react。
 
 
 ## react-pixels-metaverse
