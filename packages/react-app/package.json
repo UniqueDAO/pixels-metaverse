@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "craco build && cd ./build && http-server",
     "test": "craco test",
     "deploy": "bash deploy.sh",
     "push:npm": "cd src/react-pixels-metaverse && git add . && git commit -m '人生何曾驻旧足，前端处处是新旅' && git push",

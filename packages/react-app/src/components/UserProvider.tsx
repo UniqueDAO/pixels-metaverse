@@ -221,6 +221,8 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const { searchString } = useQueryString();
   const { contracts } = useContractRequest()
   const { setSmallLoading, SmallLoading } = useSmallLoading()
+  const [tokenID] = useReadContractRequest(PMT721_CurrentID)
+  console.log(tokenID, contracts)
 
   //const str = window?.location?.hash?.split("?")
   //const searchInit = useMemo(() => str[1] ? getSearchObj(window?.location?.hash?.split("?")[1]) : {}, [])

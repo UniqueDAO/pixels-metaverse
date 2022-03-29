@@ -32,6 +32,7 @@ const Main = () => {
   const { pathname } = useLocation()
   const { library } = useWeb3Info()
   const { openLoading, closeDelayLoading } = useLoading()
+  console.log(library, abis)
 
   return (
     <ContractRequestContextProvider
