@@ -7,7 +7,7 @@ import { ClearIcon } from './SearchQuery';
 import { MaterialItem } from '../../../components/Card';
 import { categoryData, IMerchandise } from '../../produced/components/Submit';
 import { useRequest } from 'abi-to-request';
-import { PixelsMetaverse_Addition, PixelsMetaverse_Compose } from '../../../client/PixelsMetaverse';
+import { addition, compose } from '../../../client/PixelsMetaverse';
 const { Option } = Select;
 const { TabPane } = Tabs;
 
@@ -28,7 +28,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
   const { composeList, setComposeList, materialListObj, userInfo, setSmallLoading } = useUserInfo()
   const [{ name }, setMerchandies] = React.useState<IMerchandise>({ name: "", num: "" })
 
-  const [compose] = useRequest(PixelsMetaverse_Compose, {
+  const [composeFun] = useRequest(compose, {
     isGlobalTransactionHookValid: true,
     onSuccess: () => {
       setIsModalVisible(false)
@@ -40,7 +40,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
     }
   }, [])
 
-  const [join] = useRequest(PixelsMetaverse_Addition, {
+  const [join] = useRequest(addition, {
     isGlobalTransactionHookValid: true,
     onSuccess: () => {
       setIsModalVisible(false)
@@ -124,7 +124,7 @@ export const ComposeDetails = ({ setIsModalVisible }: { setIsModalVisible: Dispa
             }
 
             if (tab === "new") {
-              compose({ idList: composeList, name, decode: "", time: "", position: "", zIndex: "" })
+              composeFun({ idList: composeList, name, decode: "", time: "", position: "", zIndex: "" })
             } else {
               const idList = [...composeList];
               idList.splice(idList?.indexOf(value), 1);

@@ -8,9 +8,8 @@ import { useRequest, useWeb3Info } from "abi-to-request";
 import { categoryData } from "../pages/produced/components/Submit";
 import { PixelsMetaverseImgByPositionData } from "../pixels-metaverse";
 import {
-  PixelsMetaverse_SetAvater,
-  PixelsMetaverse_SetConfig,
-  PixelsMetaverse_Subtract
+  setAvater,
+  subtract
 } from "../client/PixelsMetaverse";
 import { useLoading } from "./Loading";
 const { Text } = Typography;
@@ -43,7 +42,7 @@ export interface MaterialItem {
 export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
   const { composeList, setSmallLoading } = useUserInfo()
 
-  const [cancelCompose] = useRequest(PixelsMetaverse_Subtract, {
+  const [cancelCompose] = useRequest(subtract, {
     isGlobalTransactionHookValid: true,
     onSuccess: () => {
       setSmallLoading(true);
@@ -62,7 +61,7 @@ export const CancelCompose = ({ item, setIsModalVisible }: { item: MaterialItem,
 export const RemoveCompose = ({ item, setIsModalVisible }: { item: MaterialItem, setIsModalVisible?: Dispatch<React.SetStateAction<boolean>> }) => {
   const { materialListObj, setSmallLoading } = useUserInfo()
 
-  const [substract] = useRequest(PixelsMetaverse_Subtract, {
+  const [substract] = useRequest(subtract, {
     isGlobalTransactionHookValid: true,
     onSuccess: () => {
       setIsModalVisible && setIsModalVisible(false)
@@ -85,7 +84,7 @@ export const SetAvater = ({ item }: { item: MaterialItem }) => {
   const { address } = useWeb3Info()
   const { composeList, setComposeList, materialListObj, userInfo, setSmallLoading } = useUserInfo()
 
-  const [setAvater] = useRequest(PixelsMetaverse_SetAvater, {
+  const [setAvaterFun] = useRequest(setAvater, {
     isGlobalTransactionHookValid: true,
     onSuccess: () => {
       setSmallLoading(true);
@@ -96,7 +95,7 @@ export const SetAvater = ({ item }: { item: MaterialItem }) => {
   })
 
   if (address?.toLowerCase() === item?.material?.owner?.toLowerCase() && String(userInfo?.id) !== item?.material?.id) {
-    return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvater({ id: item?.material?.id }) }}>
+    return (<span className="inline-block bg-red-500 text-white ml-4 px-2 rounded-sm cursor-pointer" onClick={() => { setAvaterFun({ id: item?.material?.id }) }}>
       设置为头像
     </span>)
   } else {

@@ -15,7 +15,7 @@ import {
   MATERIAL_ID_LIST,
   MATERIAL_LEN_LIST
 } from "../gql";
-import { PMT721_CurrentID } from "../client/PMT721";
+import { currentID } from "../client/PMT721";
 import { useQueryString } from "../helpers/utilities";
 import { BigNumber } from "ethers";
 
@@ -221,8 +221,6 @@ export const UserInfoProvider = ({ children }: { children: ReactNode }) => {
   const { searchString } = useQueryString();
   const { contracts } = useContractRequest()
   const { setSmallLoading, SmallLoading } = useSmallLoading()
-  const [tokenID] = useReadContractRequest(PMT721_CurrentID)
-  console.log(tokenID, contracts)
 
   //const str = window?.location?.hash?.split("?")
   //const searchInit = useMemo(() => str[1] ? getSearchObj(window?.location?.hash?.split("?")[1]) : {}, [])

@@ -7,7 +7,7 @@ import { ReactNode, useEffect, useMemo } from "react";
 import { useRequest, useWeb3Info } from "abi-to-request";
 import { isEmpty, split } from "lodash";
 import { ellipseAddress } from "../../../helpers/utilities";
-import { PixelsMetaverse_SetConfig } from "../../../client/PixelsMetaverse";
+import { setConfig as setConfigApi } from "../../../client/PixelsMetaverse";
 
 const InfoLabel = ({ children, label }: { children: ReactNode, label: string }) => {
   return (
@@ -48,7 +48,7 @@ export const BaseInfo = () => {
   const address = search ? search.split("=")[1] : addresss
   const { userInfo } = useUserInfo()
 
-  const [goSetConfig] = useRequest(PixelsMetaverse_SetConfig, {
+  const [goSetConfig] = useRequest(setConfigApi, {
     onTransactionSuccess: () => {
       message.success("更新信息成功！")
       //getUserInfo()

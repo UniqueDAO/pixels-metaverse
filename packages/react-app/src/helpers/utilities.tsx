@@ -172,6 +172,7 @@ export const useQueryString = () => {
       if (temp.length > 1) {
         obj[temp[0]] = temp[1];
       }
+      return query
     })
     return obj
   }, [])

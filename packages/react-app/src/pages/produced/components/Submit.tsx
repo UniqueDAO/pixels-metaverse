@@ -1,15 +1,12 @@
-import { ChangeEvent, InputHTMLAttributes, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { Tooltip, Select, message, Modal, Button } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ChangeEvent, InputHTMLAttributes, ReactNode, useCallback, useMemo, useState } from 'react';
+import { Select, message, Modal, Button } from 'antd';
 import { Dictionary, keys, map } from 'lodash';
 import { useUserInfo } from '../../../components/UserProvider';
 import { usePixelsMetaverseHandleImg } from '../../../pixels-metaverse';
 import React from 'react';
-import { PixelsMetaverse_Addition, PixelsMetaverse_Avater, PixelsMetaverse_Compose, PixelsMetaverse_Make, PixelsMetaverse_SetAvater, PixelsMetaverse_Subtract } from '../../../client/PixelsMetaverse';
+import { make } from '../../../client/PixelsMetaverse';
 import { useWeb3Info, useRequest, useContractRequest } from 'abi-to-request';
-import { PMT721_Burn, PMT721_TransferFrom } from '../../../client/PMT721';
 import { useLoading } from '../../../components/Loading';
-import { BigNumber } from 'ethers';
 const { Option } = Select;
 
 export const Label = ({ children, noNeed }: { children: ReactNode, noNeed?: boolean }) => {
@@ -106,7 +103,7 @@ export const Submit = () => {
   const address = addresss
   const { contracts } = useContractRequest()
 
-  const [make] = useRequest(PixelsMetaverse_Make, {
+  const [makeFun] = useRequest(make, {
     onSuccessBefore: openLoading,
     onSuccess: ()=>{ 
       setSmallLoading(true)
@@ -135,7 +132,7 @@ export const Submit = () => {
 
   const handleOk = useCallback(() => {
     const rawData = `${positionData}${min}`;
-    make({ name, num, rawData, decode: "", position: "", zIndex: "", time: "" });
+    makeFun({ name, num, rawData, decode: "", position: "", zIndex: "", time: "" });
     setIsModalVisible(false);
   }, [positionData, min, name, num]);
 
