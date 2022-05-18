@@ -3,18 +3,19 @@ pragma solidity ^0.8.0;
 
 import "./IPMT721.sol";
 import "./PMT721.sol";
+import "./IAvater.sol";
 
 contract PixelsMetaverse {
     address public newPMT721;
-    mapping(address => string) public PMT721S;
-    event PairCreated(
+    IAvater private avater;
+
+    mapping(address => address) public PMT721S;
+    event PMT721Event(
+        address indexed creater,
         address indexed owner,
         address indexed pmt721,
         string name
     );
-
-    mapping(address => mapping(address => uint256)) public avater;
-    event AvaterEvent(address indexed owner, uint256 indexed avater);
 
     mapping(bytes32 => address) public dataOwner;
     event DataOwnerEvent(address indexed owner, bytes32 dataBytes);
@@ -67,9 +68,11 @@ contract PixelsMetaverse {
         _;
     }
 
-    constructor() {}
+    constructor(address _avater) {
+        avater = IAvater(_avater);
+    }
 
-    function createPMT721(string memory name) external {
+    function createPMT721(string memory name, address _minter) external {
         bytes memory bytecode = type(PMT721).creationCode;
         bytes32 salt = keccak256(abi.encodePacked(name, msg.sender));
         IPMT721 pmt721;
@@ -78,16 +81,16 @@ contract PixelsMetaverse {
         }
         IPMT721(pmt721).initialize(msg.sender, address(this));
         newPMT721 = address(pmt721);
-        PMT721S[newPMT721] = name;
-        emit PairCreated(msg.sender, address(pmt721), name);
+        PMT721S[newPMT721] = _minter;
+        emit PMT721Event(msg.sender, _minter, address(pmt721), name);
     }
 
-    function setAvater(address _pmt721, uint256 id)
-        public
-        Owner(msg.sender, _pmt721, id)
-    {
-        avater[_pmt721][msg.sender] = id;
-        emit AvaterEvent(msg.sender, id);
+    function setMinter(address _pmt721, address _minter) public {
+        require(
+            msg.sender == PMT721S[_pmt721],
+            "You don't have permission to make it"
+        );
+        PMT721S[_pmt721] = _minter;
     }
 
     function setDataOwner(bytes32 dataBytes, address to) public {
@@ -124,6 +127,10 @@ contract PixelsMetaverse {
         string memory decode,
         uint256 num
     ) public {
+        require(
+            msg.sender == PMT721S[_pmt721] || PMT721S[_pmt721] == address(this),
+            "You don't have permission to make it"
+        );
         require(num > 0, "The quantity must be greater than 0");
 
         bytes32 d = keccak256(abi.encodePacked(rawData));
@@ -240,7 +247,9 @@ contract PixelsMetaverse {
         Material memory m = material[id];
         require(m.composed == 0, "The item must not have been synthesized");
         require(msg.sender == pmt721, "Only the owner");
-        require(avater[pmt721][from] != id, "This id been avater");
+        bool isAvater = IAvater(avater).isAvater(pmt721, from, id);
+
+        require(!isAvater, "This id been avater");
 
         if (to == address(0)) {
             require(!m.remake, "This id been remake");

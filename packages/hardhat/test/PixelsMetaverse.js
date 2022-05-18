@@ -2,7 +2,7 @@ const { ethers } = require("hardhat");
 const { use, expect } = require("chai");
 const { solidity } = require("ethereum-waffle");
 const PMTJSON = require("../artifacts/contracts/PMT721.sol/PMT721.json");
-const ABI = PMTJSON.abi;
+const PMT_ABI = PMTJSON.abi;
 
 use(solidity);
 
@@ -10,6 +10,7 @@ describe("Test My Dapp", function () {
   let PMT721Contract;
   let PMT7212Contract;
   let PixelsMetaverseContract;
+  let AvaterContract;
   let owner;
   let PMT, PMT1, PMT2;
   let otherAccount = "0xf0A3FdF9dC875041DFCF90ae81D7E01Ed9Bc2033"
@@ -18,25 +19,26 @@ describe("Test My Dapp", function () {
     const signers = await ethers.getSigners();
     owner = signers[0];
     const PixelsMetaverse = await ethers.getContractFactory("PixelsMetaverse");
-
-    PixelsMetaverseContract = await PixelsMetaverse.deploy();
+    const Avater = await ethers.getContractFactory("Avater");
+    AvaterContract = await Avater.deploy();
+    PixelsMetaverseContract = await PixelsMetaverse.deploy(AvaterContract.address);
     await PixelsMetaverseContract.deployed();
   });
 
   describe("调用PixelsMetaverse合约函数", async function () {
     it("创建PMT721合约", async function () {
-      const res1 = await PixelsMetaverseContract.createPMT721('test1');
+      const res1 = await PixelsMetaverseContract.createPMT721('test1', owner.address);
       await res1.wait();
       PMT1 = await PixelsMetaverseContract.newPMT721();
-      PMT721Contract = new ethers.Contract(PMT1, ABI, owner);
+      PMT721Contract = new ethers.Contract(PMT1, PMT_ABI, owner);
 
-      const res2 = await PixelsMetaverseContract.createPMT721('test2');
+      const res2 = await PixelsMetaverseContract.createPMT721('test2', owner.address);
       await res2.wait();
       PMT2 = await PixelsMetaverseContract.newPMT721();
 
-      expect(await PixelsMetaverseContract.PMT721S(PMT1)).to.equal("test1");
-      expect(await PixelsMetaverseContract.PMT721S(PMT2)).to.equal("test2");
-      PMT7212Contract = new ethers.Contract(PMT2, ABI, owner);
+      expect(await PixelsMetaverseContract.PMT721S(PMT1)).to.equal(owner.address);
+      expect(await PixelsMetaverseContract.PMT721S(PMT2)).to.equal(owner.address);
+      PMT7212Contract = new ethers.Contract(PMT2, PMT_ABI, owner);
 
       PMT = PMT1;
     });
@@ -55,15 +57,16 @@ describe("Test My Dapp", function () {
     });
 
     it("设置头像为1和2", async function () {
-      expect(await PixelsMetaverseContract.avater(PMT, owner.address)).to.equal(0)
-      expect(await PixelsMetaverseContract.setAvater(PMT, 1)).to.
-        emit(PixelsMetaverseContract, "AvaterEvent").
-        withArgs(owner.address, 1);
-      expect(await PixelsMetaverseContract.avater(PMT, owner.address)).to.equal(1)
-      expect(await PixelsMetaverseContract.setAvater(PMT, 2)).to.
-        emit(PixelsMetaverseContract, "AvaterEvent").
-        withArgs(owner.address, 2);
-      expect(await PixelsMetaverseContract.avater(PMT, owner.address)).to.equal(2)
+      expect((await AvaterContract.avater(owner.address)).id).to.equal(0);
+      expect(await AvaterContract.setAvater(PMT, 1)).to.
+        emit(AvaterContract, "AvaterEvent").
+        withArgs(owner.address, PMT, 1);
+      expect((await AvaterContract.avater(owner.address)).id).to.equal(1)
+      expect(await AvaterContract.setAvater(PMT, 2)).to.
+        emit(AvaterContract, "AvaterEvent").
+        withArgs(owner.address, PMT, 2);
+      expect((await AvaterContract.avater(owner.address)).id).to.equal(2);
+      expect((await AvaterContract.isAvater(PMT, owner.address, 2))).to.equal(true);
     });
 
     it("设置1的配置信息", async function () {
