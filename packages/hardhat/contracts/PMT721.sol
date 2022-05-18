@@ -5,12 +5,12 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./IPixelsMetaverse.sol";
 
 contract PMT721 is ERC721 {
-    address public minter;
+    address public _minter;
     uint256 private _tokenId;
-    address private _owner;
+    address public _owner;
 
     modifier MustMinter(address from) {
-        require(from == minter, "Only Minter Can Do It!");
+        require(from == _minter, "Only Minter Can Do It!");
         _;
     }
 
@@ -19,13 +19,17 @@ contract PMT721 is ERC721 {
         _;
     }
 
-    constructor() ERC721("PixelsMetavers", "PMT") {
-        _owner = _msgSender();
+    constructor() ERC721("PixelsMetavers", "PMT") {}
+
+    function initialize(address owner, address minter) public {
+        require(_owner == address(0), "Only Initialize Can Do It!");
+        _owner = owner;
+        _minter = minter;
     }
 
     function mint(address to) public MustMinter(_msgSender()) {
         _mint(to, ++_tokenId);
-        _approve(minter, _tokenId);
+        _approve(_minter, _tokenId);
     }
 
     function burn(uint256 id) public {
@@ -33,12 +37,8 @@ contract PMT721 is ERC721 {
         _burn(id);
     }
 
-    function exits(uint256 id) public view returns (bool) {
-        return _exists(id);
-    }
-
-    function setMinter(address _minter) public MustOwner(_msgSender()) {
-        minter = _minter;
+    function setMinter(address minter) public MustOwner(_msgSender()) {
+        _minter = minter;
     }
 
     function setOwner(address owner) public MustOwner(_msgSender()) {
@@ -54,6 +54,11 @@ contract PMT721 is ERC721 {
         address to,
         uint256 tokenId
     ) internal virtual override {
-        IPixelsMetavers(minter).handleTransfer(from, to, tokenId);
+        IPixelsMetavers(_minter).handleTransfer(
+            address(this),
+            from,
+            to,
+            tokenId
+        );
     }
 }
