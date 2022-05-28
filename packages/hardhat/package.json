@@ -20,6 +20,7 @@
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
+    "erc721a": "^4.0.0",
     "ethereum-waffle": "^3.1.1",
     "ethers": "^5.4.4",
     "hardhat": "^2.8.4",

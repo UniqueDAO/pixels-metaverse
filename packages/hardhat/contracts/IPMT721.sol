@@ -10,11 +10,9 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 interface IPMT721 is IERC721 {
     //function exits(uint256 tokenId) external view returns (bool);
 
-    function mint(address to) external;
-
-    function burn(uint256 tokenId) external;
+    function mint(address to, uint256 quantity) external;
 
     function currentID() external view returns (uint256);
 
-    function initialize(address owner, address _minter) external;
+    function initialize(address _minter) external;
 }

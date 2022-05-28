@@ -8376,6 +8376,11 @@ eosjs@^22.1.0:
     hash.js "1.1.7"
     pako "2.0.3"
 
+erc721a@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/erc721a/-/erc721a-4.0.0.tgz#df9427ffa24c998fb33610bc558febfd932ec8d1"
+  integrity sha512-FXlJ3owiDWGQleXV5t1aE5fgMpzCaP5ZMg9ZamP1Xv4p6JdCj3QlKQDvP8BvT+Jn7p4TtqTcHNUMfh+xoHGhGw==
+
 err-code@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/err-code/-/err-code-1.1.2.tgz#06e0116d3028f6aef4806849eb0ea6a748ae6960"

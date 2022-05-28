@@ -1,64 +1,43 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./IPixelsMetaverse.sol";
+import "erc721a/contracts/ERC721A.sol";
 
-contract PMT721 is ERC721 {
-    address public _minter;
-    uint256 private _tokenId;
-    address public _owner;
+contract PMT721 is ERC721A {
+    address public minter;
 
-    modifier MustMinter(address from) {
-        require(from == _minter, "Only Minter Can Do It!");
-        _;
+    constructor() ERC721A("PixelsMetavers", "PMT") {}
+
+    function initialize(address _minter) public {
+        require(
+            minter == address(0) && _nextTokenId() == 0,
+            "Only Initialize Can Do It!"
+        );
+        minter = _minter;
     }
 
-    modifier MustOwner(address from) {
-        require(from == _owner, "Only Owner Can Do It!");
-        _;
-    }
-
-    constructor() ERC721("PixelsMetavers", "PMT") {}
-
-    function initialize(address owner, address minter) public {
-        require(_owner == address(0), "Only Initialize Can Do It!");
-        _owner = owner;
-        _minter = minter;
-    }
-
-    function mint(address to) public MustMinter(_msgSender()) {
-        _mint(to, ++_tokenId);
-        _approve(_minter, _tokenId);
-    }
-
-    function burn(uint256 id) public {
-        require(ownerOf(id) == _msgSender(), "Only Owner Can Do It!");
-        _burn(id);
-    }
-
-    function setMinter(address minter) public MustOwner(_msgSender()) {
-        _minter = minter;
-    }
-
-    function setOwner(address owner) public MustOwner(_msgSender()) {
-        _owner = owner;
+    function mint(address to, uint256 quantity) public {
+        require(_msgSenderERC721A() == minter, "Only Minter Can Do It!");
+        _safeMint(to, quantity);
     }
 
     function currentID() public view returns (uint256) {
-        return _tokenId;
+        return _nextTokenId();
     }
 
-    function _afterTokenTransfer(
+    function _beforeTokenTransfers(
         address from,
         address to,
-        uint256 tokenId
+        uint256 tokenId,
+        uint256 quantity
     ) internal virtual override {
-        IPixelsMetavers(_minter).handleTransfer(
+        IPixelsMetaverse(minter).handleTransfer(
             address(this),
             from,
             to,
-            tokenId
+            tokenId,
+            quantity
         );
     }
 }
