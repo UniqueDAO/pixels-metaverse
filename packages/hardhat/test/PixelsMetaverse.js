@@ -44,11 +44,11 @@ describe("Test My Dapp", function () {
     });
 
     it("PMT1的minter和owner", async function () {
-      const minter = await PMT7212Contract.minter();
+      const minter = await PMT7212Contract.getMinter();
       expect(minter).to.equal(PixelsMetaverseContract.address);
     });
 
-    it("制作2个虚拟物品1、2", async function () {
+    it("制作2个虚拟物品0、1", async function () {
       await PixelsMetaverseContract.make(PMT, "name", "rawData", "time", "position", "zIndex", "decode", 2);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(2);
@@ -80,8 +80,8 @@ describe("Test My Dapp", function () {
     }); */
 
     it("再次制作和1同样的2个虚拟物品2和3", async function () {
-      const d = await PixelsMetaverseContract._getMaterial(PMT, 1);
-      expect(await PixelsMetaverseContract._getMaterial(PMT, 0)).to.equal(d);
+      const d = await PixelsMetaverseContract.getMaterial(PMT, 1);
+      expect((await PixelsMetaverseContract.getMaterial(PMT, 0)).dataBytes).to.equal(d.dataBytes);
 
       const currentID1 = await PMT721Contract.currentID()
       expect(currentID1).to.equal(2);
@@ -96,109 +96,107 @@ describe("Test My Dapp", function () {
         withArgs(owner.address, PMT, 4, 4, 4, "x-43-fdfad4-54343dfdfd4-43543543dffds-443543d4-45354353d453567554653-dfsafads", false, 1);
     });
 
-    it("合成2和4为第6个物品", async function () {
+    it("合成2和4为5", async function () {
       expect(await PixelsMetaverseContract.compose(PMT, [{
         pmt721: PMT,
         id: 2
       }, {
         pmt721: PMT,
         id: 4
-      }], "name6", "time6", "position6", "zIndex6", "decode6", ethers.utils.formatBytes32String("text12331"))).to.
+      }], "name6", "time6", "position6", "zIndex6", "decode6", ethers.utils.formatBytes32String("24"))).to.
         emit(PixelsMetaverseContract, "ConfigEvent").
         withArgs(PMT, 5, "name6", "time6", "position6", "zIndex6", "decode6", 0);
     });
 
-    it("再合成1和3为第7个物品", async function () {
+    it("再合成1和3为6", async function () {
       await PixelsMetaverseContract.compose(PMT, [{
         pmt721: PMT,
         id: 1
       }, {
         pmt721: PMT,
         id: 3
-      }], "name7", "time7", "position7", "zIndex7", "decode7", ethers.utils.formatBytes32String("text1233"));
+      }], "name7", "time7", "position7", "zIndex7", "decode7", ethers.utils.formatBytes32String("13"));
     });
 
-    /* it("再合成5和6为第8个物品", async function () {
-      expect(await await PixelsMetaverseContract.compose(PMT, [5, 6], "name8", "time8", "position8", "zIndex8", "decode8")).to.
-        emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(0, 8, [5, 6], true);
+    it("再合成5和6为7", async function () {
+      await await PixelsMetaverseContract.compose(PMT, [{
+        pmt721: PMT,
+        id: 5
+      }, {
+        pmt721: PMT,
+        id: 6
+      }], "name8", "time8", "position8", "zIndex8", "decode8", ethers.utils.formatBytes32String("56"));
     });
 
-    it("再次制作3个不同的虚拟物品9、10、11", async function () {
+    it("再次制作3个不同的虚拟物品8、9、10", async function () {
       await PixelsMetaverseContract.make(PMT, "name9", "rawData9", "time9", "position9", "zIndex9", "decode9", 3);
-      const m9 = await PixelsMetaverseContract.material(9)
-      expect(m9.composed).to.equal(0);
+      const m9 = await PixelsMetaverseContract.getMaterial(PMT, 10);
+      expect((await PixelsMetaverseContract.getMaterial(PMT, 10)).dataBytes).to.equal(m9.dataBytes);
     });
 
-    it("合并9到6里面去", async function () {
-      const m6 = await PixelsMetaverseContract.material(6)
-      expect(m6.composed).to.equal(8);
-      expect(await PixelsMetaverseContract.addition(PMT, 6, [9])).to.
-        emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(0, 6, [9], false);
+    it("合并8,9,10到7里面去", async function () {
+      const m7 = await PixelsMetaverseContract.composes(PMT, 7)
+      expect(m7.id).to.equal(0);
+      await PixelsMetaverseContract.addition({
+        pmt721: PMT,
+        id: 7
+      }, [{
+        pmt721: PMT,
+        id: 8
+      }, {
+        pmt721: PMT,
+        id: 9
+      }, {
+        pmt721: PMT,
+        id: 10
+      }]);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
-      const m9 = await PixelsMetaverseContract.material(9)
-      expect(m9.composed).to.equal(6);
+      const m9 = await PixelsMetaverseContract.composes(PMT, 9);
+      expect(m9.id).to.equal(7);
     });
 
-    it("合并10和7到8里面去", async function () {
-      expect(await PixelsMetaverseContract.addition(PMT, 8, [10, 7])).to.
-        emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(0, 8, [10, 7], false);
-      const currentID = await PMT721Contract.currentID()
-      expect(currentID).to.equal(11);
-      const m7 = await PixelsMetaverseContract.material(7)
-      expect(m7.composed).to.equal(8);
+    it("移除7里面的10", async function () {
+      const m10 = await PixelsMetaverseContract.composes(PMT, 10)
+      expect(m10.id).to.equal(7);
+      await PixelsMetaverseContract.subtract({
+        pmt721: PMT,
+        id: 7
+      }, [{
+        pmt721: PMT,
+        id: 10
+      }])
+      const m1010 = await PixelsMetaverseContract.composes(PMT, 10)
+      expect(m1010.id).to.equal(0);
     });
 
-    it("移除8里面的10", async function () {
-      const m10 = await PixelsMetaverseContract.material(10)
-      expect(m10.composed).to.equal(8);
-      expect(await PixelsMetaverseContract.subtract(PMT, 8, [10])).to.
-        emit(PixelsMetaverseContract, "ComposeEvent").
-        withArgs(8, 0, [10], false);
-      const currentID = await PMT721Contract.currentID()
-      expect(currentID).to.equal(11);
-
-      const m1010 = await PixelsMetaverseContract.material(10)
-      expect(m1010.composed).to.equal(0);
-      const m1 = await PixelsMetaverseContract.material(1)
-      expect(m1.composed).to.equal(7);
-    });
-
-    it("制作1个虚拟物品12", async function () {
+    it("制作1个虚拟物品11", async function () {
       await PixelsMetaverseContract.make(PMT, "name12", "rawData12", "time12", "position12", "zIndex12", "decode12", 1);
     });
 
-    it("再次制作和6一样的2个合成虚拟物品13、14", async function () {
+    it("再次制作和6一样的2个合成虚拟物品12、13", async function () {
       await PixelsMetaverseContract.reMake(PMT, 6, 2);
-    }); */
+    });
   });
 
-  /* describe("调用PMT721合约函数", async function () {
-    it("检查11的所有者", async function () {
-      expect(await PMT721Contract.ownerOf(11)).to.equal(owner.address);
+  describe("调用PMT721合约函数", async function () {
+    it("检查12的所有者", async function () {
+      expect(await PMT721Contract.ownerOf(12)).to.equal(owner.address);
     });
-    it("转账11给" + otherAccount, async function () {
-      expect(await PMT721Contract.ownerOf(11)).to.equal(owner.address);
-      expect(await PMT721Contract.transferFrom(owner.address, otherAccount, 11)).to.
+    it("转账12给" + otherAccount, async function () {
+      expect(await PMT721Contract.transferFrom(owner.address, otherAccount, 12)).to.
         emit(PixelsMetaverseContract, "MaterialEvent").
-        withArgs(otherAccount, 11, 0, 0, "", false);
-      expect(await PMT721Contract.ownerOf(11)).to.equal(otherAccount);
-      const m1111 = await PixelsMetaverseContract.material(11)
-      expect(m1111.composed).to.equal(0);
+        withArgs(otherAccount, PMT, 12, 0, 0, "", false, 1);
+      expect(await PMT721Contract.ownerOf(12)).to.equal(otherAccount);
     });
-    it("销毁10", async function () {
-      const m10 = await PixelsMetaverseContract.material(10)
-      expect(m10.composed).to.equal(0);
 
-      expect(await PMT721Contract.burn(10)).to.
+    it("销毁11", async function () {
+      const m10 = await PixelsMetaverseContract.composes(PMT, 11)
+      expect(m10.id).to.equal(0);
+
+      expect(await PMT721Contract.burn(11)).to.
         emit(PMT721Contract, "Transfer").
-        withArgs(owner.address, ethers.constants.AddressZero, 10);
-      const m1010 = await PixelsMetaverseContract.material(10)
-      expect(m1010.composed).to.equal(0);
-      expect(await PMT721Contract.balanceOf(otherAccount)).to.equal(1);
+        withArgs(owner.address, ethers.constants.AddressZero, 11);
     });
-  }); */
+  });
 });

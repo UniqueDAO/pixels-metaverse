@@ -8,8 +8,16 @@ contract PMT721 is ERC721A {
     constructor() ERC721A("PixelsMetavers", "PMT") {}
 
     function mint(address to, uint256 quantity) public {
-        require(_msgSenderERC721A() == minter, "Only Minter Can Do It!");
+        require(_msgSenderERC721A() == _minter, "Only Minter Can Do It!");
         _safeMint(to, quantity);
+    }
+
+    function burn(uint256 id) public {
+        _burn(id, true);
+    }
+
+    function getMinter() public view returns (address) {
+        return _minter;
     }
 
     function currentID() public view returns (uint256) {
@@ -22,12 +30,6 @@ contract PMT721 is ERC721A {
         uint256 tokenId,
         uint256 quantity
     ) internal virtual override {
-        IPixelsMetaverse(minter).handleTransfer(
-            address(this),
-            from,
-            to,
-            tokenId,
-            quantity
-        );
+        IPixelsMetaverse(_minter).handleTransfer(from, to, tokenId, quantity);
     }
 }

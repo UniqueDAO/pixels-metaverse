@@ -68,7 +68,7 @@ contract ERC721A is IERC721A {
     // Token symbol
     string private _symbol;
 
-    address public minter;
+    address internal _minter;
 
     // Mapping from token ID to ownership details
     // An empty struct value does not necessarily mean the token is unowned.
@@ -94,13 +94,13 @@ contract ERC721A is IERC721A {
     mapping(uint256 => address) private _tokenApprovals;
 
     // Mapping from owner to operator approvals
-    mapping(address => mapping(address => bool)) internal _operatorApprovals;
+    mapping(address => mapping(address => bool)) private _operatorApprovals;
 
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
         _currentIndex = _startTokenId();
-        minter = msg.sender;
+        _minter = msg.sender;
     }
 
     /**
@@ -701,7 +701,7 @@ contract ERC721A is IERC721A {
             bool isApprovedOrOwner = (_msgSenderERC721A() == from ||
                 isApprovedForAll(from, _msgSenderERC721A()) ||
                 getApproved(tokenId) == _msgSenderERC721A()) ||
-                _msgSenderERC721A() == minter;
+                _msgSenderERC721A() == _minter;
 
             if (!isApprovedOrOwner) revert TransferCallerNotOwnerNorApproved();
         }
