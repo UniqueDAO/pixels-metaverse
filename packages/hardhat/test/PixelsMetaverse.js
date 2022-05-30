@@ -94,36 +94,34 @@ describe("Test My Dapp", function () {
     it("合成0和2为7", async function () {
       expect(await PixelsMetaverseContract.compose(PMT, [{
         pmt721: PMT,
-        id: 0
+        pmt721_id: 0
       }, {
         pmt721: PMT,
-        id: 2
+        pmt721_id: 2
       }], "name6", "time6", "position6", "zIndex6", "decode6")).to.
         emit(PixelsMetaverseContract, "ConfigEvent").
         withArgs(PMT, 7, "name6", "time6", "position6", "zIndex6", "decode6", 0);
     });
 
-
-
     it("再合成1和4为8", async function () {
       expect(await PixelsMetaverseContract.compose(PMT, [{
         pmt721: PMT,
-        id: 1
+        pmt721_id: 1
       }, {
         pmt721: PMT,
-        id: 4
+        pmt721_id: 4
       }], "name7", "time7", "position7", "zIndex7", "decode7")).to.
-      emit(PixelsMetaverseContract, "ConfigEvent").
-      withArgs(PMT, 8, "name7", "time7", "position7", "zIndex7", "decode7", 0);
+        emit(PixelsMetaverseContract, "ConfigEvent").
+        withArgs(PMT, 8, "name7", "time7", "position7", "zIndex7", "decode7", 0);
     });
 
     it("再合成3和5为9", async function () {
       await PixelsMetaverseContract.compose(PMT, [{
         pmt721: PMT,
-        id: 3
+        pmt721_id: 3
       }, {
         pmt721: PMT,
-        id: 5
+        pmt721_id: 5
       }], "name7", "time7", "position7", "zIndex7", "decode7");
     });
 
@@ -134,21 +132,41 @@ describe("Test My Dapp", function () {
     it("再合成9和10为12", async function () {
       await await PixelsMetaverseContract.compose(PMT, [{
         pmt721: PMT,
-        id: 10
+        pmt721_id: 10
       }, {
         pmt721: PMT,
-        id: 9
+        pmt721_id: 9
       }], "name8", "time8", "position8", "zIndex8", "decode8");
     });
 
     it("移除7里面的10", async function () {
       await PixelsMetaverseContract.subtract({
         pmt721: PMT,
-        id: 7
+        pmt721_id: 12
       }, [{
         pmt721: PMT,
-        id: 4
+        pmt721_id: 10
       }])
+    });
+
+    it("移除7里面的10", async function () {
+      await PixelsMetaverseContract.subtract({
+        pmt721: PMT,
+        pmt721_id: 12
+      }, [{
+        pmt721: PMT,
+        pmt721_id: 9
+      }])
+    });
+
+    it("再合成9和10为12", async function () {
+      await await PixelsMetaverseContract.compose(PMT, [{
+        pmt721: PMT,
+        pmt721_id: 11
+      }, {
+        pmt721: PMT,
+        pmt721_id: 9
+      }], "name8", "time8", "position8", "zIndex8", "decode8");
     });
     return
 
@@ -163,13 +181,13 @@ describe("Test My Dapp", function () {
       expect(m7).to.equal(0);
       await PixelsMetaverseContract.addition(8, [{
         pmt721: PMT,
-        id: 8
+        pmt721_id: 8
       }, {
         pmt721: PMT,
-        id: 9
+        pmt721_id: 9
       }, {
         pmt721: PMT,
-        id: 10
+        pmt721_id: 10
       }]);
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);

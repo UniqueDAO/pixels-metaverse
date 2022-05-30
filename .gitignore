@@ -4,6 +4,8 @@ packages/subgraph/generated
 packages/hardhat/*.txt
 **/aws.json
 /bin
+/.vscode
+/.husky
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 **/node_modules
