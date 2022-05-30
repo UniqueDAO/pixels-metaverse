@@ -194,15 +194,10 @@ contract PixelsMetaverse {
         string memory time,
         string memory position,
         string memory zIndex,
-        string memory decode,
-        bytes32 data
+        string memory decode
     ) public Minter(pmt721) {
         uint256 len = list.length;
         require(len > 1, "The quantity must be greater than 1");
-        require(
-            dataOwner[data] == address(0),
-            "This data already has an owner"
-        );
         uint256 pmt721_id = IPMT721(pmt721).currentID();
         emit ConfigEvent(
             pmt721,
@@ -214,15 +209,24 @@ contract PixelsMetaverse {
             decode,
             0
         );
-        _make(pmt721, "", data, 1);
 
         PMTStruct memory p = PMTStruct(pmt721, pmt721_id);
 
+        bytes32 dataBytes;
+
         for (uint256 i; i < len; i++) {
-            _compose(materialId, list[i], msg.sender);
+            PMTStruct memory temp = list[i];
+            DataBytesStruct memory d = getMaterial(temp.pmt721, temp.id);
+            dataBytes = dataBytes ^ d.dataBytes;
+            _compose(materialId, temp, msg.sender);
         }
         emit ComposeEvent(p, list, true);
-        dataOwner[data] = msg.sender;
+        require(
+            dataOwner[dataBytes] == address(0),
+            "This data already has an owner"
+        );
+        dataOwner[dataBytes] = msg.sender;
+        _make(pmt721, "", dataBytes, 1);
         materialIdToPmt721[materialId] = p;
     }
 
@@ -260,12 +264,20 @@ contract PixelsMetaverse {
             msg.sender == IPMT721(c.pmt721).ownerOf(c.id),
             "Only the owner"
         );
+
+        DataBytesStruct memory d = getMaterial(c.pmt721, c.id);
+        bytes32 dataBytes = d.dataBytes;
         uint256 material_id = composes[c.pmt721][c.id];
         require(material_id == 0, "The item must not have been synthesized");
         for (uint256 i; i < list.length; i++) {
+            PMTStruct memory temp = list[i];
+            DataBytesStruct memory d1 = getMaterial(temp.pmt721, temp.id);
+            dataBytes = dataBytes ^ d1.dataBytes;
             _compose(_materialId, list[i], msg.sender);
         }
         emit ComposeEvent(c, list, false);
+        dataOwner[dataBytes] = msg.sender;
+        material[c.pmt721][c.id] = dataBytes;
     }
 
     function _compose(
@@ -286,16 +298,19 @@ contract PixelsMetaverse {
         uint256 material_id = composes[item.pmt721][item.id];
         require(material_id == 0, "this Material composed");
 
-        uint256 _materialId = composes[list[0].pmt721][list[0].id];
+        PMTStruct memory t = list[0];
+        uint256 _materialId = composes[t.pmt721][t.id];
         PMTStruct memory p = materialIdToPmt721[_materialId];
-        require(
-            p.id == item.id && p.pmt721 == item.pmt721,
-            "this Material composed"
-        );
+        require(p.id == item.id && p.pmt721 == item.pmt721, "error");
+
+        DataBytesStruct memory d = getMaterial(item.pmt721, item.id);
+        bytes32 dataBytes = d.dataBytes;
 
         if (list.length == 1) {
-            delete composes[list[0].pmt721][list[0].id];
-            delete materialIdToPmt721[list[0].id];
+            DataBytesStruct memory d1 = getMaterial(t.pmt721, t.id);
+            dataBytes = dataBytes ^ d1.dataBytes;
+            delete composes[t.pmt721][t.id];
+            delete materialIdToPmt721[t.id];
         } else {
             for (uint256 i = 1; i < list.length; i++) {
                 PMTStruct memory temp = list[i];
@@ -304,11 +319,20 @@ contract PixelsMetaverse {
                     _material_id == _materialId,
                     "The item was not synthesized into the ids"
                 );
+
+                DataBytesStruct memory d2 = getMaterial(temp.pmt721, temp.id);
+                dataBytes = dataBytes ^ d2.dataBytes;
                 delete composes[temp.pmt721][temp.id];
                 delete materialIdToPmt721[temp.id];
             }
         }
         emit ComposeEvent(PMTStruct(address(0), 0), list, false);
+        require(
+            dataOwner[dataBytes] == address(0),
+            "This data already has an owner"
+        );
+        dataOwner[dataBytes] = msg.sender;
+        material[item.pmt721][item.id] = dataBytes;
     }
 
     function handleTransfer(
