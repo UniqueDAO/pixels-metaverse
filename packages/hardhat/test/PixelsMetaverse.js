@@ -136,11 +136,8 @@ describe("Test My Dapp", function () {
 
     it("合并8,9,10到7里面去", async function () {
       const m7 = await PixelsMetaverseContract.composes(PMT, 7)
-      expect(m7.id).to.equal(0);
-      await PixelsMetaverseContract.addition({
-        pmt721: PMT,
-        id: 7
-      }, [{
+      expect(m7).to.equal(0);
+      await PixelsMetaverseContract.addition(8, [{
         pmt721: PMT,
         id: 8
       }, {
@@ -153,12 +150,12 @@ describe("Test My Dapp", function () {
       const currentID = await PMT721Contract.currentID()
       expect(currentID).to.equal(11);
       const m9 = await PixelsMetaverseContract.composes(PMT, 9);
-      expect(m9.id).to.equal(7);
+      expect(m9).to.equal(8);
     });
 
     it("移除7里面的10", async function () {
       const m10 = await PixelsMetaverseContract.composes(PMT, 10)
-      expect(m10.id).to.equal(7);
+      expect(m10).to.equal(8);
       await PixelsMetaverseContract.subtract({
         pmt721: PMT,
         id: 7
@@ -167,11 +164,11 @@ describe("Test My Dapp", function () {
         id: 10
       }])
       const m1010 = await PixelsMetaverseContract.composes(PMT, 10)
-      expect(m1010.id).to.equal(0);
+      expect(m1010).to.equal(0);
     });
 
     it("制作1个虚拟物品11", async function () {
-      await PixelsMetaverseContract.make(PMT, "name12", "rawData12", "time12", "position12", "zIndex12", "decode12", 1);
+      await PixelsMetaverseContract.make(PMT, "name12", "rawData12", "time12", "position12", "zIndex12", "decode12", 1000);
     });
 
     it("再次制作和6一样的2个合成虚拟物品12、13", async function () {
@@ -192,7 +189,7 @@ describe("Test My Dapp", function () {
 
     it("销毁11", async function () {
       const m10 = await PixelsMetaverseContract.composes(PMT, 11)
-      expect(m10.id).to.equal(0);
+      expect(m10).to.equal(0);
 
       expect(await PMT721Contract.burn(11)).to.
         emit(PMT721Contract, "Transfer").

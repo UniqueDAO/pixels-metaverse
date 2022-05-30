@@ -8,11 +8,7 @@ import "./IAvater.sol";
 contract PixelsMetaverse {
     address public avater;
     address public newPMT721;
-
-    struct PMTStruct {
-        address pmt721;
-        uint256 id;
-    }
+    uint256 public materialId;
 
     mapping(address => address) public PMT721Minter;
     event PMT721Event(
@@ -29,8 +25,14 @@ contract PixelsMetaverse {
         uint256 id;
     }
 
+    struct PMTStruct {
+        address pmt721;
+        uint256 id;
+    }
+
+    mapping(uint256 => PMTStruct) public materialIdToPmt721;
     mapping(address => mapping(uint256 => bytes32)) public material;
-    mapping(address => mapping(uint256 => PMTStruct)) public composes;
+    mapping(address => mapping(uint256 => uint256)) public composes;
 
     event MaterialEvent(
         address indexed owner,
@@ -135,8 +137,8 @@ contract PixelsMetaverse {
         string memory decode,
         uint256 sort
     ) public Owner(pmt721, id, msg.sender) {
-        PMTStruct memory c = composes[pmt721][id];
-        require(c.id == 0, "The item must not have been synthesized");
+        uint256 _materialId = composes[pmt721][id];
+        require(_materialId == 0, "The item must not have been synthesized");
         emit ConfigEvent(
             pmt721,
             id,
@@ -201,17 +203,27 @@ contract PixelsMetaverse {
             dataOwner[data] == address(0),
             "This data already has an owner"
         );
-        uint256 id = IPMT721(pmt721).currentID();
-        emit ConfigEvent(pmt721, id, name, time, position, zIndex, decode, 0);
+        uint256 pmt721_id = IPMT721(pmt721).currentID();
+        emit ConfigEvent(
+            pmt721,
+            pmt721_id,
+            name,
+            time,
+            position,
+            zIndex,
+            decode,
+            0
+        );
         _make(pmt721, "", data, 1);
 
-        PMTStruct memory p = PMTStruct(pmt721, id);
+        PMTStruct memory p = PMTStruct(pmt721, pmt721_id);
 
         for (uint256 i; i < len; i++) {
-            _compose(list[i], p, msg.sender);
+            _compose(materialId, list[i], msg.sender);
         }
         emit ComposeEvent(p, list, true);
         dataOwner[data] = msg.sender;
+        materialIdToPmt721[materialId] = p;
     }
 
     function _make(
@@ -220,58 +232,81 @@ contract PixelsMetaverse {
         bytes32 dataBytes,
         uint256 quantity
     ) private {
-        uint256 ID = IPMT721(pmt721).currentID();
+        uint256 pmt721_id = IPMT721(pmt721).currentID();
         IPMT721(pmt721).mint(msg.sender, quantity);
-        material[pmt721][ID] = dataBytes;
+        material[pmt721][pmt721_id] = dataBytes;
+        materialId += quantity;
         emit MaterialEvent(
             msg.sender,
             pmt721,
-            ID,
-            ID,
-            ID,
+            pmt721_id,
+            pmt721_id,
+            pmt721_id,
             rawData,
             false,
             quantity
         );
     }
 
-    function addition(PMTStruct memory item, PMTStruct[] memory list)
-        public
-        Owner(item.pmt721, item.id, msg.sender)
-    {
+    function addition(uint256 _materialId, PMTStruct[] memory list) public {
+        PMTStruct memory c = materialIdToPmt721[_materialId];
+        require(
+            msg.sender == PMT721Minter[c.pmt721] ||
+                PMT721Minter[c.pmt721] == address(this),
+            "You don't have permission to edit it"
+        );
+
+        require(
+            msg.sender == IPMT721(c.pmt721).ownerOf(c.id),
+            "Only the owner"
+        );
+        uint256 material_id = composes[c.pmt721][c.id];
+        require(material_id == 0, "The item must not have been synthesized");
         for (uint256 i; i < list.length; i++) {
-            _compose(list[i], item, msg.sender);
+            _compose(_materialId, list[i], msg.sender);
         }
-        emit ComposeEvent(item, list, false);
+        emit ComposeEvent(c, list, false);
     }
 
     function _compose(
+        uint256 _materialId,
         PMTStruct memory item,
-        PMTStruct memory toItem,
         address _sender
     ) private Owner(item.pmt721, item.id, _sender) {
-        require(
-            composes[item.pmt721][item.id].id == 0,
-            "this Material composed"
-        );
-        composes[item.pmt721][item.id] = toItem;
+        uint256 material_id = composes[item.pmt721][item.id];
+        require(material_id == 0, "this Material composed");
+        composes[item.pmt721][item.id] = _materialId;
     }
 
     function subtract(PMTStruct memory item, PMTStruct[] memory list)
         public
         Owner(item.pmt721, item.id, msg.sender)
+        Minter(item.pmt721)
     {
+        uint256 material_id = composes[item.pmt721][item.id];
+        require(material_id == 0, "this Material composed");
+
+        uint256 _materialId = composes[list[0].pmt721][list[0].id];
+        PMTStruct memory p = materialIdToPmt721[_materialId];
         require(
-            composes[item.pmt721][item.id].id == 0,
-            "The item must not have been synthesized"
+            p.id == item.id && p.pmt721 == item.pmt721,
+            "this Material composed"
         );
-        for (uint256 i; i < list.length; i++) {
-            PMTStruct memory temp = list[i];
-            require(
-                composes[temp.pmt721][temp.id].id == item.id,
-                "The item was not synthesized into the ids"
-            );
-            delete composes[temp.pmt721][temp.id];
+
+        if (list.length == 1) {
+            delete composes[list[0].pmt721][list[0].id];
+            delete materialIdToPmt721[list[0].id];
+        } else {
+            for (uint256 i = 1; i < list.length; i++) {
+                PMTStruct memory temp = list[i];
+                uint256 _material_id = composes[temp.pmt721][temp.id];
+                require(
+                    _material_id == _materialId,
+                    "The item was not synthesized into the ids"
+                );
+                delete composes[temp.pmt721][temp.id];
+                delete materialIdToPmt721[temp.id];
+            }
         }
         emit ComposeEvent(PMTStruct(address(0), 0), list, false);
     }
@@ -282,28 +317,36 @@ contract PixelsMetaverse {
         uint256 id,
         uint256 quantity
     ) public {
-        require(
-            composes[msg.sender][id].id == 0,
-            "The item must not have been synthesized"
-        );
-        require(
-            IPMT721(msg.sender).getMinter() == address(this),
-            "Only the PixelsMetaverse Contract"
-        );
-        bool isAvater = IAvater(avater).isAvater(msg.sender, from, id);
+        if (PMT721Minter[msg.sender] != address(0)) {
+            uint256 _materialId = composes[msg.sender][id];
+            require(
+                _materialId == 0,
+                "The item must not have been synthesized"
+            );
+            bool isAvater = IAvater(avater).isAvater(msg.sender, from, id);
 
-        require(!isAvater, "This id been avater");
+            require(!isAvater, "This id been avater");
 
-        if (to == address(0)) {
-            DataBytesStruct memory d = getMaterial(msg.sender, id);
-            if (d.id != id) {
-                material[msg.sender][id + 1] = d.dataBytes;
-            } else {
-                material[msg.sender][id] = 0;
+            if (to == address(0)) {
+                DataBytesStruct memory d = getMaterial(msg.sender, id);
+                if (d.id != id) {
+                    material[msg.sender][id + 1] = d.dataBytes;
+                } else {
+                    material[msg.sender][id] = 0;
+                }
             }
-        }
-        if (from != address(0)) {
-            emit MaterialEvent(to, msg.sender, id, 0, 0, "", false, quantity);
+            if (from != address(0)) {
+                emit MaterialEvent(
+                    to,
+                    msg.sender,
+                    id,
+                    0,
+                    0,
+                    "",
+                    false,
+                    quantity
+                );
+            }
         }
     }
 }
