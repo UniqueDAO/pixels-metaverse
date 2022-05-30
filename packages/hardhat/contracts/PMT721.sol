@@ -24,6 +24,15 @@ contract PMT721 is ERC721A {
         return _nextTokenId();
     }
 
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4) {
+        return bytes4(0);
+    }
+
     function _beforeTokenTransfers(
         address from,
         address to,

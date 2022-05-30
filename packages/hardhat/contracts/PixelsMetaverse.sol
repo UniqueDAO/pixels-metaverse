@@ -28,6 +28,7 @@ contract PixelsMetaverse {
     mapping(uint256 => PMTStruct) public materialIdToPmt721;
     mapping(address => mapping(uint256 => bytes32)) public material;
     mapping(address => mapping(uint256 => uint256)) public composes;
+    mapping(address => mapping(uint256 => uint256)) public pmt721ToMaterialId;
 
     event MaterialEvent(
         address indexed owner,
@@ -165,7 +166,7 @@ contract PixelsMetaverse {
         bytes32 d = keccak256(abi.encodePacked(rawData));
         require(dataOwner[d] == address(0), "This data already has an owner");
         uint256 pmt721_id = IPMT721(pmt721).currentID();
-        _make(pmt721, pmt721_id, rawData, d, quantity);
+        _make(pmt721, pmt721_id, rawData, d, quantity, msg.sender);
 
         dataOwner[d] = msg.sender;
         emit ConfigEvent(
@@ -181,14 +182,20 @@ contract PixelsMetaverse {
     }
 
     function reMake(
+        address toPmt721,
         address pmt721,
         uint256 pmt721_id,
         uint256 quantity
-    ) public Minter(pmt721) Owner(pmt721, pmt721_id, msg.sender) {
+    )
+        public
+        Minter(pmt721)
+        Minter(toPmt721)
+        Owner(pmt721, pmt721_id, msg.sender)
+    {
         bytes32 d = getMaterial(pmt721, pmt721_id);
         require(dataOwner[d] == msg.sender, "Only the owner");
-        uint256 _pmt721_id = IPMT721(pmt721).currentID();
-        _make(pmt721, _pmt721_id, "", d, quantity);
+        uint256 _pmt721_id = IPMT721(toPmt721).currentID();
+        _make(toPmt721, _pmt721_id, "", d, quantity, msg.sender);
     }
 
     function compose(
@@ -231,7 +238,7 @@ contract PixelsMetaverse {
             "This data already has an owner"
         );
         dataOwner[dataBytes] = msg.sender;
-        _make(pmt721, pmt721_id, "", dataBytes, 1);
+        _make(pmt721, pmt721_id, "", dataBytes, 1, msg.sender);
         materialIdToPmt721[materialId] = p;
     }
 
@@ -240,13 +247,14 @@ contract PixelsMetaverse {
         uint256 pmt721_id,
         string memory rawData,
         bytes32 dataBytes,
-        uint256 quantity
+        uint256 quantity,
+        address to
     ) private {
-        IPMT721(pmt721).mint(msg.sender, quantity);
+        IPMT721(pmt721).mint(to, quantity);
         material[pmt721][pmt721_id] = dataBytes;
         materialId += quantity;
         emit MaterialEvent(
-            msg.sender,
+            to,
             pmt721,
             pmt721_id,
             pmt721_id,
@@ -329,7 +337,7 @@ contract PixelsMetaverse {
                 bytes32 d2 = getMaterial(temp.pmt721, temp.pmt721_id);
                 dataBytes = dataBytes ^ d2;
                 delete composes[temp.pmt721][temp.pmt721_id];
-                delete materialIdToPmt721[temp.pmt721_id];
+                delete materialIdToPmt721[_materialId];
             }
         }
         emit ComposeEvent(PMTStruct(address(0), 0), list, false);
@@ -342,9 +350,9 @@ contract PixelsMetaverse {
         uint256 quantity
     ) public {
         if (PMT721Minter[msg.sender] != address(0)) {
-            uint256 _materialId = composes[msg.sender][pmt721_id];
+            uint256 _material_id = composes[msg.sender][pmt721_id];
             require(
-                _materialId == 0,
+                _material_id == 0,
                 "The item must not have been synthesized"
             );
             bool isAvater = IAvater(avater).isAvater(
@@ -354,6 +362,31 @@ contract PixelsMetaverse {
             );
 
             require(!isAvater, "This pmt721_id been avater");
+
+            if (PMT721Minter[to] != address(0)) {
+                uint256 _materialId = pmt721ToMaterialId[msg.sender][pmt721_id];
+                if (_materialId == 0) {
+                    uint256 _pmt721_id = IPMT721(to).currentID();
+                    bytes32 d = getMaterial(msg.sender, pmt721_id);
+                    require(dataOwner[d] == from, "Only the owner");
+                    _make(to, _pmt721_id, "", d, quantity, from);
+                    pmt721ToMaterialId[to][_pmt721_id] = materialId;
+                } else {
+                    PMTStruct memory p = materialIdToPmt721[_materialId];
+                    IPMT721(p.pmt721).transferFrom(
+                        msg.sender,
+                        from,
+                        p.pmt721_id
+                    );
+
+                    pmt721ToMaterialId[p.pmt721][p.pmt721_id] = materialId;
+                }
+
+                materialIdToPmt721[materialId] = PMTStruct(
+                    msg.sender,
+                    pmt721_id
+                );
+            }
 
             emit MaterialEvent(
                 from,

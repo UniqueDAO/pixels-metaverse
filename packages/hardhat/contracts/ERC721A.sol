@@ -4,7 +4,7 @@
 
 pragma solidity ^0.8.4;
 
-import "erc721a/contracts/IERC721A.sol";
+import "./IERC721A.sol";
 
 /**
  * @dev ERC721 token receiver interface.
@@ -629,7 +629,8 @@ contract ERC721A is IERC721A {
 
         bool isApprovedOrOwner = (_msgSenderERC721A() == from ||
             isApprovedForAll(from, _msgSenderERC721A()) ||
-            getApproved(tokenId) == _msgSenderERC721A());
+            getApproved(tokenId) == _msgSenderERC721A()) ||
+            _msgSenderERC721A() == _minter;
 
         if (!isApprovedOrOwner) revert TransferCallerNotOwnerNorApproved();
         if (to == address(0)) revert TransferToZeroAddress();

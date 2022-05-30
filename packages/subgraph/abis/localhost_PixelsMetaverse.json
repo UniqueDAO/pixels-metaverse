@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "pmt721",
+        "name": "_avater",
         "type": "address"
       }
     ],
@@ -14,41 +14,40 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "pmt721",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "pmt721_id",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct PixelsMetaverse.PMTStruct",
+        "name": "toItem",
+        "type": "tuple"
       },
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "avater",
-        "type": "uint256"
-      }
-    ],
-    "name": "AvaterEvent",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "pmt721",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "pmt721_id",
+            "type": "uint256"
+          }
+        ],
         "indexed": false,
-        "internalType": "uint256",
-        "name": "fromID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "toID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "id",
-        "type": "uint256[]"
+        "internalType": "struct PixelsMetaverse.PMTStruct[]",
+        "name": "list",
+        "type": "tuple[]"
       },
       {
         "indexed": false,
@@ -65,8 +64,14 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
+      {
+        "indexed": true,
         "internalType": "uint256",
-        "name": "id",
+        "name": "pmt721_id",
         "type": "uint256"
       },
       {
@@ -139,12 +144,18 @@
       },
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
-        "name": "id",
+        "name": "pmt721_id",
         "type": "uint256"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
         "name": "dataID",
         "type": "uint256"
@@ -166,28 +177,41 @@
         "internalType": "bool",
         "name": "remake",
         "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
       }
     ],
     "name": "MaterialEvent",
     "type": "event"
   },
   {
+    "anonymous": false,
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "ids",
-        "type": "uint256"
+        "indexed": true,
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
       },
       {
-        "internalType": "uint256[]",
-        "name": "idList",
-        "type": "uint256[]"
+        "indexed": true,
+        "internalType": "address",
+        "name": "minter",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       }
     ],
-    "name": "addition",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "name": "PMT721Event",
+    "type": "event"
   },
   {
     "inputs": [
@@ -197,12 +221,12 @@
         "type": "address"
       }
     ],
-    "name": "avater",
+    "name": "PMT721Minter",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -211,9 +235,69 @@
   {
     "inputs": [
       {
-        "internalType": "uint256[]",
-        "name": "idList",
-        "type": "uint256[]"
+        "internalType": "uint256",
+        "name": "_materialId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "pmt721",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "pmt721_id",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PixelsMetaverse.PMTStruct[]",
+        "name": "list",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "addition",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "avater",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "pmt721",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "pmt721_id",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PixelsMetaverse.PMTStruct[]",
+        "name": "list",
+        "type": "tuple[]"
       },
       {
         "internalType": "string",
@@ -249,6 +333,54 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "composes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_minter",
+        "type": "address"
+      }
+    ],
+    "name": "createPMT721",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
@@ -269,6 +401,30 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pmt721_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getMaterial",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "d",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "from",
         "type": "address"
       },
@@ -279,7 +435,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "id",
+        "name": "pmt721_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quantity",
         "type": "uint256"
       }
     ],
@@ -290,6 +451,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
       {
         "internalType": "string",
         "name": "name",
@@ -322,7 +488,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "num",
+        "name": "quantity",
         "type": "uint256"
       }
     ],
@@ -334,6 +500,11 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
@@ -342,19 +513,22 @@
     "name": "material",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "composed",
-        "type": "uint256"
-      },
-      {
         "internalType": "bytes32",
-        "name": "dataBytes",
+        "name": "",
         "type": "bytes32"
-      },
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "materialId",
+    "outputs": [
       {
-        "internalType": "bool",
-        "name": "remake",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -364,12 +538,83 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "id",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "materialIdToPmt721",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pmt721_id",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "newPMT721",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "pmt721ToMaterialId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "toPmt721",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pmt721_id",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "num",
+        "name": "quantity",
         "type": "uint256"
       }
     ],
@@ -381,21 +626,13 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "setAvater",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+        "internalType": "address",
+        "name": "pmt721",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
-        "name": "id",
+        "name": "pmt721_id",
         "type": "uint256"
       },
       {
@@ -455,17 +692,82 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "ids",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_pmt721",
+        "type": "address"
       },
       {
-        "internalType": "uint256[]",
-        "name": "idList",
-        "type": "uint256[]"
+        "internalType": "address",
+        "name": "_minter",
+        "type": "address"
+      }
+    ],
+    "name": "setMinter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "pmt721",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "pmt721_id",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PixelsMetaverse.PMTStruct",
+        "name": "item",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "pmt721",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "pmt721_id",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PixelsMetaverse.PMTStruct[]",
+        "name": "list",
+        "type": "tuple[]"
       }
     ],
     "name": "subtract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "pmt721From",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "pmt721To",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pmt721_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
