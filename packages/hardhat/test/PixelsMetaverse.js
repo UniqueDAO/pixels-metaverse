@@ -42,11 +42,6 @@ describe("Test My Dapp", function () {
       otherAccount = PMT2;
     });
 
-    it("PMT1的minter和owner", async function () {
-      const minter = await PMT7212Contract.getMinter();
-      expect(minter).to.equal(PixelsMetaverseContract.address);
-    });
-
     it("PMT1制作2个虚拟物品0、1", async function () {
       await PixelsMetaverseContract.make(PMT1, "name", "rawData", "time", "position", "zIndex", "decode", 2);
       const currentID = await PMT721Contract.currentID()
