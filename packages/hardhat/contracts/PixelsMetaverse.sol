@@ -369,6 +369,7 @@ contract PixelsMetaverse {
         uint256 pmt721_id,
         uint256 quantity
     ) public {
+        require(msg.sender != to, "Cannot transfer this contract");
         if (PMT721Minter[msg.sender] != address(0)) {
             uint256 _material_id = composes[msg.sender][pmt721_id];
             require(
