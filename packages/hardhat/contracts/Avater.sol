@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
-import "./IPMT721.sol";
+interface IPMT721 {
+    function ownerOf(uint256 tokenId) external view returns (address owner);
+}
 
 contract Avater {
     struct UserAvater {

@@ -4,7 +4,7 @@
 
 pragma solidity ^0.8.4;
 
-import "./IERC721A.sol";
+import "erc721a/contracts/IERC721A.sol";
 
 /**
  * @dev ERC721 token receiver interface.

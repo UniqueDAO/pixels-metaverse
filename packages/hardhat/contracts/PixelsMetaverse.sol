@@ -1,9 +1,29 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
-import "./IPMT721.sol";
 import "./PMT721.sol";
-import "./IAvater.sol";
+
+interface IAvater {
+    function isAvater(
+        address pmt721,
+        address from,
+        uint256 id
+    ) external view returns (bool);
+}
+
+interface IPMT721 {
+    function mint(address to, uint256 quantity) external;
+
+    function currentID() external view returns (uint256);
+
+    function ownerOf(uint256 tokenId) external view returns (address owner);
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) external;
+}
 
 contract PixelsMetaverse {
     address public avater;

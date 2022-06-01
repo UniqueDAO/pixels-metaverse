@@ -1,8 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
-import "./IPixelsMetaverse.sol";
 import "./ERC721A.sol";
+
+interface IPixelsMetaverse {
+    function handleTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 quantity
+    ) external;
+}
 
 contract PMT721 is ERC721A {
     constructor() ERC721A("PixelsMetavers", "PMT") {}
