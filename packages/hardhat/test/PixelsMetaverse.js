@@ -7,6 +7,7 @@ const PMT_ABI = PMTJSON.abi;
 use(solidity);
 
 describe("Test My Dapp", function () {
+  let PMT20Contract;
   let PMT721Contract;
   let PMT7212Contract;
   let PixelsMetaverseContract;
@@ -20,9 +21,12 @@ describe("Test My Dapp", function () {
     owner = signers[0];
     const PixelsMetaverse = await ethers.getContractFactory("PixelsMetaverse");
     const Avater = await ethers.getContractFactory("Avater");
+    const PMT20 = await ethers.getContractFactory("PMT20");
     AvaterContract = await Avater.deploy();
-    PixelsMetaverseContract = await PixelsMetaverse.deploy(AvaterContract.address);
+    PMT20Contract = await PMT20.deploy();
+    PixelsMetaverseContract = await PixelsMetaverse.deploy(AvaterContract.address, PMT20Contract.address);
     await PixelsMetaverseContract.deployed();
+    await PMT20Contract.setMinter(PixelsMetaverseContract.address);
   });
 
   describe("调用PixelsMetaverse合约函数", async function () {
@@ -222,6 +226,9 @@ describe("Test My Dapp", function () {
         emit(PixelsMetaverseContract, "MaterialEvent").
         withArgs(PMT1, otherAccount, 7, 0, 0, "", false, 1);
       expect(await PMT721Contract.ownerOf(9)).to.equal(owner.address);
+
+      const amount = await PMT20Contract.balanceOf(owner.address);
+      console.log(amount?.toString())
     });
 
     /* it("销毁11", async function () {

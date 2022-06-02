@@ -3,7 +3,7 @@ pragma solidity ^0.8.4;
 
 import "./ERC721A.sol";
 
-interface IPixelsMetaverse {
+interface IPixelsMetaverse721 {
     function handleTransfer(
         address from,
         address to,
@@ -34,6 +34,11 @@ contract PMT721 is ERC721A {
         uint256 tokenId,
         uint256 quantity
     ) internal virtual override {
-        IPixelsMetaverse(_minter).handleTransfer(from, to, tokenId, quantity);
+        IPixelsMetaverse721(_minter).handleTransfer(
+            from,
+            to,
+            tokenId,
+            quantity
+        );
     }
 }
