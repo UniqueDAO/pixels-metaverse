@@ -5,25 +5,27 @@ import { initReactI18next } from "react-i18next";
 //详情请访问：https://github.com/i18next/i18next-browser-languageDetector
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-//import en from "./en-us.json";
-//import hk from "./zh-hk.json";
+import en from "./en-us.json";
+import hk from "./zh-hk.json";
 import cn from "./zh-cn.json";
 
 const resources = {
     cn: {
         translation: cn,
     },
-    /* en: {
+    en: {
         translation: en,
     },
     hk: {
         translation: hk,
-    }, */
+    },
 };
 
 i18n.use(LanguageDetector) //嗅探当前浏览器语言 zh-CN
-    .use(initReactI18next).init({
+    .use(initReactI18next)
+    .init({
         resources,
+        fallbackLng: 'cn',
         interpolation: {
             escapeValue: false,
         },

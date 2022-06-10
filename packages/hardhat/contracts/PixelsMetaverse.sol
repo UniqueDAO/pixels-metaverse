@@ -38,7 +38,7 @@ contract PixelsMetaverse {
     address public newPMT721;
     address public PMT20;
     uint256 public materialId;
-    uint256 public MAX_NUM = 21_000_000;
+    uint256 public MAX_NUM = 21_000_000 * 10 ** 18;
 
     mapping(address => address) public PMT721Minter;
     event PMT721Event(
@@ -127,7 +127,7 @@ contract PixelsMetaverse {
         returns (address pmt721)
     {
         uint256 balance = IPMT20(PMT20).balanceOf(msg.sender);
-        require(balance >= 1024, "Lack of balance");
+        require(balance >= 1024 * 10**18, "Lack of balance");
         bytes memory bytecode = type(PMT721).creationCode;
         bytes32 salt = keccak256(abi.encodePacked(name, msg.sender));
         assembly {
@@ -135,7 +135,7 @@ contract PixelsMetaverse {
         }
         PMT721Minter[pmt721] = _minter;
         newPMT721 = pmt721;
-        IPMT20(PMT20).burn(msg.sender, 1024);
+        IPMT20(PMT20).burn(msg.sender, 1024 * 10**18);
         emit PMT721Event(address(pmt721), _minter, name);
     }
 
@@ -146,7 +146,7 @@ contract PixelsMetaverse {
         );
         PMT721Minter[_pmt721] = _minter;
         if (_minter == address(0)) {
-            IPMT20(PMT20).mint(msg.sender, 1024);
+            IPMT20(PMT20).mint(msg.sender, 1024 * 10**18);
         }
     }
 
@@ -199,7 +199,7 @@ contract PixelsMetaverse {
             "You don't have permission to make it"
         );
         require(
-            quantity > 0 && quantity <= 1024,
+            quantity > 0 && quantity <= 1024 * 10**18,
             "The quantity must be greater than 0"
         );
 
@@ -212,7 +212,7 @@ contract PixelsMetaverse {
         require(dataOwner[d] == address(0), "This data already has an owner");
         uint256 pmt721_id = IPMT721(pmt721).currentID();
         _make(pmt721, pmt721_id, rawData, d, quantity, msg.sender);
-        IPMT20(PMT20).mint(msg.sender, quantity);
+        IPMT20(PMT20).mint(msg.sender, quantity * 10**18);
 
         dataOwner[d] = msg.sender;
         emit ConfigEvent(
@@ -239,7 +239,7 @@ contract PixelsMetaverse {
         Owner(pmt721, pmt721_id, msg.sender)
     {
         require(
-            quantity > 0 && quantity <= 1024,
+            quantity > 0 && quantity <= 1024 * 10**18,
             "The quantity must be greater than 0"
         );
         require(
@@ -250,7 +250,7 @@ contract PixelsMetaverse {
         require(dataOwner[d] == msg.sender, "Only the owner");
         uint256 _pmt721_id = IPMT721(toPmt721).currentID();
         _make(toPmt721, _pmt721_id, "", d, quantity, msg.sender);
-        IPMT20(PMT20).mint(msg.sender, quantity);
+        IPMT20(PMT20).mint(msg.sender, quantity * 10**18);
     }
 
     function compose(
@@ -279,13 +279,13 @@ contract PixelsMetaverse {
         PMTStruct memory p = PMTStruct(pmt721, pmt721_id);
 
         bytes32 dataBytes;
-        IPMT20(PMT20).mint(msg.sender, len * 2);
+        IPMT20(PMT20).mint(msg.sender, len * 2 * 10**18);
 
         for (uint256 i; i < len; i++) {
             PMTStruct memory temp = list[i];
             bytes32 d = getMaterial(temp.pmt721, temp.pmt721_id);
             dataBytes = dataBytes ^ d;
-            IPMT20(PMT20).mint(dataOwner[d], 3);
+            IPMT20(PMT20).mint(dataOwner[d], 3 * 10**18);
             _compose(materialId + 1, temp, msg.sender);
         }
         emit ComposeEvent(p, list, true);
@@ -342,7 +342,7 @@ contract PixelsMetaverse {
             PMTStruct memory temp = list[i];
             bytes32 d1 = getMaterial(temp.pmt721, temp.pmt721_id);
             dataBytes = dataBytes ^ d1;
-            IPMT20(PMT20).mint(dataOwner[d1], 3);
+            IPMT20(PMT20).mint(dataOwner[d1], 3 * 10**18);
             _compose(_materialId, list[i], msg.sender);
         }
         emit ComposeEvent(c, list, false);
@@ -379,7 +379,7 @@ contract PixelsMetaverse {
         bytes32 dataBytes = getMaterial(item.pmt721, item.pmt721_id);
         uint256 len = list.length;
 
-        IPMT20(PMT20).burn(msg.sender, 4 * len);
+        IPMT20(PMT20).burn(msg.sender, 4 * len * 10**18);
 
         if (len == 1) {
             bytes32 d1 = getMaterial(t.pmt721, t.pmt721_id);

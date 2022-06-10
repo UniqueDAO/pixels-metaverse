@@ -9,7 +9,7 @@ contract PMT20 is ERC20 {
 
     constructor() ERC20("PixelsMetavers", "PMT") {
         _owner = msg.sender;
-        _mint(msg.sender, 102400);
+        _mint(msg.sender, 102400 * 10**18);
     }
 
     function mint(address to, uint256 amount) public {
