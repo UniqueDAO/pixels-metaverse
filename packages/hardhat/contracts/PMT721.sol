@@ -13,19 +13,43 @@ interface IPixelsMetaverse721 {
 }
 
 contract PMT721 is ERC721A {
-    constructor() ERC721A("PixelsMetavers", "PMT") {}
-
-    function mint(address to, uint256 quantity) public {
-        require(_msgSenderERC721A() == _minter, "Only Minter Can Do It!");
-        _safeMint(to, quantity);
+    uint256 private _MAX_QUANTITY;
+    bool private _paused;
+    modifier Minter() {
+        require(
+            _msgSenderERC721A() == _minter,
+            "You don't have permission to make it"
+        );
+        _;
     }
 
-    function burn(uint256 id) public {
-        _burn(id, true);
+    constructor() ERC721A() {}
+
+    function initialize(
+        string memory name,
+        string memory symbol,
+        uint256 MAX_QUANTITY
+    ) public Minter {
+        _name = name;
+        _symbol = symbol;
+        _MAX_QUANTITY = MAX_QUANTITY;
+    }
+
+    function mint(address to, uint256 quantity) public Minter {
+        require(!_paused, "Can't mint");
+        require(
+            _MAX_QUANTITY == 0 || _nextTokenId() <= _MAX_QUANTITY,
+            "Exceed maximum quantity"
+        );
+        _safeMint(to, quantity);
     }
 
     function currentID() public view returns (uint256) {
         return _nextTokenId();
+    }
+
+    function setPause() public Minter {
+        _paused = true;
     }
 
     function _beforeTokenTransfers(

@@ -63,10 +63,10 @@ contract ERC721A is IERC721A {
     uint256 private _burnCounter;
 
     // Token name
-    string private _name;
+    string internal _name;
 
     // Token symbol
-    string private _symbol;
+    string internal _symbol;
 
     address internal _minter;
 
@@ -96,9 +96,7 @@ contract ERC721A is IERC721A {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
 
-    constructor(string memory name_, string memory symbol_) {
-        _name = name_;
-        _symbol = symbol_;
+    constructor() {
         _currentIndex = _startTokenId();
         _minter = msg.sender;
     }
